@@ -1,34 +1,46 @@
 package avernusvenine.sne;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.Server;
+import avernusvenine.sne.commands.GiveCustomItem;
+import avernusvenine.sne.items.*;
+
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.event.Event;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.security.Permission;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 public final class StrongholdsAndEnderdragons extends JavaPlugin {
 
+    // Dictionary of all custom items
+    public static BiMap<String, ItemStack> customItemDictionary = HashBiMap.create();
+
     @Override
     public void onEnable() {
-        // Plugin startup logic
+
+        registerCommand("givecustomitem", new GiveCustomItem());
+        loadItems();
 
     }
 
 
-    public void registerCommand(String name, CommandExecutor executor, Permission permission){
+    // Don't forget to put new custom items in here, so they can be spawned in
+    public void loadItems(){
+        CustomItem.init();
+        customItemDictionary.put(CustomItem.getID(), CustomItem.getCustomItem());
+        Mjolnir.init();
+        customItemDictionary.put(Mjolnir.getID(), Mjolnir.getCustomItem());
+    }
+
+    public void registerCommand(String name, CommandExecutor executor){
         PluginCommand command = getCommand(name);
 
         if(command != null){
             command.setExecutor(executor);
-            command.setPermission(permission.toString());
 
         }
 

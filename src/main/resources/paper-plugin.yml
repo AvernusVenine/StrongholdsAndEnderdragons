@@ -1,4 +1,0 @@
-name: Strongholds and Enderdragons
-version: '${project.version}'
-main: avernusvenine.sne.StrongholdsAndEnderdragons
-api-version: '1.20'
