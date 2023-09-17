@@ -1,14 +1,18 @@
 package avernusvenine.sne.items;
 
 import avernusvenine.sne.StrongholdsAndEnderdragons;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -16,19 +20,24 @@ import org.bukkit.inventory.meta.ItemMeta;
 import static org.bukkit.Bukkit.*;
 
 
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 
 public class CustomItem {
 
-    protected static ItemStack item;
-    protected static String id;
+    protected ItemStack item;
+    protected Material material;
+    protected String id;
 
-    public static void init() {
+    public CustomItem() {
         id = "default_custom_item";
+        material = Material.STICK;
         item = generateItem();
     }
 
@@ -47,16 +56,18 @@ public class CustomItem {
     }
 
     public static ItemStack generateItem(Material material, int amount, String displayName, List<String> lore,
-                                         @NotNull List<ItemFlag> itemFlags){
+                                         @NotNull List<ItemFlag> itemFlags, boolean unbreakable){
         ItemStack tempItem = new ItemStack(material, amount);
 
         ItemMeta meta = tempItem.getItemMeta();
         meta.setDisplayName(displayName);
         meta.setLore(lore);
 
-        for(int i = 0; i < itemFlags.size(); i++){
-            meta.addItemFlags(itemFlags.get(i));
+        for (ItemFlag itemFlag : itemFlags) {
+            meta.addItemFlags(itemFlag);
         }
+
+        meta.setUnbreakable(unbreakable);
 
         tempItem.setItemMeta(meta);
 
@@ -64,61 +75,69 @@ public class CustomItem {
     }
 
     public static ItemStack generateItem(Material material, int amount, String displayName, List<String> lore,
-                                  @NotNull List<Enchantment> enchantment, @NotNull List<Integer> enchantmentStrength,
-                                  @NotNull List<ItemFlag> itemFlags) {
+                                         @NotNull Map<Enchantment, Integer> enchantment, @NotNull List<ItemFlag> itemFlags,
+                                         boolean unbreakable) {
         ItemStack tempItem = new ItemStack(material, amount);
         ItemMeta meta = tempItem.getItemMeta();
         meta.setDisplayName(displayName);
         meta.setLore(lore);
 
         // Adds given Enchantments to the item
-        for(int i = 0; i < enchantment.size(); i++){
-            meta.addEnchant(enchantment.get(i), enchantmentStrength.get(i), false);
+        for(Map.Entry<Enchantment, Integer> entry : enchantment.entrySet()){
+            meta.addEnchant(entry.getKey(), entry.getValue(), false);
         }
 
         // Adds given ItemFlags to the item
-        for(int i = 0; i < itemFlags.size(); i++){
-            meta.addItemFlags(itemFlags.get(i));
+        for (ItemFlag itemFlag : itemFlags) {
+            meta.addItemFlags(itemFlag);
         }
+
+        meta.setUnbreakable(unbreakable);
 
         tempItem.setItemMeta(meta);
 
         return tempItem;
     }
 
-    public static void useItem(PlayerInteractEvent event){
+    public void rightClickAir(Player player){}
+    public void leftClickAir(Player player){}
+    public void leftClickAtEntity(Player player, Entity entity){}
 
-    }
+
+    public void killedWhileWorn(Player player, Entity entity, EntityDamageByEntityEvent event){}
 
 
     // Getters and Setters
 
 
-    public static String getID(){
+    public String getID(){
         return id;
     }
 
-    public static ItemStack getCustomItem(){
+    public ItemStack getCustomItem(){
         return item;
     }
 
+    protected static class TaskHandler {
 
-    // Event Handler
+        private int iterator;
 
-    protected static class CustomItemEvent implements Listener {
+        private BukkitTask task;
 
-        @EventHandler
-        public void onEvent(PlayerInteractEvent event){
+        public TaskHandler(long delay, long period, int count, Runnable func){
 
-            ItemStack eventItem = event.getItem();
-
-            if (eventItem != null){
-                if (StrongholdsAndEnderdragons.customItemDictionary.inverse().get(eventItem) != null){
-
-                    if(eventItem.equals(Mjolnir.getCustomItem())) Mjolnir.useItem(event);
-
+            task = Bukkit.getScheduler().runTaskTimer(StrongholdsAndEnderdragons.plugin, new Runnable() {
+                @Override
+                public void run() {
+                    if(iterator > count)
+                        task.cancel();
+                    else {
+                        func.run();
+                        iterator++;
+                    }
                 }
-            }
+            }, delay, period);
+
         }
 
     }

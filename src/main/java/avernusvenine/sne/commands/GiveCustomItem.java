@@ -3,6 +3,7 @@ package avernusvenine.sne.commands;
 import avernusvenine.sne.StrongholdsAndEnderdragons;
 
 
+import avernusvenine.sne.items.CustomItem;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,7 +26,7 @@ public class GiveCustomItem implements CommandExecutor {
 
         if(command.getName().equalsIgnoreCase("givecustomitem")){
 
-            ItemStack item = StrongholdsAndEnderdragons.customItemDictionary.get(args[0]);
+            CustomItem item = StrongholdsAndEnderdragons.customItemDictionary.get(args[0]);
 
             // Happens if the item is not found
             if(item == null){
@@ -33,7 +34,7 @@ public class GiveCustomItem implements CommandExecutor {
                 return true;
             }
 
-            player.getInventory().addItem(item);
+            player.getInventory().addItem(item.getCustomItem());
         }
 
         return true;

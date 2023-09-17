@@ -6,3 +6,6 @@ commands:
   givecustomitem:
     description: Gives a custom item to the player
     usage: /<command> item_id
+  resetcooldown:
+    description: Reset cooldown of item held in the players hand
+    usage: /<command>
