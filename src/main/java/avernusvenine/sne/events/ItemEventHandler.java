@@ -1,7 +1,8 @@
-package avernusvenine.sne.items;
+package avernusvenine.sne.events;
 
 import avernusvenine.sne.StrongholdsAndEnderdragons;
 
+import avernusvenine.sne.items.CustomItem;
 import avernusvenine.sne.items.weapons.Mjolnir;
 import de.tr7zw.nbtapi.NBTItem;
 import io.papermc.paper.event.player.PlayerItemCooldownEvent;

@@ -41,6 +41,13 @@ public class CustomItem {
     public final static String nbtSpecial = "SpecialCooldown";
     public final static String nbtID = "CustomID";
 
+    public final static String artifact = ChatColor.AQUA + "" + ChatColor.BOLD + "Artifact";
+    public final static String legendary = ChatColor.GOLD + "" + ChatColor.BOLD + "Legendary";
+    public final static String epic = ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Epic";
+    public final static String rare = ChatColor.DARK_BLUE + "" + ChatColor.BOLD + "Rare";
+    public final static String uncommon = ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "Uncommon";
+    public final static String common = ChatColor.WHITE + "" + ChatColor.BOLD + "Common";
+
     protected ItemStack item;
     protected Material material;
     protected String id;
@@ -62,6 +69,19 @@ public class CustomItem {
         CHESTPLATE,
         LEGGINGS,
         BOOTS
+    }
+
+    public enum ItemType {
+        SPELL,
+        MUSICAL,
+        CLOTH_ARMOR,
+        LIGHT_ARMOR,
+        MEDIUM_ARMOR,
+        HEAVY_ARMOR,
+        SHIELD,
+        SIMPLE_WEAPON,
+        MARTIAL_WEAPON,
+        MAGICAL_WEAPON
     }
 
 
@@ -195,28 +215,27 @@ public class CustomItem {
         return false;
     }
 
-    public static void alertCooldown(Player player, ItemStack item, UseType type){
-        String timeLeft;
+    public static void alertCooldown(Player player, long cooldown, UseType type){
+        String timeLeft = "";
         long time = 0L;
 
-        NBTItem nbtItem = new NBTItem(item);
+        NBTItem nbtItem = new NBTItem(player.getInventory().getItemInMainHand());
 
         if(type == UseType.BASIC)
             time = nbtItem.getLong(nbtBasic);
         else if(type == UseType.SPECIAL)
             time = nbtItem.getLong(nbtSpecial);
 
-        time = (System.currentTimeMillis() - time)/1000;
+        long diff = System.currentTimeMillis() - time;
+        time =  ticksToMillis(cooldown) - diff;
 
-        timeLeft = (time % 60) + "h ";
-        time = time % 60;
-        timeLeft += (time % 60) + "m ";
-        time = time % 60;
-        timeLeft += time + "s";
+        timeLeft += ((int) (time / (1000*60*60)) % 24) + "h ";
+        timeLeft += ((int) (time / (1000*60)) % 60) + "m ";
+        timeLeft += ((int) (time / 1000) % 60) + "s";
 
 
-        player.sendTitle("", item.getItemMeta().getDisplayName() + ChatColor.RESET + " is on cooldown for "
-                + timeLeft, 5, 20, 5);
+        player.sendTitle("", player.getInventory().getItemInMainHand().getItemMeta().getDisplayName()
+                + ChatColor.RESET + " is on cooldown for " + timeLeft, 5, 5, 5);
     }
 
     // Functions related to events

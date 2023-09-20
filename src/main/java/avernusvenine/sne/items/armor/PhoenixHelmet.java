@@ -38,10 +38,18 @@ public class PhoenixHelmet extends CustomItem {
                 + ChatColor.GOLD + "" + ChatColor.MAGIC + "AA";
 
         List<String> lore = new ArrayList<String>();
-        String loreOne = ChatColor.YELLOW + "" + ChatColor.BOLD + "A glimpse of rebirth";
-        String loreTwo = ChatColor.GRAY + "" + ChatColor.ITALIC + "Prevents the wearers death (Cooldown: 30m)";
-        lore.add(loreOne);
-        lore.add(loreTwo);
+        lore.add(ChatColor.GOLD + "A glimpse of rebirth");
+        lore.add("");
+        lore.add("");
+        lore.add(ChatColor.GRAY + "Rebirth I");
+        lore.add("");
+        lore.add("");
+        lore.add(ChatColor.GOLD + "Rebirth:");
+        lore.add(ChatColor.GRAY + "Prevents the wearers death and ignites nearby creatures");
+        lore.add("");
+        lore.add("");
+        lore.add(artifact);
+
 
         List<ItemFlag> itemFlags = new ArrayList<ItemFlag>();
         itemFlags.add(ItemFlag.HIDE_ATTRIBUTES);

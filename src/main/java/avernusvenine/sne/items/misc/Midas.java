@@ -2,15 +2,12 @@ package avernusvenine.sne.items.misc;
 
 import avernusvenine.sne.items.CustomItem;
 import avernusvenine.sne.StrongholdsAndEnderdragons;
-import avernusvenine.sne.items.CustomItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
@@ -35,10 +32,18 @@ public class Midas extends CustomItem{
                 + ChatColor.GOLD + ChatColor.MAGIC + "A";
 
         List<String> lore = new ArrayList<String>();
-        String loreOne = ChatColor.GOLD + "" + ChatColor.BOLD + "Hand of the cursed king Midas";
-        String loreTwo = ChatColor.GRAY + "" + ChatColor.ITALIC + "Turn a mob into solid gold (Cooldown: 1h)";
-        lore.add(loreOne);
-        lore.add(loreTwo);
+
+        lore.add(ChatColor.GOLD + "Hand of the cursed king Midas");
+        lore.add("");
+        lore.add("");
+        lore.add(ChatColor.GRAY + "Midas Touch I");
+        lore.add("");
+        lore.add("");
+        lore.add(ChatColor.GOLD + "Midas Touch:");
+        lore.add(ChatColor.GRAY + "Convert a creature to solid gold");
+        lore.add("");
+        lore.add("");
+        lore.add(legendary);
 
         List<ItemFlag> itemFlags = new ArrayList<ItemFlag>();
         itemFlags.add(ItemFlag.HIDE_ATTRIBUTES);
@@ -52,9 +57,11 @@ public class Midas extends CustomItem{
     public void leftClickAtEntity(Player player, Entity entity){
 
         if(onCooldown(new NBTItem(player.getInventory().getItemInMainHand()), UseType.BASIC, basicCooldown)) {
-            alertCooldown(player, item, UseType.BASIC);
+            alertCooldown(player, basicCooldown, UseType.BASIC);
             return;
         }
+
+        addCooldown(item, UseType.BASIC, player, InventorySlot.MAIN_HAND);
 
         if(!(StrongholdsAndEnderdragons.basicEntities.contains(entity.getType())))
             return;
@@ -70,7 +77,7 @@ public class Midas extends CustomItem{
         player.getWorld().dropItem(entity.getLocation(), goldIngots);
         player.getWorld().dropItem(entity.getLocation(), goldNuggets);
 
-        player.getWorld().playSound(player, Sound.ENTITY_ITEM_BREAK, 1, 0.5f);
+        player.getWorld().playSound(player, Sound.ENTITY_ITEM_BREAK, 1, 5.0f);
     }
 
 }

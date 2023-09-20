@@ -32,12 +32,22 @@ public class Mjolnir extends CustomItem {
                 + ChatColor.WHITE + "" + ChatColor.MAGIC + "AA";
 
         List<String> lore = new ArrayList<String>();
-        String loreOne = ChatColor.WHITE + "" + ChatColor.BOLD + "Whosoever holds this hammer...";
-        String loreTwo = ChatColor.GRAY + "" + ChatColor.ITALIC + "Strike an opponent with lightning (Cooldown: 3s)";
-        String loreThree = ChatColor.GRAY + "" + ChatColor.ITALIC + "Summon a lightning storm around you (Cooldown: 20s)";
-        lore.add(loreOne);
-        lore.add(loreTwo);
-        lore.add(loreThree);
+
+        lore.add(ChatColor.WHITE + "Whosoever holds this hammer...");
+        lore.add("");
+        lore.add("");
+        lore.add(ChatColor.GRAY + "Thundering V");
+        lore.add(ChatColor.GRAY + "Lightning Storm III");
+        lore.add("");
+        lore.add("");
+        lore.add(ChatColor.WHITE + "Thundering:");
+        lore.add(ChatColor.GRAY + "Strikes a creature with lightning");
+        lore.add("");
+        lore.add(ChatColor.WHITE + "Lightning Storm:");
+        lore.add(ChatColor.GRAY + "Summon a lightning storm to strike nearby creatures");
+        lore.add("");
+        lore.add("");
+        lore.add(artifact);
 
         List<ItemFlag> itemFlags = new ArrayList<ItemFlag>();
         itemFlags.add(ItemFlag.HIDE_ATTRIBUTES);
@@ -57,12 +67,12 @@ public class Mjolnir extends CustomItem {
         long period = 40;
 
         if(onCooldown(new NBTItem(player.getInventory().getItemInMainHand()), UseType.SPECIAL, specialCooldown)){
-            alertCooldown(player, item, UseType.SPECIAL);
+            alertCooldown(player, specialCooldown, UseType.SPECIAL);
             return;
         }
 
-        if(player.getInventory().getItemInOffHand() != null){
-            System.out.println(player.getInventory().getItemInOffHand());
+        if(player.getInventory().getItemInOffHand().getType() != Material.AIR){
+            return;
         }
 
         addCooldown(item, UseType.SPECIAL, player, slot);

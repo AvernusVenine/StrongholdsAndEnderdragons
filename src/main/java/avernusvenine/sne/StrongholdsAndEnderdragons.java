@@ -1,24 +1,30 @@
 package avernusvenine.sne;
 
+import avernusvenine.sne.commands.GetRank;
 import avernusvenine.sne.commands.GiveCustomItem;
-import avernusvenine.sne.commands.ResetCooldowns;
+import avernusvenine.sne.commands.OpenGUI;
+import avernusvenine.sne.commands.SetRank;
+import avernusvenine.sne.database.DatabaseHandler;
+import avernusvenine.sne.events.ItemEventHandler;
+import avernusvenine.sne.events.PlayerEventHandler;
+import avernusvenine.sne.gui.ClassSelectGUI;
+import avernusvenine.sne.gui.DefaultGUI;
 import avernusvenine.sne.items.*;
 
 import avernusvenine.sne.items.armor.PhoenixHelmet;
 import avernusvenine.sne.items.misc.Midas;
 import avernusvenine.sne.items.weapons.Mjolnir;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.SQLException;
+import java.util.*;
 
 public final class StrongholdsAndEnderdragons extends JavaPlugin {
 
@@ -28,20 +34,43 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
     public static List<EntityType> invalidEntities = new ArrayList<EntityType>();
     public static List<EntityType> basicEntities = new ArrayList<EntityType>();
 
+    public static Dictionary<String, DefaultGUI> guiDictionary = new Hashtable<String, DefaultGUI>();
+
     public static JavaPlugin plugin;
+    public static DatabaseHandler databaseHandler;
 
     @Override
     public void onEnable() {
 
         plugin = this;
 
-        registerCommand("givecustomitem", new GiveCustomItem());
-        registerCommand("resetcooldowns", new ResetCooldowns());
-
         loadItems();
+        loadGUI();
+        loadCommands();
+
         registerEvents();
+        Bukkit.getServer().getConsoleSender().sendMessage("Successfully registered events!");
         registerEntities();
 
+        try {
+            if (!getDataFolder().exists())
+                getDataFolder().mkdirs();
+
+            databaseHandler = new DatabaseHandler(getDataFolder().getAbsolutePath() + "/sne.db");
+            Bukkit.getServer().getConsoleSender().sendMessage("Successfully loaded database!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Bukkit.getServer().getConsoleSender().sendMessage("Failed to load database! Disabling plugin");
+            Bukkit.getPluginManager().disablePlugin(plugin);
+        }
+
+    }
+
+    public void loadGUI(){
+        {
+            ClassSelectGUI gui = new ClassSelectGUI();
+            guiDictionary.put(gui.getID(), gui);
+        }
     }
 
     public void registerEntities(){
@@ -144,6 +173,12 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
         basicEntities.add(EntityType.ZOMBIFIED_PIGLIN);
     }
 
+    public void loadCommands(){
+        registerCommand("givecustomitem", new GiveCustomItem());
+        registerCommand("getrank", new GetRank());
+        registerCommand("setrank", new SetRank());
+        registerCommand("opengui", new OpenGUI());
+    }
 
     // Don't forget to put new custom items in here, so they can be spawned in
     public void loadItems(){
@@ -174,14 +209,17 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
     }
 
     public void registerEvents(){
-        getServer().getPluginManager().registerEvents(new ItemEventHandler(),plugin);
+        getServer().getPluginManager().registerEvents(new ItemEventHandler(), plugin);
+        getServer().getPluginManager().registerEvents(new PlayerEventHandler(), plugin);
+        getServer().getPluginManager().registerEvents(new ClassSelectGUI(), plugin);
     }
-
-
-
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        try {
+            databaseHandler.closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
