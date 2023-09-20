@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -71,10 +72,16 @@ public class ClassSelectGUI extends DefaultGUI implements Listener {
         if(item == null || item.getType().isAir())
             return;
 
-        event.setCancelled(true);
-
         Player player = (Player) event.getWhoClicked();
         player.sendMessage(item.displayName());
+    }
+
+    @EventHandler
+    public void onInventoryEvent(final InventoryInteractEvent event){
+        if(!event.getInventory().equals(inventory))
+            return;
+
+        event.setCancelled(true);
     }
 
     @EventHandler
