@@ -1,6 +1,7 @@
 package avernusvenine.sne.classes;
 
 import avernusvenine.sne.items.CustomItem;
+import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,7 @@ public class DefaultClass {
         ARTIFICER,
         BARBARIAN,
         BARD,
-        BLOOD_HUNTER,
+        SHAMAN,
         CLERIC,
         DRUID,
         DEFAULT_CLASS,
@@ -46,10 +47,13 @@ public class DefaultClass {
     protected ClassType type;
     protected String id;
 
+    protected String chatPrefix;
+
 
     public DefaultClass(){
         type = ClassType.DEFAULT_CLASS;
         id = "default_class";
+        chatPrefix = ChatColor.GRAY + "[CLASSLESS]";
     }
 
     //Getters and setters
@@ -57,6 +61,8 @@ public class DefaultClass {
     public String getID(){
         return id;
     }
+
+    public String getChatPrefix(){return chatPrefix;}
 
     public List<CustomItem.ItemType> getInnateItemProficiency(){
         return innateItemProficiency;

@@ -3,7 +3,7 @@ package avernusvenine.sne.items.armor;
 import avernusvenine.sne.StrongholdsAndEnderdragons;
 import avernusvenine.sne.items.CustomItem;
 
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

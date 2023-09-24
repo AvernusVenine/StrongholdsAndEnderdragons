@@ -10,7 +10,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
-import de.tr7zw.nbtapi.*;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 
 import java.util.ArrayList;
 import java.util.List;

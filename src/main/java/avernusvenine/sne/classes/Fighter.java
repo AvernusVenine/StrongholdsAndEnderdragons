@@ -1,4 +1,13 @@
 package avernusvenine.sne.classes;
 
-public class Fighter {
+import org.bukkit.ChatColor;
+
+public class Fighter extends DefaultClass {
+
+    public Fighter(){
+        type = ClassType.FIGHTER;
+        id = "fighter";
+        chatPrefix = ChatColor.GRAY + "" + ChatColor.BOLD +  "[FIGHTER]";
+    }
+
 }

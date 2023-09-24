@@ -1,5 +1,8 @@
 package avernusvenine.sne;
 
+import avernusvenine.sne.classes.*;
+import avernusvenine.sne.events.ChatEventHandler;
+import avernusvenine.sne.players.PlayerCharacter;
 import avernusvenine.sne.commands.GetRank;
 import avernusvenine.sne.commands.GiveCustomItem;
 import avernusvenine.sne.commands.OpenGUI;
@@ -9,11 +12,13 @@ import avernusvenine.sne.events.ItemEventHandler;
 import avernusvenine.sne.events.PlayerEventHandler;
 import avernusvenine.sne.gui.ClassSelectGUI;
 import avernusvenine.sne.gui.DefaultGUI;
+import avernusvenine.sne.gui.RaceSelectGUI;
 import avernusvenine.sne.items.*;
 
 import avernusvenine.sne.items.armor.PhoenixHelmet;
 import avernusvenine.sne.items.misc.Midas;
 import avernusvenine.sne.items.weapons.Mjolnir;
+import avernusvenine.sne.races.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -30,11 +35,18 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
 
     // Dictionary of all custom items
     public static BiMap<String, CustomItem> customItemDictionary = HashBiMap.create();
+    public static Map<DefaultClass.ClassType, DefaultClass> classDictionary = new HashMap<DefaultClass.ClassType, DefaultClass>();
+    public static Map<DefaultRace.RaceType, DefaultRace> raceDictionary = new HashMap<DefaultRace.RaceType, DefaultRace>();
 
+    //Entity lists for interaction events
     public static List<EntityType> invalidEntities = new ArrayList<EntityType>();
     public static List<EntityType> basicEntities = new ArrayList<EntityType>();
 
-    public static Dictionary<String, DefaultGUI> guiDictionary = new Hashtable<String, DefaultGUI>();
+    //GUI dictionary for gui events
+    public static Map<String, DefaultGUI> guiDictionary = new HashMap<String, DefaultGUI>();
+
+    //Player dictionary for relating players to their currently selected characters
+    public static Map<String, PlayerCharacter> playerCharacters = new HashMap<String, PlayerCharacter>();
 
     public static JavaPlugin plugin;
     public static DatabaseHandler databaseHandler;
@@ -47,6 +59,8 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
         loadItems();
         loadGUI();
         loadCommands();
+        loadClasses();
+        loadRaces();
 
         registerEvents();
         Bukkit.getServer().getConsoleSender().sendMessage("Successfully registered events!");
@@ -66,14 +80,50 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
 
     }
 
+    public void loadRaces(){
+        raceDictionary.put(DefaultRace.RaceType.DWARF, new Dwarf());
+        raceDictionary.put(DefaultRace.RaceType.DRAGON_KIN, new Dragonkin());
+        raceDictionary.put(DefaultRace.RaceType.ELF, new Elf());
+        raceDictionary.put(DefaultRace.RaceType.FELIDAE, new Felidae());
+        raceDictionary.put(DefaultRace.RaceType.GNOME, new Gnome());
+        raceDictionary.put(DefaultRace.RaceType.HALF_ELF, new HalfElf());
+        raceDictionary.put(DefaultRace.RaceType.HALF_ORC, new HalfOrc());
+        raceDictionary.put(DefaultRace.RaceType.HUMAN, new Human());
+        raceDictionary.put(DefaultRace.RaceType.ORC, new Orc());
+        raceDictionary.put(DefaultRace.RaceType.TIEFLING, new Tiefling());
+    }
+
+    public void loadClasses(){
+        classDictionary.put(DefaultClass.ClassType.ARTIFICER, new Artificer());
+        classDictionary.put(DefaultClass.ClassType.BARBARIAN, new Barbarian());
+        classDictionary.put(DefaultClass.ClassType.BARD, new Bard());
+        classDictionary.put(DefaultClass.ClassType.CLERIC, new Cleric());
+        classDictionary.put(DefaultClass.ClassType.DRUID, new Druid());
+        classDictionary.put(DefaultClass.ClassType.FIGHTER, new Fighter());
+        classDictionary.put(DefaultClass.ClassType.MONK, new Monk());
+        classDictionary.put(DefaultClass.ClassType.PALADIN, new Paladin());
+        classDictionary.put(DefaultClass.ClassType.RANGER, new Ranger());
+        classDictionary.put(DefaultClass.ClassType.ROGUE, new Rogue());
+        classDictionary.put(DefaultClass.ClassType.SHAMAN, new Shaman());
+        classDictionary.put(DefaultClass.ClassType.SORCERER, new Sorcerer());
+        classDictionary.put(DefaultClass.ClassType.WARLOCK, new Warlock());
+        classDictionary.put(DefaultClass.ClassType.WIZARD, new Wizard());
+    }
+
     public void loadGUI(){
         {
             ClassSelectGUI gui = new ClassSelectGUI();
             guiDictionary.put(gui.getID(), gui);
+            getServer().getPluginManager().registerEvents(gui, plugin);
+        }
+        {
+            RaceSelectGUI gui = new RaceSelectGUI();
+            guiDictionary.put(gui.getID(), gui);
+            getServer().getPluginManager().registerEvents(gui, plugin);
         }
     }
 
-    public void registerEntities(){
+    public static void registerEntities(){
         // Invalid entities
         invalidEntities.add(EntityType.ARMOR_STAND);
         invalidEntities.add(EntityType.ARROW);
@@ -211,7 +261,7 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
     public void registerEvents(){
         getServer().getPluginManager().registerEvents(new ItemEventHandler(), plugin);
         getServer().getPluginManager().registerEvents(new PlayerEventHandler(), plugin);
-        getServer().getPluginManager().registerEvents(new ClassSelectGUI(), plugin);
+        getServer().getPluginManager().registerEvents(new ChatEventHandler(), plugin);
     }
 
     @Override

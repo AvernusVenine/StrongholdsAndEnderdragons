@@ -4,7 +4,7 @@ import avernusvenine.sne.StrongholdsAndEnderdragons;
 
 import avernusvenine.sne.items.CustomItem;
 import avernusvenine.sne.items.weapons.Mjolnir;
-import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import io.papermc.paper.event.player.PlayerItemCooldownEvent;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
