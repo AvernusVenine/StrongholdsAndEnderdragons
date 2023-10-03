@@ -1,5 +1,6 @@
 package avernusvenine.sne.events;
 
+import avernusvenine.sne.PlayerDictionary;
 import avernusvenine.sne.StrongholdsAndEnderdragons;
 import avernusvenine.sne.players.PlayerCharacter;
 import org.bukkit.entity.Player;
@@ -11,10 +12,8 @@ public class ChatEventHandler implements Listener {
 
     @EventHandler
     public void onAsyncPlayerChatEvent(AsyncPlayerChatEvent event){
-        PlayerCharacter playerCharacter = StrongholdsAndEnderdragons.playerCharacters.get(event.getPlayer().getUniqueId().toString());
 
-        System.out.println(playerCharacter.getID());
-        System.out.println(playerCharacter.getClassType());
+        PlayerCharacter playerCharacter = PlayerDictionary.get(event.getPlayer().getUniqueId().toString()).getPlayerCharacter();
 
         if(playerCharacter == null)
             return;

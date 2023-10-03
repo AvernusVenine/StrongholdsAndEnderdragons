@@ -1,6 +1,6 @@
 package avernusvenine.sne.items.misc;
 
-import avernusvenine.sne.items.CustomItem;
+import avernusvenine.sne.items.SneItem;
 import avernusvenine.sne.StrongholdsAndEnderdragons;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,7 +16,7 @@ import de.tr7zw.changeme.nbtapi.NBTItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Midas extends CustomItem{
+public class Midas extends SneItem {
 
     public Midas() {
         super();
@@ -51,7 +51,7 @@ public class Midas extends CustomItem{
         itemFlags.add(ItemFlag.HIDE_ENCHANTS);
         itemFlags.add(ItemFlag.HIDE_ITEM_SPECIFICS);
 
-        item = CustomItem.generateItem(material, 1, displayName, lore, itemFlags, true, id);
+        item = SneItem.generateItem(material, 1, displayName, lore, itemFlags, true, id);
     }
 
     public void leftClickAtEntity(Player player, Entity entity){

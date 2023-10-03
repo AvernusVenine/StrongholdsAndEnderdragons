@@ -1,8 +1,10 @@
 avernusvenine\sne\items\CustomItem$TaskHandler$1.class
 avernusvenine\sne\classes\Artificer.class
+avernusvenine\sne\NPCDictionary.class
 avernusvenine\sne\classes\DefaultClass$FeatType.class
 avernusvenine\sne\commands\GetRank.class
 avernusvenine\sne\gui\ClassSelectGUI.class
+avernusvenine\sne\items\misc\PlayerJournal.class
 avernusvenine\sne\items\CustomItem$1.class
 avernusvenine\sne\classes\Druid.class
 avernusvenine\sne\classes\DefaultClass$SkillType.class
@@ -13,11 +15,13 @@ avernusvenine\sne\races\Gnome.class
 avernusvenine\sne\classes\Wizard.class
 avernusvenine\sne\gui\DefaultGUI.class
 avernusvenine\sne\items\misc\Midas.class
+avernusvenine\sne\npc\DefaultNPC.class
 avernusvenine\sne\classes\Fighter.class
 avernusvenine\sne\items\CustomItem.class
 avernusvenine\sne\races\DefaultRace.class
 avernusvenine\sne\classes\Ranger.class
 avernusvenine\sne\commands\GiveCustomItem.class
+avernusvenine\sne\gui\PlayerJournalGUI.class
 avernusvenine\sne\classes\DefaultClass.class
 avernusvenine\sne\players\PlayerProfile.class
 avernusvenine\sne\items\CustomItem$ItemType.class
@@ -30,10 +34,12 @@ avernusvenine\sne\races\HalfOrc.class
 avernusvenine\sne\races\Tiefling.class
 avernusvenine\sne\scoreboard\ScoreboardHandler.class
 avernusvenine\sne\gui\RaceSelectGUI.class
+avernusvenine\sne\ItemDictionary.class
 avernusvenine\sne\races\DefaultRace$RaceType.class
 avernusvenine\sne\gui\CharacterSelectGUI.class
 avernusvenine\sne\races\Felidae.class
 avernusvenine\sne\gui\NameSelectGUI.class
+avernusvenine\sne\commands\SpawnNPC.class
 avernusvenine\sne\events\InterfaceEventHandler.class
 avernusvenine\sne\items\armor\PhoenixHelmet.class
 avernusvenine\sne\items\CustomItem$InventorySlot.class
@@ -46,6 +52,7 @@ avernusvenine\sne\events\PlayerEventHandler.class
 avernusvenine\sne\items\CustomItem$UseType.class
 avernusvenine\sne\database\DatabaseHandler.class
 avernusvenine\sne\classes\DefaultClass$ClassType.class
+avernusvenine\sne\npc\traits\DialogueTrait.class
 avernusvenine\sne\classes\Rogue.class
 avernusvenine\sne\races\Dwarf.class
 avernusvenine\sne\StrongholdsAndEnderdragons.class

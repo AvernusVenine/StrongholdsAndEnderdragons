@@ -2,6 +2,7 @@ name: StrongholdsandEnderdragons
 version: "InDev 1.1"
 main: avernusvenine.sne.StrongholdsAndEnderdragons
 api-version: '1.20'
+depend: [Citizens]
 commands:
   GiveCustomItem:
     description: Gives a custom item to the player
@@ -15,3 +16,6 @@ commands:
   OpenGUI:
     description: Opens a gui to the player
     usage: /<command> gui_id
+  SpawnNPC:
+    description: Spawns an NPC on the player
+    usage: /<command> npc_id

@@ -1,7 +1,8 @@
 package avernusvenine.sne.gui;
 
+import avernusvenine.sne.PlayerDictionary;
 import avernusvenine.sne.StrongholdsAndEnderdragons;
-import avernusvenine.sne.races.DefaultRace;
+import avernusvenine.sne.races.Race;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -75,7 +76,7 @@ public class RaceSelectGUI extends DefaultGUI implements Listener {
 
         NBTItem nbtItem = new NBTItem(item);
 
-        DefaultRace.RaceType type;
+        Race.RaceType type;
 
         switch(nbtItem.getString(nbtID)){
             default:
@@ -85,38 +86,38 @@ public class RaceSelectGUI extends DefaultGUI implements Listener {
                 player.playSound(player, Sound.UI_BUTTON_CLICK, 1, 1);
                 return;
             case "dwarf":
-                type = DefaultRace.RaceType.DWARF;
+                type = Race.RaceType.DWARF;
                 break;
             case "dragon_kin":
-                type = DefaultRace.RaceType.DRAGON_KIN;
+                type = Race.RaceType.DRAGON_KIN;
                 break;
             case "elf":
-                type = DefaultRace.RaceType.ELF;
+                type = Race.RaceType.ELF;
                 break;
             case "felidae":
-                type = DefaultRace.RaceType.FELIDAE;
+                type = Race.RaceType.FELIDAE;
                 break;
             case "gnome":
-                type = DefaultRace.RaceType.GNOME;
+                type = Race.RaceType.GNOME;
                 break;
             case "half_elf":
-                type = DefaultRace.RaceType.HALF_ELF;
+                type = Race.RaceType.HALF_ELF;
                 break;
             case "half_orc":
-                type = DefaultRace.RaceType.HALF_ORC;
+                type = Race.RaceType.HALF_ORC;
                 break;
             case "human":
-                type = DefaultRace.RaceType.HUMAN;
+                type = Race.RaceType.HUMAN;
                 break;
             case "orc":
-                type = DefaultRace.RaceType.ORC;
+                type = Race.RaceType.ORC;
                 break;
             case "tiefling":
-                type = DefaultRace.RaceType.TIEFLING;
+                type = Race.RaceType.TIEFLING;
                 break;
         }
 
-        StrongholdsAndEnderdragons.playerCharacters.get(player.getUniqueId().toString()).setRaceType(type);
+        PlayerDictionary.get(player.getUniqueId().toString()).getPlayerCharacter().setRaceType(type);
         player.playSound(player, Sound.UI_BUTTON_CLICK, 1, 1);
         new NameSelectGUI(player);
     }

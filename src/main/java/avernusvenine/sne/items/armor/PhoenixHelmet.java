@@ -1,7 +1,7 @@
 package avernusvenine.sne.items.armor;
 
 import avernusvenine.sne.StrongholdsAndEnderdragons;
-import avernusvenine.sne.items.CustomItem;
+import avernusvenine.sne.items.SneItem;
 
 import de.tr7zw.changeme.nbtapi.NBTItem;
 
@@ -11,7 +11,6 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -22,7 +21,7 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PhoenixHelmet extends CustomItem {
+public class PhoenixHelmet extends SneItem {
 
     public PhoenixHelmet(){
         super();
@@ -57,7 +56,7 @@ public class PhoenixHelmet extends CustomItem {
         itemFlags.add(ItemFlag.HIDE_ENCHANTS);
         itemFlags.add(ItemFlag.HIDE_ITEM_SPECIFICS);
 
-        item = CustomItem.generateItem(material, 1, displayName, lore, itemFlags, true, id);
+        item = SneItem.generateItem(material, 1, displayName, lore, itemFlags, true, id);
     }
 
     public void killedWhileWorn(Player player, EntityDamageEvent event){

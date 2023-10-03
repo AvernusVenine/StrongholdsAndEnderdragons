@@ -2,7 +2,8 @@ package avernusvenine.sne.database;
 
 import avernusvenine.sne.players.PlayerCharacter;
 import avernusvenine.sne.classes.DefaultClass;
-import avernusvenine.sne.races.DefaultRace;
+import avernusvenine.sne.races.Race;
+import com.google.common.collect.BiMap;
 import org.bukkit.entity.Player;
 
 import java.sql.*;
@@ -12,6 +13,8 @@ import java.util.Map;
 public class DatabaseHandler {
 
     private final Connection connection;
+
+    private final String questTablePrefix = "quests_";
 
     public DatabaseHandler(String path) throws SQLException {
         connection = DriverManager.getConnection("jdbc:sqlite:" + path);
@@ -128,6 +131,16 @@ public class DatabaseHandler {
 
         preparedStatement.executeUpdate();
         preparedStatement.close();
+
+        preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS ? (" +
+                "quest_id TEXT PRIMARY KEY " +
+                "status BOOLEAN NOT NULL DEFAULT FALSE," +
+                "progress INT DEFAULT 0");
+
+        preparedStatement.setString(1, questTablePrefix + playerCharacter.getID());
+
+        preparedStatement.execute();
+        preparedStatement.close();
     }
 
     public PlayerCharacter loadCharacter(int id, Player player) throws SQLException {
@@ -145,7 +158,7 @@ public class DatabaseHandler {
         playerCharacter.setLevel(resultSet.getInt("level"));
 
         DefaultClass.ClassType classType = DefaultClass.ClassType.DEFAULT_CLASS;
-        DefaultRace.RaceType raceType = DefaultRace.RaceType.DEFAULT_RACE;
+        Race.RaceType raceType = Race.RaceType.DEFAULT_RACE;
 
         String classTitle = resultSet.getString("class");
         String raceTitle = resultSet.getString("race");
@@ -197,51 +210,76 @@ public class DatabaseHandler {
 
         switch(raceTitle){
             case "dwarf":
-                raceType = DefaultRace.RaceType.DWARF;
+                raceType = Race.RaceType.DWARF;
                 break;
             case "dragon_kin":
-                raceType = DefaultRace.RaceType.DRAGON_KIN;
+                raceType = Race.RaceType.DRAGON_KIN;
                 break;
             case "elf":
-                raceType = DefaultRace.RaceType.ELF;
+                raceType = Race.RaceType.ELF;
                 break;
             case "felidae":
-                raceType = DefaultRace.RaceType.FELIDAE;
+                raceType = Race.RaceType.FELIDAE;
                 break;
             case "gnome":
-                raceType = DefaultRace.RaceType.GNOME;
+                raceType = Race.RaceType.GNOME;
                 break;
             case "half_elf":
-                raceType = DefaultRace.RaceType.HALF_ELF;
+                raceType = Race.RaceType.HALF_ELF;
                 break;
             case "half_orc":
-                raceType = DefaultRace.RaceType.HALF_ORC;
+                raceType = Race.RaceType.HALF_ORC;
                 break;
             case "human":
-                raceType = DefaultRace.RaceType.HUMAN;
+                raceType = Race.RaceType.HUMAN;
                 break;
             case "orc":
-                raceType = DefaultRace.RaceType.ORC;
+                raceType = Race.RaceType.ORC;
                 break;
             case "tiefling":
-                raceType = DefaultRace.RaceType.TIEFLING;
+                raceType = Race.RaceType.TIEFLING;
                 break;
         }
 
         playerCharacter.setClassType(classType);
         playerCharacter.setRaceType(raceType);
 
+        preparedStatement.close();
+
+        preparedStatement = connection.prepareStatement("SELECT * FROM ?");
+        preparedStatement.setString(1, questTablePrefix + playerCharacter.getID());
+
+        resultSet = preparedStatement.executeQuery();
+
+        while(resultSet.next()){
+            playerCharacter.addQuest(resultSet.getString("quest_id"),
+                    resultSet.getBoolean("status"),
+                    resultSet.getInt("progress"));
+        }
+
+        preparedStatement.close();
         return playerCharacter;
     }
 
     public void saveCharacter(PlayerCharacter playerCharacter) throws SQLException{
         PreparedStatement preparedStatement = connection.prepareStatement(
-                "UPDATE characters SET xp = ?, level = ?, WHERE character_id = ?");
+                "UPDATE characters SET xp = ?, level = ? WHERE character_id = ?");
         preparedStatement.setInt(1, playerCharacter.getExperience());
         preparedStatement.setInt(2, playerCharacter.getLevel());
         preparedStatement.setInt(3, playerCharacter.getID());
         preparedStatement.executeUpdate();
         preparedStatement.close();
+
+        for(Map.Entry<String, PlayerCharacter.QuestStatus> entry : playerCharacter.getQuests().entrySet()){
+            preparedStatement = connection.prepareStatement("UPDATE ? SET status = ?, progress = ? WHERE quest_id = ?");
+            preparedStatement.setString(1, questTablePrefix + playerCharacter.getID());
+            preparedStatement.setBoolean(2, entry.getValue().status);
+            preparedStatement.setInt(3, entry.getValue().progress);
+            preparedStatement.setString(4, entry.getKey());
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+        }
+
     }
 
     public Map<String, Integer> getCharacters(String uuid) throws SQLException {

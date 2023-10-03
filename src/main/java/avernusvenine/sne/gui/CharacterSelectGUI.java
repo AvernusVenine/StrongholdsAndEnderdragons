@@ -1,5 +1,6 @@
 package avernusvenine.sne.gui;
 
+import avernusvenine.sne.PlayerDictionary;
 import avernusvenine.sne.StrongholdsAndEnderdragons;
 import avernusvenine.sne.players.PlayerCharacter;
 import de.tr7zw.changeme.nbtapi.NBTItem;
@@ -86,9 +87,9 @@ public class CharacterSelectGUI extends DefaultGUI {
                 break;
             case "load_character":
                 try{
-                    PlayerCharacter playerCharacter = StrongholdsAndEnderdragons.databaseHandler.loadCharacter(
-                            nbtItem.getInteger("CharacterID"), player);
-                    StrongholdsAndEnderdragons.playerCharacters.put(player.getUniqueId().toString(), playerCharacter);
+                    PlayerDictionary.get(player.getUniqueId().toString()).setPlayerCharacter(
+                            StrongholdsAndEnderdragons.databaseHandler.loadCharacter(
+                                    nbtItem.getInteger("CharacterID"), player));
                 }
                 catch(SQLException e){
                     e.printStackTrace();

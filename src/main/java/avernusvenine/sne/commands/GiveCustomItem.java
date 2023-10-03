@@ -1,16 +1,12 @@
 package avernusvenine.sne.commands;
 
-import avernusvenine.sne.StrongholdsAndEnderdragons;
 
-
-import avernusvenine.sne.items.CustomItem;
-import org.bukkit.attribute.AttributeModifier;
+import avernusvenine.sne.items.SneItem;
+import avernusvenine.sne.ItemDictionary;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +24,7 @@ public class GiveCustomItem implements CommandExecutor {
 
         if(command.getName().equalsIgnoreCase("givecustomitem")){
 
-            CustomItem item = StrongholdsAndEnderdragons.customItemDictionary.get(args[0]);
+            SneItem item = ItemDictionary.get(args[0]);
 
             // Happens if the item is not found
             if(item == null){

@@ -1,12 +1,9 @@
 package avernusvenine.sne.events;
 
-import avernusvenine.sne.StrongholdsAndEnderdragons;
+import avernusvenine.sne.ItemDictionary;
 
-import avernusvenine.sne.items.CustomItem;
-import avernusvenine.sne.items.weapons.Mjolnir;
+import avernusvenine.sne.items.SneItem;
 import de.tr7zw.changeme.nbtapi.NBTItem;
-import io.papermc.paper.event.player.PlayerItemCooldownEvent;
-import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,10 +13,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemEventHandler implements Listener {
 
@@ -32,11 +25,10 @@ public class ItemEventHandler implements Listener {
         if (item != null){
             if(event.getAction() == Action.RIGHT_CLICK_AIR){
 
-                CustomItem customItem = StrongholdsAndEnderdragons.customItemDictionary
-                        .get(new NBTItem(item).getString(CustomItem.nbtID));
+                SneItem sneItem = ItemDictionary.get(new NBTItem(item).getString(SneItem.nbtID));
 
-                if(customItem != null)
-                    customItem.rightClickAir(event.getPlayer());
+                if(sneItem != null)
+                    sneItem.rightClickAir(event.getPlayer());
 
             }
             else if(event.getAction() == Action.LEFT_CLICK_AIR){
@@ -59,11 +51,10 @@ public class ItemEventHandler implements Listener {
         if(event.getDamager() instanceof Player){
             ItemStack item = ((Player) event.getDamager()).getInventory().getItemInMainHand();
 
-            CustomItem customItem = StrongholdsAndEnderdragons.customItemDictionary
-                    .get(new NBTItem(item).getString(CustomItem.nbtID));
+            SneItem sneItem = ItemDictionary.get(new NBTItem(item).getString(SneItem.nbtID));
 
-            if(customItem != null)
-                customItem.leftClickAtEntity((Player) event.getDamager(), event.getEntity());
+            if(sneItem != null)
+                sneItem.leftClickAtEntity((Player) event.getDamager(), event.getEntity());
         }
     }
 
@@ -77,11 +68,10 @@ public class ItemEventHandler implements Listener {
         Player player = (Player) event.getEntity();
 
         {
-            CustomItem customItem = StrongholdsAndEnderdragons.customItemDictionary
-                    .get(new NBTItem(player.getInventory().getItemInMainHand()).getString(CustomItem.nbtID));
+            SneItem sneItem = ItemDictionary.get(new NBTItem(player.getInventory().getItemInMainHand()).getString(SneItem.nbtID));
 
-            if(customItem != null)
-                customItem.damagedWhileHeld(player, event);
+            if(sneItem != null)
+                sneItem.damagedWhileHeld(player, event);
         }
 
         for(ItemStack item : player.getInventory().getArmorContents()){
@@ -89,15 +79,14 @@ public class ItemEventHandler implements Listener {
             if(item == null)
                 continue;
 
-            CustomItem customItem = StrongholdsAndEnderdragons.customItemDictionary
-                    .get(new NBTItem(item).getString(CustomItem.nbtID));
+            SneItem sneItem = ItemDictionary.get(new NBTItem(item).getString(SneItem.nbtID));
 
-            if(customItem == null)
+            if(sneItem == null)
                 continue;
 
             // Check if player is killed
             if(player.getHealth() - event.getDamage() < 1){
-                customItem.killedWhileWorn(player, event);
+                sneItem.killedWhileWorn(player, event);
             }
 
         }

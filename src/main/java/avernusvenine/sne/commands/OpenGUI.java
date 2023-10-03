@@ -29,7 +29,6 @@ public class OpenGUI implements CommandExecutor {
             }
 
             player.openInventory(gui.getInventory());
-
         }
 
 

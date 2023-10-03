@@ -2,7 +2,7 @@ package avernusvenine.sne.races;
 
 import org.bukkit.ChatColor;
 
-public class Tiefling extends DefaultRace{
+public class Tiefling extends Race {
 
     public Tiefling(){
         type = RaceType.TIEFLING;

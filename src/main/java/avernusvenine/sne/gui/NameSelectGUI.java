@@ -1,5 +1,6 @@
 package avernusvenine.sne.gui;
 
+import avernusvenine.sne.PlayerDictionary;
 import avernusvenine.sne.StrongholdsAndEnderdragons;
 
 import org.bukkit.ChatColor;
@@ -41,7 +42,7 @@ public class NameSelectGUI extends DefaultGUI implements Listener {
                 .interactableSlots()
                 .itemLeft(leftItem)
                 .itemOutput(rightItem)
-                .text("ENTER CHARACTER NAME")
+                .text("NAME")
                 .plugin(StrongholdsAndEnderdragons.plugin)
                 .onClick((slot, stateSnapshot) -> {
                     if(slot == AnvilGUI.Slot.INPUT_LEFT) {
@@ -51,10 +52,10 @@ public class NameSelectGUI extends DefaultGUI implements Listener {
                     }
 
                     if(slot == AnvilGUI.Slot.OUTPUT) {
-                        StrongholdsAndEnderdragons.playerCharacters.get(player.getUniqueId().toString()).setName(stateSnapshot.getText());
+                        PlayerDictionary.get(player.getUniqueId().toString()).getPlayerCharacter().setName(stateSnapshot.getText());
                         player.playSound(player, Sound.BLOCK_ANVIL_PLACE, 1, 1);
 
-                        StrongholdsAndEnderdragons.playerCharacters.get(player.getUniqueId().toString()).createInDatabase();
+                        PlayerDictionary.get(player.getUniqueId().toString()).getPlayerCharacter().createInDatabase();
 
                         CharacterSelectGUI gui = new CharacterSelectGUI(player);
                         StrongholdsAndEnderdragons.plugin.getServer().getPluginManager().registerEvents(gui, StrongholdsAndEnderdragons.plugin);

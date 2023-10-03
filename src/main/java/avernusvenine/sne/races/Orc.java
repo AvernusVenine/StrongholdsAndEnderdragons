@@ -2,7 +2,7 @@ package avernusvenine.sne.races;
 
 import org.bukkit.ChatColor;
 
-public class Orc extends DefaultRace{
+public class Orc extends Race {
 
     public Orc(){
         type = RaceType.ORC;

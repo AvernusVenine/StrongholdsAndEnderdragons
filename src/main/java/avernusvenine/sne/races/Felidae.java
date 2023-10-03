@@ -2,7 +2,7 @@ package avernusvenine.sne.races;
 
 import org.bukkit.ChatColor;
 
-public class Felidae extends DefaultRace{
+public class Felidae extends Race {
 
     public Felidae(){
         type = RaceType.FELIDAE;

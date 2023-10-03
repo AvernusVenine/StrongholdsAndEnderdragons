@@ -1,6 +1,6 @@
 package avernusvenine.sne.classes;
 
-import avernusvenine.sne.items.CustomItem;
+import avernusvenine.sne.items.SneItem;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class DefaultClass {
     }
 
 
-    protected List<CustomItem.ItemType> innateItemProficiency = new ArrayList<CustomItem.ItemType>();
+    protected List<SneItem.ItemType> innateItemProficiency = new ArrayList<SneItem.ItemType>();
 
     protected ClassType type;
     protected String id;
@@ -64,7 +64,7 @@ public class DefaultClass {
 
     public String getChatPrefix(){return chatPrefix;}
 
-    public List<CustomItem.ItemType> getInnateItemProficiency(){
+    public List<SneItem.ItemType> getInnateItemProficiency(){
         return innateItemProficiency;
     }
 

@@ -2,23 +2,30 @@ package avernusvenine.sne.players;
 
 import avernusvenine.sne.StrongholdsAndEnderdragons;
 import avernusvenine.sne.classes.DefaultClass;
-import avernusvenine.sne.races.DefaultRace;
+import avernusvenine.sne.quests.Quest;
+import avernusvenine.sne.races.Race;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class PlayerCharacter {
 
     protected final String uuid;
 
-    // Open an anvil screen for the player, prompting them to enter text to name their character
+    protected BiMap<String, QuestStatus> quests = HashBiMap.create();
+
     protected String characterName;
     protected int experience;
     protected int level;
     protected int id;
     protected DefaultClass.ClassType classType;
-    protected DefaultRace.RaceType raceType;
+    protected Race.RaceType raceType;
 
     public PlayerCharacter(Player player){
         uuid = player.getUniqueId().toString();
@@ -42,6 +49,32 @@ public class PlayerCharacter {
         }
     }
 
+    public void addQuest(String id, boolean status, int progress){
+        quests.put(id, new QuestStatus(status, progress));
+    }
+
+    public void updateQuestProgress(String id, int progress){
+        quests.get(id).progress += progress;
+    }
+
+    public void updateQuestStatus(String id, boolean status){
+        quests.get(id).status = status;
+    }
+
+    //Getters and setters
+
+    public BiMap<String, QuestStatus> getQuests(){
+        return quests;
+    }
+
+    public boolean getQuestStatus(String id){
+        return quests.get(id).status;
+    }
+
+    public int getQuestProgress(String id){
+        return quests.get(id).progress;
+    }
+
     public void setExperience(int xp){
         experience = xp;
     }
@@ -60,11 +93,11 @@ public class PlayerCharacter {
 
     public int getID(){return id;}
 
-    public void setRaceType(DefaultRace.RaceType type){
+    public void setRaceType(Race.RaceType type){
         this.raceType = type;
     }
 
-    public DefaultRace.RaceType getRaceType(){return raceType;}
+    public Race.RaceType getRaceType(){return raceType;}
 
     public void setClassType(DefaultClass.ClassType type){
         this.classType = type;
@@ -82,10 +115,32 @@ public class PlayerCharacter {
 
     public String getChatPrefix(){
 
+        ChatColor levelColor = ChatColor.WHITE;
+
+        if(level < 11 && level > 5)
+            levelColor = ChatColor.GRAY;
+        else if(level < 16 && level > 10)
+            levelColor = ChatColor.GOLD;
+        else if(level > 15)
+            levelColor = ChatColor.GRAY;
+
+
         String prefix = StrongholdsAndEnderdragons.raceDictionary.get(raceType).getChatPrefix() + " " +
                 ChatColor.RESET + StrongholdsAndEnderdragons.classDictionary.get(classType).getChatPrefix() +
-                ChatColor.RESET + ChatColor.BOLD + " [" + level + "] " + ChatColor.RESET;
+                ChatColor.RESET +  levelColor + "" + ChatColor.BOLD + " [" + level + "] " + ChatColor.RESET;
 
         return prefix;
+    }
+
+    public class QuestStatus{
+
+        public boolean status;
+        public int progress;
+
+        public QuestStatus(boolean status, int progress){
+            this.status = status;
+            this.progress = progress;
+        }
+
     }
 }

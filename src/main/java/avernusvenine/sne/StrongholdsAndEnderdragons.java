@@ -1,23 +1,17 @@
 package avernusvenine.sne;
 
 import avernusvenine.sne.classes.*;
+import avernusvenine.sne.commands.*;
 import avernusvenine.sne.events.ChatEventHandler;
+import avernusvenine.sne.gui.PlayerJournalGUI;
 import avernusvenine.sne.players.PlayerCharacter;
-import avernusvenine.sne.commands.GetRank;
-import avernusvenine.sne.commands.GiveCustomItem;
-import avernusvenine.sne.commands.OpenGUI;
-import avernusvenine.sne.commands.SetRank;
 import avernusvenine.sne.database.DatabaseHandler;
 import avernusvenine.sne.events.ItemEventHandler;
 import avernusvenine.sne.events.PlayerEventHandler;
 import avernusvenine.sne.gui.ClassSelectGUI;
 import avernusvenine.sne.gui.DefaultGUI;
 import avernusvenine.sne.gui.RaceSelectGUI;
-import avernusvenine.sne.items.*;
 
-import avernusvenine.sne.items.armor.PhoenixHelmet;
-import avernusvenine.sne.items.misc.Midas;
-import avernusvenine.sne.items.weapons.Mjolnir;
 import avernusvenine.sne.races.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -25,18 +19,14 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
 import java.sql.SQLException;
 import java.util.*;
 
 public final class StrongholdsAndEnderdragons extends JavaPlugin {
 
     // Dictionary of all custom items
-    public static BiMap<String, CustomItem> customItemDictionary = HashBiMap.create();
     public static Map<DefaultClass.ClassType, DefaultClass> classDictionary = new HashMap<DefaultClass.ClassType, DefaultClass>();
-    public static Map<DefaultRace.RaceType, DefaultRace> raceDictionary = new HashMap<DefaultRace.RaceType, DefaultRace>();
+    public static Map<Race.RaceType, Race> raceDictionary = new HashMap<Race.RaceType, Race>();
 
     //Entity lists for interaction events
     public static List<EntityType> invalidEntities = new ArrayList<EntityType>();
@@ -45,8 +35,6 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
     //GUI dictionary for gui events
     public static Map<String, DefaultGUI> guiDictionary = new HashMap<String, DefaultGUI>();
 
-    //Player dictionary for relating players to their currently selected characters
-    public static Map<String, PlayerCharacter> playerCharacters = new HashMap<String, PlayerCharacter>();
 
     public static JavaPlugin plugin;
     public static DatabaseHandler databaseHandler;
@@ -56,7 +44,9 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
 
         plugin = this;
 
-        loadItems();
+        ItemDictionary.loadItems();
+        NPCDictionary.loadNPCs();
+
         loadGUI();
         loadCommands();
         loadClasses();
@@ -81,16 +71,16 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
     }
 
     public void loadRaces(){
-        raceDictionary.put(DefaultRace.RaceType.DWARF, new Dwarf());
-        raceDictionary.put(DefaultRace.RaceType.DRAGON_KIN, new Dragonkin());
-        raceDictionary.put(DefaultRace.RaceType.ELF, new Elf());
-        raceDictionary.put(DefaultRace.RaceType.FELIDAE, new Felidae());
-        raceDictionary.put(DefaultRace.RaceType.GNOME, new Gnome());
-        raceDictionary.put(DefaultRace.RaceType.HALF_ELF, new HalfElf());
-        raceDictionary.put(DefaultRace.RaceType.HALF_ORC, new HalfOrc());
-        raceDictionary.put(DefaultRace.RaceType.HUMAN, new Human());
-        raceDictionary.put(DefaultRace.RaceType.ORC, new Orc());
-        raceDictionary.put(DefaultRace.RaceType.TIEFLING, new Tiefling());
+        raceDictionary.put(Race.RaceType.DWARF, new Dwarf());
+        raceDictionary.put(Race.RaceType.DRAGON_KIN, new Dragonkin());
+        raceDictionary.put(Race.RaceType.ELF, new Elf());
+        raceDictionary.put(Race.RaceType.FELIDAE, new Felidae());
+        raceDictionary.put(Race.RaceType.GNOME, new Gnome());
+        raceDictionary.put(Race.RaceType.HALF_ELF, new HalfElf());
+        raceDictionary.put(Race.RaceType.HALF_ORC, new HalfOrc());
+        raceDictionary.put(Race.RaceType.HUMAN, new Human());
+        raceDictionary.put(Race.RaceType.ORC, new Orc());
+        raceDictionary.put(Race.RaceType.TIEFLING, new Tiefling());
     }
 
     public void loadClasses(){
@@ -120,6 +110,10 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
             RaceSelectGUI gui = new RaceSelectGUI();
             guiDictionary.put(gui.getID(), gui);
             getServer().getPluginManager().registerEvents(gui, plugin);
+        }
+        {// TODO: Remove this once im done testing
+            PlayerJournalGUI gui = new PlayerJournalGUI();
+            guiDictionary.put(gui.getID(), gui);
         }
     }
 
@@ -228,28 +222,8 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
         registerCommand("getrank", new GetRank());
         registerCommand("setrank", new SetRank());
         registerCommand("opengui", new OpenGUI());
+        registerCommand("spawnnpc", new SpawnNPC());
     }
-
-    // Don't forget to put new custom items in here, so they can be spawned in
-    public void loadItems(){
-        {
-            CustomItem item = new CustomItem();
-            customItemDictionary.put(item.getID(), item);
-        }
-        {
-            Mjolnir item = new Mjolnir();
-            customItemDictionary.put(item.getID(), item);
-        }
-        {
-            PhoenixHelmet item = new PhoenixHelmet();
-            customItemDictionary.put(item.getID(), item);
-        }
-        {
-            Midas item = new Midas();
-            customItemDictionary.put(item.getID(), item);
-        }
-    }
-
     public void registerCommand(String name, CommandExecutor executor){
         PluginCommand command = getCommand(name);
 

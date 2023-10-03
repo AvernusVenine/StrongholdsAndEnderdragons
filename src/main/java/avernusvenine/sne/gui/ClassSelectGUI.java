@@ -1,5 +1,6 @@
 package avernusvenine.sne.gui;
 
+import avernusvenine.sne.PlayerDictionary;
 import avernusvenine.sne.StrongholdsAndEnderdragons;
 import avernusvenine.sne.players.PlayerCharacter;
 import avernusvenine.sne.classes.DefaultClass;
@@ -142,7 +143,7 @@ public class ClassSelectGUI extends DefaultGUI implements Listener {
 
         PlayerCharacter playerCharacter = new PlayerCharacter(player);
         playerCharacter.setClassType(type);
-        StrongholdsAndEnderdragons.playerCharacters.put(player.getUniqueId().toString(), playerCharacter);
+        PlayerDictionary.get(player.getUniqueId().toString()).setPlayerCharacter(playerCharacter);
 
         player.playSound(player, Sound.UI_BUTTON_CLICK, 1, 1);
 

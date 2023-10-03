@@ -1,13 +1,17 @@
 package avernusvenine.sne.events;
 
+import avernusvenine.sne.PlayerDictionary;
 import avernusvenine.sne.StrongholdsAndEnderdragons;
 import avernusvenine.sne.gui.CharacterSelectGUI;
 
+import avernusvenine.sne.players.PlayerCharacter;
+import avernusvenine.sne.players.PlayerProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.sql.SQLException;
 
@@ -37,6 +41,21 @@ public class PlayerEventHandler implements Listener {
             Bukkit.getServer().getConsoleSender().sendMessage("Failed to add player to database!");
             e.printStackTrace();
         }
+
+        PlayerDictionary.add(new PlayerProfile(player));
+    }
+
+    @EventHandler
+    public void onPlayerQuit(final PlayerQuitEvent event){
+        Player player = event.getPlayer();
+
+        PlayerProfile playerProfile = PlayerDictionary.get(player.getUniqueId().toString());
+
+        if(playerProfile == null)
+            return;
+
+        playerProfile.getPlayerCharacter().saveToDatabase();
+        PlayerDictionary.remove(player.getUniqueId().toString());
     }
 
 }

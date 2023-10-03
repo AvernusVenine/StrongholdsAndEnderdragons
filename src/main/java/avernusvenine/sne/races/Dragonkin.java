@@ -2,7 +2,7 @@ package avernusvenine.sne.races;
 
 import org.bukkit.ChatColor;
 
-public class Dragonkin extends DefaultRace{
+public class Dragonkin extends Race {
 
     public Dragonkin(){
         type = RaceType.DRAGON_KIN;

@@ -2,7 +2,7 @@ package avernusvenine.sne.races;
 
 import org.bukkit.ChatColor;
 
-public class Gnome extends DefaultRace{
+public class Gnome extends Race {
 
     public Gnome(){
         type = RaceType.GNOME;

@@ -2,7 +2,7 @@ package avernusvenine.sne.races;
 
 import org.bukkit.ChatColor;
 
-public class Elf extends DefaultRace{
+public class Elf extends Race {
 
     public Elf(){
         type = RaceType.ELF;
