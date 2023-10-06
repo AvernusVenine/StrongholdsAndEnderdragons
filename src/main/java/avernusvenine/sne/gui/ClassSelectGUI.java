@@ -141,9 +141,7 @@ public class ClassSelectGUI extends DefaultGUI implements Listener {
                 break;
         }
 
-        PlayerCharacter playerCharacter = new PlayerCharacter(player);
-        playerCharacter.setClassType(type);
-        PlayerDictionary.get(player.getUniqueId().toString()).setPlayerCharacter(playerCharacter);
+        PlayerDictionary.get(player.getUniqueId().toString()).getPlayerCharacter().setClassType(type);
 
         player.playSound(player, Sound.UI_BUTTON_CLICK, 1, 1);
 

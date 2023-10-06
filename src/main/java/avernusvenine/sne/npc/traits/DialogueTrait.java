@@ -1,8 +1,14 @@
 package avernusvenine.sne.npc.traits;
 
+import avernusvenine.sne.NPCDictionary;
+import avernusvenine.sne.PlayerDictionary;
 import avernusvenine.sne.StrongholdsAndEnderdragons;
+import avernusvenine.sne.npc.DialogueSet;
 import net.citizensnpcs.api.trait.Trait;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,24 +17,16 @@ public class DialogueTrait extends Trait {
 
     protected static String title = "dialogue_trait";
 
-    protected List<String> dialogue;
-
-    public DialogueTrait(String dialogue){
+    public DialogueTrait(){
         super(title);
-        this.dialogue = new ArrayList<>();
-        this.dialogue.add(dialogue);
-    }
-
-    protected DialogueTrait(List<String> dialogue){
-        super(title);
-        this.dialogue = dialogue;
     }
 
     @EventHandler
     public void onRightClick(net.citizensnpcs.api.event.NPCRightClickEvent event){
-           if(event.getNPC() != this.getNPC())
-               return;
-           event.getClicker().sendMessage("You clicked on " + event.getNPC().getName());
+        if(event.getNPC() != this.getNPC())
+            return;
+
+        NPCDictionary.getByUUID(event.getNPC().getUniqueId().toString()).advanceDialogue(event.getClicker());
     }
 
 }

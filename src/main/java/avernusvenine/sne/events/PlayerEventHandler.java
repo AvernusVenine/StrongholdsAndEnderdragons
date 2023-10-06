@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.sql.SQLException;
@@ -27,6 +28,8 @@ public class PlayerEventHandler implements Listener {
     public void onPlayerJoin(final PlayerJoinEvent event){
         Player player = event.getPlayer();
 
+        PlayerDictionary.add(new PlayerProfile(player));
+
         try {
             if(StrongholdsAndEnderdragons.databaseHandler.playerExists(player)) {
                 openCharacterSelect(player);
@@ -41,8 +44,6 @@ public class PlayerEventHandler implements Listener {
             Bukkit.getServer().getConsoleSender().sendMessage("Failed to add player to database!");
             e.printStackTrace();
         }
-
-        PlayerDictionary.add(new PlayerProfile(player));
     }
 
     @EventHandler
@@ -56,6 +57,16 @@ public class PlayerEventHandler implements Listener {
 
         playerProfile.getPlayerCharacter().saveToDatabase();
         PlayerDictionary.remove(player.getUniqueId().toString());
+    }
+
+    @EventHandler
+    public void onPlayerMove(final PlayerMoveEvent event){
+        Player player = event.getPlayer();
+
+        if(PlayerDictionary.get(player.getUniqueId().toString()).isInDialogue()){
+            event.setCancelled(true);
+        }
+
     }
 
 }

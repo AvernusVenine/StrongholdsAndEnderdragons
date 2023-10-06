@@ -4,6 +4,7 @@ import avernusvenine.sne.classes.*;
 import avernusvenine.sne.commands.*;
 import avernusvenine.sne.events.ChatEventHandler;
 import avernusvenine.sne.gui.PlayerJournalGUI;
+import avernusvenine.sne.npc.traits.DialogueTrait;
 import avernusvenine.sne.players.PlayerCharacter;
 import avernusvenine.sne.database.DatabaseHandler;
 import avernusvenine.sne.events.ItemEventHandler;
@@ -13,6 +14,7 @@ import avernusvenine.sne.gui.DefaultGUI;
 import avernusvenine.sne.gui.RaceSelectGUI;
 
 import avernusvenine.sne.races.*;
+import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -23,6 +25,13 @@ import java.sql.SQLException;
 import java.util.*;
 
 public final class StrongholdsAndEnderdragons extends JavaPlugin {
+
+    /*
+    #### TAKEN UNICODE CHARACTERS ####
+    /uC0000 - /u512C0
+    /uE238 -> Player Journal
+    /uE239 -> Empty speech bubble
+     */
 
     // Dictionary of all custom items
     public static Map<DefaultClass.ClassType, DefaultClass> classDictionary = new HashMap<DefaultClass.ClassType, DefaultClass>();
@@ -52,8 +61,12 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
         loadClasses();
         loadRaces();
 
+        registerNPCTraits();
+        Bukkit.getServer().getConsoleSender().sendMessage("[SNE] Successfully registered Citizen Traits!");
+
         registerEvents();
-        Bukkit.getServer().getConsoleSender().sendMessage("Successfully registered events!");
+        Bukkit.getServer().getConsoleSender().sendMessage("[SNE] Successfully registered events!");
+
         registerEntities();
 
         try {
@@ -61,7 +74,7 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
                 getDataFolder().mkdirs();
 
             databaseHandler = new DatabaseHandler(getDataFolder().getAbsolutePath() + "/sne.db");
-            Bukkit.getServer().getConsoleSender().sendMessage("Successfully loaded database!");
+            Bukkit.getServer().getConsoleSender().sendMessage("[SNE] Successfully loaded database!");
         } catch (SQLException e) {
             e.printStackTrace();
             Bukkit.getServer().getConsoleSender().sendMessage("Failed to load database! Disabling plugin");
@@ -238,6 +251,11 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChatEventHandler(), plugin);
     }
 
+    public void registerNPCTraits(){
+        net.citizensnpcs.api.CitizensAPI.getTraitFactory()
+                .registerTrait(net.citizensnpcs.api.trait.TraitInfo.create(DialogueTrait.class));
+    }
+
     @Override
     public void onDisable() {
         try {
@@ -245,5 +263,7 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        CitizensAPI.getNPCRegistry().deregisterAll();
     }
 }

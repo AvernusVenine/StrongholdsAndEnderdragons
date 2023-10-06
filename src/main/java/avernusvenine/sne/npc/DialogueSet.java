@@ -21,7 +21,7 @@ public class DialogueSet {
         return dialogue.get(type);
     }
 
-    public void setDialogue(DialogueType type, String text){
+    public void addDialogue(DialogueType type, String text){
         dialogue.put(type, text);
     }
 

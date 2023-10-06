@@ -268,9 +268,7 @@ public class SneItem {
                     }
                 }
             }, delay, period);
-
         }
-
     }
 
 }

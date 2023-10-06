@@ -46,101 +46,93 @@ public class DatabaseHandler {
     }
 
     public void createCharacter(PlayerCharacter playerCharacter) throws SQLException{
-        PreparedStatement preparedStatement = connection.prepareStatement(
-                "INSERT INTO characters (uuid, name, class, race) VALUES (?, ?, ?, ?)");
-        preparedStatement.setString(1, playerCharacter.getUUID());
-        preparedStatement.setString(2, playerCharacter.getName());
 
-        switch(playerCharacter.getClassType()){
-            case ARTIFICER:
-                preparedStatement.setString(3, "artificer");
-                break;
-            case BARBARIAN:
-                preparedStatement.setString(3, "barbarian");
-                break;
-            case SHAMAN:
-                preparedStatement.setString(3, "blood_hunter");
-                break;
-            case BARD:
-                preparedStatement.setString(3, "bard");
-                break;
-            case CLERIC:
-                preparedStatement.setString(3, "cleric");
-                break;
-            case DRUID:
-                preparedStatement.setString(3, "druid");
-                break;
-            case FIGHTER:
-                preparedStatement.setString(3, "fighter");
-                break;
-            case MONK:
-                preparedStatement.setString(3, "monk");
-                break;
-            case PALADIN:
-                preparedStatement.setString(3, "paladin");
-                break;
-            case RANGER:
-                preparedStatement.setString(3, "ranger");
-                break;
-            case ROGUE:
-                preparedStatement.setString(3, "rogue");
-                break;
-            case SORCERER:
-                preparedStatement.setString(3, "sorcerer");
-                break;
-            case WARLOCK:
-                preparedStatement.setString(3, "warlock");
-                break;
-            case WIZARD:
-                preparedStatement.setString(3, "wizard");
-                break;
+        try(PreparedStatement preparedStatement = connection.prepareStatement(
+                "INSERT INTO characters (uuid, name, class, race) VALUES (?, ?, ?, ?)")){
+
+            preparedStatement.setString(1, playerCharacter.getUUID());
+            preparedStatement.setString(2, playerCharacter.getName());
+
+            switch(playerCharacter.getClassType()){
+                case ARTIFICER:
+                    preparedStatement.setString(3, "artificer");
+                    break;
+                case BARBARIAN:
+                    preparedStatement.setString(3, "barbarian");
+                    break;
+                case SHAMAN:
+                    preparedStatement.setString(3, "shaman");
+                    break;
+                case BARD:
+                    preparedStatement.setString(3, "bard");
+                    break;
+                case CLERIC:
+                    preparedStatement.setString(3, "cleric");
+                    break;
+                case DRUID:
+                    preparedStatement.setString(3, "druid");
+                    break;
+                case FIGHTER:
+                    preparedStatement.setString(3, "fighter");
+                    break;
+                case MONK:
+                    preparedStatement.setString(3, "monk");
+                    break;
+                case PALADIN:
+                    preparedStatement.setString(3, "paladin");
+                    break;
+                case RANGER:
+                    preparedStatement.setString(3, "ranger");
+                    break;
+                case ROGUE:
+                    preparedStatement.setString(3, "rogue");
+                    break;
+                case SORCERER:
+                    preparedStatement.setString(3, "sorcerer");
+                    break;
+                case WARLOCK:
+                    preparedStatement.setString(3, "warlock");
+                    break;
+                case WIZARD:
+                    preparedStatement.setString(3, "wizard");
+                    break;
+            }
+
+            switch(playerCharacter.getRaceType()){
+                case DWARF:
+                    preparedStatement.setString(4, "dwarf");
+                    break;
+                case DRAGON_KIN:
+                    preparedStatement.setString(4, "dragon_kin");
+                    break;
+                case ELF:
+                    preparedStatement.setString(4, "elf");
+                    break;
+                case FELIDAE:
+                    preparedStatement.setString(4, "felidae");
+                    break;
+                case GNOME:
+                    preparedStatement.setString(4, "gnome");
+                    break;
+                case HALF_ELF:
+                    preparedStatement.setString(4, "half_elf");
+                    break;
+                case HALF_ORC:
+                    preparedStatement.setString(4, "half_orc");
+                    break;
+                case HUMAN:
+                    preparedStatement.setString(4, "human");
+                    break;
+                case ORC:
+                    preparedStatement.setString(4, "orc");
+                    break;
+                case TIEFLING:
+                    preparedStatement.setString(4, "tiefling");
+                    break;
+            }
+
+            preparedStatement.executeUpdate();
         }
-
-        switch(playerCharacter.getRaceType()){
-            case DWARF:
-                preparedStatement.setString(4, "dwarf");
-                break;
-            case DRAGON_KIN:
-                preparedStatement.setString(4, "dragon_kin");
-                break;
-            case ELF:
-                preparedStatement.setString(4, "elf");
-                break;
-            case FELIDAE:
-                preparedStatement.setString(4, "felidae");
-                break;
-            case GNOME:
-                preparedStatement.setString(4, "gnome");
-                break;
-            case HALF_ELF:
-                preparedStatement.setString(4, "half_elf");
-                break;
-            case HALF_ORC:
-                preparedStatement.setString(4, "half_orc");
-                break;
-            case HUMAN:
-                preparedStatement.setString(4, "human");
-                break;
-            case ORC:
-                preparedStatement.setString(4, "orc");
-                break;
-            case TIEFLING:
-                preparedStatement.setString(4, "tiefling");
-                break;
-        }
-
-        preparedStatement.executeUpdate();
-        preparedStatement.close();
-
-        preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS ? (" +
-                "quest_id TEXT PRIMARY KEY " +
-                "status BOOLEAN NOT NULL DEFAULT FALSE," +
-                "progress INT DEFAULT 0");
-
-        preparedStatement.setString(1, questTablePrefix + playerCharacter.getID());
-
-        preparedStatement.execute();
-        preparedStatement.close();
     }
 
     public PlayerCharacter loadCharacter(int id, Player player) throws SQLException {
@@ -148,6 +140,16 @@ public class DatabaseHandler {
         PlayerCharacter playerCharacter = new PlayerCharacter(player);
 
         playerCharacter.setID(id);
+
+        Statement statement = connection.createStatement();
+
+        statement.execute("CREATE TABLE IF NOT EXISTS "
+                + questTablePrefix + playerCharacter.getID() + "(" +
+                "quest_id TEXT PRIMARY KEY, " +
+                "status BOOLEAN NOT NULL DEFAULT FALSE, " +
+                "progress INT DEFAULT 0)");
+
+        statement.close();
 
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM characters WHERE character_id = ?");
         preparedStatement.setString(1, Integer.toString(id));
@@ -170,7 +172,7 @@ public class DatabaseHandler {
             case "barbarian":
                 classType = DefaultClass.ClassType.BARBARIAN;
                 break;
-            case "blood_hunter":
+            case "shaman":
                 classType = DefaultClass.ClassType.SHAMAN;
                 break;
             case "bard":
@@ -246,10 +248,9 @@ public class DatabaseHandler {
 
         preparedStatement.close();
 
-        preparedStatement = connection.prepareStatement("SELECT * FROM ?");
-        preparedStatement.setString(1, questTablePrefix + playerCharacter.getID());
+        PreparedStatement preparedStatementTwo = connection.prepareStatement("SELECT * FROM " + questTablePrefix + playerCharacter.getID());
 
-        resultSet = preparedStatement.executeQuery();
+        resultSet = preparedStatementTwo.executeQuery();
 
         while(resultSet.next()){
             playerCharacter.addQuest(resultSet.getString("quest_id"),
@@ -257,7 +258,7 @@ public class DatabaseHandler {
                     resultSet.getInt("progress"));
         }
 
-        preparedStatement.close();
+        preparedStatementTwo.close();
         return playerCharacter;
     }
 
@@ -271,11 +272,11 @@ public class DatabaseHandler {
         preparedStatement.close();
 
         for(Map.Entry<String, PlayerCharacter.QuestStatus> entry : playerCharacter.getQuests().entrySet()){
-            preparedStatement = connection.prepareStatement("UPDATE ? SET status = ?, progress = ? WHERE quest_id = ?");
-            preparedStatement.setString(1, questTablePrefix + playerCharacter.getID());
-            preparedStatement.setBoolean(2, entry.getValue().status);
-            preparedStatement.setInt(3, entry.getValue().progress);
-            preparedStatement.setString(4, entry.getKey());
+            preparedStatement = connection.prepareStatement("UPDATE " + questTablePrefix + playerCharacter.getID()
+                    +" SET status = ?, progress = ? WHERE quest_id = ?");
+            preparedStatement.setBoolean(1, entry.getValue().status);
+            preparedStatement.setInt(2, entry.getValue().progress);
+            preparedStatement.setString(3, entry.getKey());
             preparedStatement.executeUpdate();
             preparedStatement.close();
         }

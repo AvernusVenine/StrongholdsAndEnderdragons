@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
@@ -77,13 +78,15 @@ public class CharacterSelectGUI extends DefaultGUI {
             return;
 
         NBTItem nbtItem = new NBTItem(item);
-        System.out.println(nbtItem.getString(nbtID));
 
         switch(nbtItem.getString(nbtID)){
             case "new_character":
                 player.openInventory(StrongholdsAndEnderdragons.guiDictionary.get("class_select").getInventory());
                 player.playSound(player, Sound.UI_BUTTON_CLICK, 1, 1);
                 event.setCancelled(true);
+                HandlerList.unregisterAll(this);
+
+                PlayerDictionary.get(player.getUniqueId().toString()).setPlayerCharacter(new PlayerCharacter(player));
                 break;
             case "load_character":
                 try{
@@ -98,6 +101,7 @@ public class CharacterSelectGUI extends DefaultGUI {
                 player.playSound(player, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1, 1);
                 event.setCancelled(true);
                 player.closeInventory();
+                HandlerList.unregisterAll(this);
                 break;
         }
     }

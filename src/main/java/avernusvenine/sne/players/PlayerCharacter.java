@@ -19,6 +19,7 @@ public class PlayerCharacter {
     protected final String uuid;
 
     protected BiMap<String, QuestStatus> quests = HashBiMap.create();
+    protected BiMap<String, Float> relationships = HashBiMap.create();
 
     protected String characterName;
     protected int experience;
@@ -49,12 +50,34 @@ public class PlayerCharacter {
         }
     }
 
+    public void addRelationship(String id, double level){
+
+    }
+
+    public float getRelationship(String id){
+
+        if(relationships.get(id) == null){
+            relationships.put(id, 0f);
+            return 0f;
+        }
+
+        return relationships.get(id);
+    }
+
+    public BiMap<String, Float> getRelationships(){
+        return relationships;
+    }
+
     public void addQuest(String id, boolean status, int progress){
         quests.put(id, new QuestStatus(status, progress));
     }
 
-    public void updateQuestProgress(String id, int progress){
+    public void addQuestProgress(String id, int progress){
         quests.get(id).progress += progress;
+    }
+
+    public void updateQuestProgress(String id, int progress){
+        quests.get(id).progress = progress;
     }
 
     public void updateQuestStatus(String id, boolean status){

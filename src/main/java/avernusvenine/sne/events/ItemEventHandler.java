@@ -51,6 +51,9 @@ public class ItemEventHandler implements Listener {
         if(event.getDamager() instanceof Player){
             ItemStack item = ((Player) event.getDamager()).getInventory().getItemInMainHand();
 
+            if(item == null || item.getType().isAir() || item.getAmount() == 0)
+                return;
+
             SneItem sneItem = ItemDictionary.get(new NBTItem(item).getString(SneItem.nbtID));
 
             if(sneItem != null)
