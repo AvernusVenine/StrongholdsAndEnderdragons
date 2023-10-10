@@ -39,6 +39,7 @@ avernusvenine\sne\races\Dragonkin.class
 avernusvenine\sne\races\Elf.class
 avernusvenine\sne\classes\Barbarian.class
 avernusvenine\sne\races\HalfOrc.class
+avernusvenine\sne\commands\ShowTitle.class
 avernusvenine\sne\races\Tiefling.class
 avernusvenine\sne\items\SneItem$InventorySlot.class
 avernusvenine\sne\gui\RaceSelectGUI.class

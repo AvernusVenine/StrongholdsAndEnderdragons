@@ -19,3 +19,6 @@ commands:
   SpawnNPC:
     description: Spawns an NPC on the player
     usage: /<command> npc_id
+  ShowTitle:
+    description: Used to test negative spacing fonts
+    usage: /<command> spacing

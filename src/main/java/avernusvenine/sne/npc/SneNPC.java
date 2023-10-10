@@ -7,6 +7,7 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
 import net.md_5.bungee.api.ChatMessageType;
@@ -20,6 +21,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.checkerframework.checker.units.qual.K;
 
 import java.time.Duration;
 import java.util.UUID;
@@ -45,12 +47,16 @@ public class SneNPC {
 
     }
 
-    public void showDialogue(Player player, String dialogue){
+    public void showDialogue(Player player, String[] dialogue){
         PlayerDictionary.get(player.getUniqueId().toString()).setInDialogue(true);
         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, PotionEffect.INFINITE_DURATION, 3));
 
         // Max characters per line currently ~35
-        dialogue = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBB";
+        dialogue = new String[4];
+        dialogue[0] = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+        dialogue[1] = "BBBBBBBBBBBBBBBBBBBBBB";
+        dialogue[2] = "";
+        dialogue[3] = "";
 
         new DialogueTask(dialogue, player);
     }
@@ -84,56 +90,117 @@ public class SneNPC {
     public class DialogueTask{
 
         private int iterator;
+        private int line;
 
         private BukkitTask task;
 
-        public DialogueTask(String dialogue, Player player){
+        public DialogueTask(String[] dialogue, Player player){
+            iterator = 0;
+            line = 0;
+
+            int offset = 280;
+            TextColor color = TextColor.color(0, 0, 0);
 
             task = Bukkit.getScheduler().runTaskTimer(StrongholdsAndEnderdragons.plugin, new Runnable() {
                 @Override
                 public void run() {
-                    if(iterator > dialogue.length())
+                    if(line == 4)
                         //TODO: Add another task here that keeps the action bar up until the player right clicks again
                         task.cancel();
                     else {
                         Component component = Component.text("");
 
-                        if(iterator <= 45){
-                            String sub = dialogue.substring(0, iterator);
-                            component = Component.text(sub).font(Key.key("sne:dialogue_one"))
-                                    .append(Component.text(convertWidthToMinecraftCode(-160+iterator*8)));
-                            /*component = Component.text(convertWidthToMinecraftCode(-290+iterator*6)).font(Key.key("space:default"))
-                                    .append(Component.text("\ue239").font(Key.key("minecraft:default")))
-                                    .append(Component.text(convertWidthToMinecraftCode(-290)).font(Key.key("space:default")))
-                                    .append(Component.text(sub).font(Key.key("sne:dialogue_one")));*/
+                        if(line == 0){
+
+                            if(iterator >= dialogue[0].length()){
+                                iterator = 0;
+                                line = 1;
+                                return;
+                            }
+
+                            String sub = dialogue[0].substring(0, iterator);
+                            int spacer = offset-(6*iterator);
+
+                            component = Component.text(sub).font(Key.key("sne:dialogue_one")).color(TextColor.color(0, 0, 0))
+                                    .append(Component.text(convertWidthToMinecraftCode(spacer)).font(Key.key("space:default")));
                         }
-                        if(iterator > 45 && iterator <= 90){
-                            String subOne = dialogue.substring(0, 45);
-                            String subTwo = dialogue.substring(46, iterator);
+                        else if(line == 1){
 
-                            component = Component.text(subOne).font(Key.key("sne:dialogue_one"))
-                                    .append(Component.text(convertWidthToMinecraftCode(-300)).font(Key.key("space:default")))
-                                    .append(Component.text(subTwo).font(Key.key("sne:dialogue_two")));
+                            if(iterator >= dialogue[1].length()){
+                                iterator = 0;
+                                line = 2;
+                                return;
+                            }
 
-                            /*component = Component.text(convertWidthToMinecraftCode(-500+iterator*6)).font(Key.key("space:default"))
-                                    .append(Component.text("\ue239").font(Key.key("minecraft:default")))
-                                    .append(Component.text(convertWidthToMinecraftCode(-300)).font(Key.key("space:default")))
-                                    .append(Component.text(subOne).font(Key.key("sne:dialogue_one")))
-                                    .append(Component.text(convertWidthToMinecraftCode(-200)).font(Key.key("space:default")))
-                                    .append(Component.text(subTwo).font(Key.key("sne:dialogue_two")));*/
+                            String sub = dialogue[1].substring(0, iterator);
+
+                            component = Component.text(dialogue[0]).font(Key.key("sne:dialogue_one"))
+                                    .append(Component.text(convertWidthToMinecraftCode(-6*dialogue[0].length())).font(Key.key("space:default")))
+                                    .append(Component.text(sub).font(Key.key("sne:dialogue_two")))
+                                    .append(Component.text(convertWidthToMinecraftCode(offset-6*iterator)).font(Key.key("space:default")));
 
                         }
-                        if(iterator > 90){
-                            String subOne = dialogue.substring(0, 35);
-                            String subTwo = dialogue.substring(36, 70);
-                            String subThree = dialogue.substring(71, iterator);
+                        else if(line == 2){
 
-                            component = Component.text(subOne).font(Key.key("sne:dialogue_one"))
-                                    .append(Component.text(convertWidthToMinecraftCode(-35*7)).font(Key.key("space:default")))
-                                    .append(Component.text(subTwo).font(Key.key("sne:dialogue_two")))
-                                    .append(Component.text(convertWidthToMinecraftCode((-iterator/2)*7)).font(Key.key("space:default")))
-                                    .append(Component.text(subThree).font(Key.key("sne:dialogue_three")));
+                            if(iterator >= dialogue[2].length()){
+                                iterator = 0;
+                                line = 3;
+                                return;
+                            }
+
+                            String sub = dialogue[2].substring(0, iterator);
+
+                            component = Component.text(dialogue[0]).font(Key.key("sne:dialogue_one"))
+                                    .append(Component.text(convertWidthToMinecraftCode(-6*dialogue[0].length())).font(Key.key("space:default")))
+                                    .append(Component.text(dialogue[1]).font(Key.key("sne:dialogue_two")))
+                                    .append(Component.text(convertWidthToMinecraftCode(-6*dialogue[1].length())).font(Key.key("space:default")))
+                                    .append(Component.text(sub).font(Key.key("sne:dialogue_three")))
+                                    .append(Component.text(convertWidthToMinecraftCode(offset-6*iterator)).font(Key.key("space:default")));
                         }
+                        else if(line == 3){
+
+                            if(iterator >= dialogue[3].length()){
+                                iterator = 0;
+                                line = 4;
+                                return;
+                            }
+
+                            String sub = dialogue[3].substring(0, iterator);
+
+                            component = Component.text(dialogue[0]).font(Key.key("sne:dialogue_one"))
+                                    .append(Component.text(convertWidthToMinecraftCode(-6*dialogue[0].length())).font(Key.key("space:default")))
+                                    .append(Component.text(dialogue[1]).font(Key.key("sne:dialogue_two")))
+                                    .append(Component.text(convertWidthToMinecraftCode(-6*dialogue[1].length())).font(Key.key("space:default")))
+                                    .append(Component.text(dialogue[2]).font(Key.key("sne:dialogue_three")))
+                                    .append(Component.text(convertWidthToMinecraftCode(-6*dialogue[2].length())).font(Key.key("space:default")))
+                                    .append(Component.text(sub).font(Key.key("sne:dialogue_four")))
+                                    .append(Component.text(convertWidthToMinecraftCode(offset-6*iterator)).font(Key.key("space:default")));
+
+                            line = 4;
+                        }
+
+
+
+                        /*if(iterator <= dialogue[0].length()){
+                            String sub = dialogue[0].substring(0, iterator);
+
+                            int spacerOne = 280 - (6*iterator);
+
+                            component = Component.text(sub).font(Key.key("sne:dialogue_one")).color(TextColor.color(0, 0, 0))
+                                    .append(Component.text(convertWidthToMinecraftCode(spacerOne)).font(Key.key("space:default")));
+                        }
+                        if(iterator > dialogue[0].length() && iterator <= dialogue[0].length() + dialogue[1].length()) {
+                            String sub = dialogue[1].substring(0, iterator - dialogue[0].length());
+
+                            int spacerOne = 280 - (6 * (dialogue[0].length() - (iterator - dialogue[0].length())));
+                            int spacerTwo = 280 - (6 * ((iterator - dialogue[0].length()) + dialogue[0].length()));
+
+                            component = Component.text(dialogue[0]).font(Key.key("sne:dialogue_one")).color(TextColor.color(0, 0, 0))
+                                    .append(Component.text(convertWidthToMinecraftCode(spacerOne)).font(Key.key("space:default")))
+                                    .append(Component.text(sub).font(Key.key("sne:dialogue_two")).color(TextColor.color(0, 0, 0)))
+                                    .append(Component.text(convertWidthToMinecraftCode(spacerTwo)).font(Key.key("space:default")));
+                        }*/
+
 
                         Component empty = Component.text("");
                         Component speechBubble = Component.text("\ue239").font(Key.key("minecraft:default"));

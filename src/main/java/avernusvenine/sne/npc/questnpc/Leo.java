@@ -42,7 +42,7 @@ public class Leo extends SneNPC {
                 break;
         }
 
-        showDialogue(player, dialogue);
+        showDialogue(player, new String[4]);
     }
 
 }
