@@ -12,11 +12,6 @@ public class NPCDictionary {
 
     public static void loadNPCs(){
         {
-            SneNPC npc = new SneNPC();
-            npcDictionary.put(npc.getID(), npc);
-            npcDictionaryUUID.put(npc.getUUID(), npc);
-        }
-        {
             Leo npc = new Leo();
             npcDictionary.put(npc.getID(), npc);
             npcDictionaryUUID.put(npc.getUUID(), npc);

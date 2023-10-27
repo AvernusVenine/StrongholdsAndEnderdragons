@@ -56,6 +56,7 @@ public class PlayerEventHandler implements Listener {
             return;
 
         playerProfile.getPlayerCharacter().saveToDatabase();
+        playerProfile.onPlayerQuit();
         PlayerDictionary.remove(player.getUniqueId().toString());
     }
 

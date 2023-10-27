@@ -4,6 +4,7 @@ import avernusvenine.sne.NPCDictionary;
 import avernusvenine.sne.PlayerDictionary;
 import avernusvenine.sne.StrongholdsAndEnderdragons;
 import avernusvenine.sne.npc.DialogueSet;
+import avernusvenine.sne.players.PlayerProfile;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,7 +27,12 @@ public class DialogueTrait extends Trait {
         if(event.getNPC() != this.getNPC())
             return;
 
-        NPCDictionary.getByUUID(event.getNPC().getUniqueId().toString()).advanceDialogue(event.getClicker());
+        PlayerProfile profile = PlayerDictionary.get(event.getClicker().getUniqueId().toString());
+
+        if(!profile.isInDialogue())
+            profile.onDialogueStart(NPCDictionary.getByUUID(event.getNPC().getUniqueId().toString()).getDialogueHandler());
+
+        profile.advanceDialogue();
     }
 
 }

@@ -146,7 +146,7 @@ public class DatabaseHandler {
         statement.execute("CREATE TABLE IF NOT EXISTS "
                 + questTablePrefix + playerCharacter.getID() + "(" +
                 "quest_id TEXT PRIMARY KEY, " +
-                "status BOOLEAN NOT NULL DEFAULT FALSE, " +
+                "status INTEGER NOT NULL DEFAULT FALSE, " +
                 "progress INT DEFAULT 0)");
 
         statement.close();
@@ -254,7 +254,7 @@ public class DatabaseHandler {
 
         while(resultSet.next()){
             playerCharacter.addQuest(resultSet.getString("quest_id"),
-                    resultSet.getBoolean("status"),
+                    PlayerCharacter.QuestStatus.convertToEnum(resultSet.getInt("status")),
                     resultSet.getInt("progress"));
         }
 
@@ -274,7 +274,7 @@ public class DatabaseHandler {
         for(Map.Entry<String, PlayerCharacter.QuestStatus> entry : playerCharacter.getQuests().entrySet()){
             preparedStatement = connection.prepareStatement("UPDATE " + questTablePrefix + playerCharacter.getID()
                     +" SET status = ?, progress = ? WHERE quest_id = ?");
-            preparedStatement.setBoolean(1, entry.getValue().status);
+            preparedStatement.setInt(1, entry.getValue().status.getValue());
             preparedStatement.setInt(2, entry.getValue().progress);
             preparedStatement.setString(3, entry.getKey());
             preparedStatement.executeUpdate();

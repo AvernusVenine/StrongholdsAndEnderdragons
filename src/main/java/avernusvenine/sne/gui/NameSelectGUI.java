@@ -27,6 +27,10 @@ public class NameSelectGUI extends DefaultGUI implements Listener {
         initializeAnvil();
     }
 
+    public void initializeItems(){
+
+    }
+
     public void initializeAnvil(){
         ItemStack rightItem = new ItemStack(Material.PAPER, 1);
         ItemMeta rightMeta = rightItem.getItemMeta();

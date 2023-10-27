@@ -50,16 +50,14 @@ public class PlayerCharacter {
         }
     }
 
-    public void addRelationship(String id, double level){
-
+    public void addRelationship(String id, float level){
+        relationships.replace(id, relationships.get(id) + level);
     }
 
     public float getRelationship(String id){
 
-        if(relationships.get(id) == null){
+        if(relationships.get(id) == null)
             relationships.put(id, 0f);
-            return 0f;
-        }
 
         return relationships.get(id);
     }
@@ -68,7 +66,7 @@ public class PlayerCharacter {
         return relationships;
     }
 
-    public void addQuest(String id, boolean status, int progress){
+    public void addQuest(String id, QuestStatus.Status status, int progress){
         quests.put(id, new QuestStatus(status, progress));
     }
 
@@ -80,8 +78,33 @@ public class PlayerCharacter {
         quests.get(id).progress = progress;
     }
 
-    public void updateQuestStatus(String id, boolean status){
+    public void updateQuestStatus(String id, QuestStatus.Status status){
         quests.get(id).status = status;
+    }
+
+    public boolean checkQuestCompletion(String id){
+
+        if(!quests.containsKey(id))
+            return false;
+
+        return quests.get(id).status == QuestStatus.Status.COMPLETED;
+    }
+
+    public boolean checkQuestCompletion(List<String> idList){
+
+        if(idList.isEmpty())
+            return true;
+
+        for(String id : idList){
+
+            if(!quests.containsKey(id))
+                return false;
+            else if(quests.get(id).status != QuestStatus.Status.COMPLETED)
+                return false;
+
+        }
+
+        return true;
     }
 
     //Getters and setters
@@ -90,7 +113,11 @@ public class PlayerCharacter {
         return quests;
     }
 
-    public boolean getQuestStatus(String id){
+    public QuestStatus.Status getQuestStatus(String id){
+
+        if(quests.get(id) == null)
+            addQuest(id, QuestStatus.Status.NOT_ACCEPTED, 0);
+
         return quests.get(id).status;
     }
 
@@ -157,12 +184,39 @@ public class PlayerCharacter {
 
     public class QuestStatus{
 
-        public boolean status;
+        public enum Status {
+            NOT_ACCEPTED(0),
+            ACCEPTED(1),
+            IN_PROGRESS(2),
+            COMPLETED(3);
+
+            final int value;
+
+            Status(final int i){
+                this.value = i;
+            }
+
+            public int getValue(){
+                return value;
+            }
+        }
+
+        public Status status;
         public int progress;
 
-        public QuestStatus(boolean status, int progress){
+        public QuestStatus(Status status, int progress){
             this.status = status;
             this.progress = progress;
+        }
+
+        public static Status convertToEnum(int i){
+            return switch (i) {
+                case 0 -> Status.NOT_ACCEPTED;
+                case 1 -> Status.ACCEPTED;
+                case 2 -> Status.IN_PROGRESS;
+                case 3 -> Status.COMPLETED;
+                default -> Status.NOT_ACCEPTED;
+            };
         }
 
     }

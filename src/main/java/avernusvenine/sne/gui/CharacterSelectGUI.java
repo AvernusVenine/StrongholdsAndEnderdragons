@@ -21,14 +21,17 @@ import java.util.*;
 
 public class CharacterSelectGUI extends DefaultGUI {
 
+    private Player player;
+
     public CharacterSelectGUI(Player player){
+        this.player = player;
         id = "character_select";
         title = "Character Selection";
         inventory = Bukkit.createInventory(null, 9,title);
-        initializeItems(player);
+        initializeItems();
     }
 
-    public void initializeItems(Player player){
+    public void initializeItems(){
         String uuid = player.getUniqueId().toString();
         Map<String, Integer> characters;
 

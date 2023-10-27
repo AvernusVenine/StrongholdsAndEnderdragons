@@ -15,7 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
-public class DefaultGUI implements Listener {
+public abstract class DefaultGUI implements Listener {
 
     /*
      * ####CUSTOM MODEL CHEAT SHEET####
@@ -23,7 +23,7 @@ public class DefaultGUI implements Listener {
 
      * */
 
-    protected static String nbtID = "GuiID";
+    protected final static String nbtID = "GuiID";
 
     protected Inventory inventory;
     protected String id;
@@ -32,9 +32,7 @@ public class DefaultGUI implements Listener {
     public DefaultGUI() {
     }
 
-    public void initializeItems(){
-
-    }
+    public abstract void initializeItems();
 
     public static ItemStack createGUIItem(final Material material, final String name, final List<String> lore){
         ItemStack item = new ItemStack(material, 1);
