@@ -19,7 +19,7 @@ public class QuestRewardGUI extends DefaultGUI {
         id = "quest_reward";
         title = "Quest Reward";
         rewardItems = quest.getRewardItems();
-        inventory = Bukkit.createInventory(null, rewardItems.size(), title);
+        inventory = Bukkit.createInventory(null, 9, title);
         ownerUUID = player.getUniqueId().toString();
         initializeItems();
     }

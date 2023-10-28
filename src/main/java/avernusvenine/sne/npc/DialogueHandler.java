@@ -3,39 +3,27 @@ package avernusvenine.sne.npc;
 import avernusvenine.sne.Globals;
 import avernusvenine.sne.PlayerDictionary;
 import avernusvenine.sne.StrongholdsAndEnderdragons;
-import avernusvenine.sne.gui.DefaultGUI;
 import avernusvenine.sne.gui.ItemRetrievalCompletionGUI;
 import avernusvenine.sne.gui.QuestPromptGUI;
 import avernusvenine.sne.gui.QuestRewardGUI;
 import avernusvenine.sne.players.PlayerCharacter;
 import avernusvenine.sne.quests.ItemRetrievalQuest;
 import avernusvenine.sne.quests.Quest;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class DialogueHandler {
-
 
     public enum Phase {
         GREETING,
@@ -53,16 +41,15 @@ public class DialogueHandler {
 
     private Phase phase;
     private Quest currentQuest;
+    private int iterator;
 
-    private String id;
-    private List<RelationshipDialogue> greeting = new ArrayList<>();
+    private boolean textScrolling = false;
 
-    private List<Quest> quests = new ArrayList<>();
-    private HashMap<Quest, QuestDialogue> questDialogue = new HashMap<>();
+    private DialogueSet set;
+    private DialogueTask dialogueTask;
 
-    public DialogueHandler(String id){
+    public DialogueHandler(){
         phase = Phase.GREETING;
-        this.id = id;
     }
 
     public void advance(Player player){
@@ -71,26 +58,27 @@ public class DialogueHandler {
 
         PlayerCharacter playerCharacter = PlayerDictionary.get(player.getUniqueId().toString()).getPlayerCharacter();
 
+        if(textScrolling){
+            skipDialogue(player);
+            return;
+        }
+
         switch(phase){
             case GREETING:
+                List<String[]> greeting = set.getGreeting(player);
 
-                RelationshipDialogue currentGreeting = new RelationshipDialogue(0, 0, new ArrayList<>());
-
-                for(RelationshipDialogue relationship : greeting){
-                    if(relationship.inRange(playerCharacter.getRelationship(id)))
-                        currentGreeting = relationship;
+                if(iterator < greeting.size()){
+                    dialogue = greeting.get(iterator);
+                    iterator++;
+                    break;
                 }
 
-                dialogue = currentGreeting.dialogue.get(0);
-                currentGreeting.dialogue.remove(0);
+                iterator = 0;
 
-                if(!currentGreeting.dialogue.isEmpty())
-                    break;
-
-                if(quests.isEmpty())
+                if(set.getQuests().isEmpty())
                     phase = Phase.CLOSE;
 
-                for(Quest quest : quests){
+                for(Quest quest : set.getQuests()){
                     if(playerCharacter.getQuestStatus(quest.getID()) != PlayerCharacter.QuestStatus.Status.COMPLETED
                             && playerCharacter.checkQuestCompletion(quest.getQuestPrerequisites())){
                         currentQuest = quest;
@@ -98,58 +86,82 @@ public class DialogueHandler {
                         break;
                     }
                 }
-                break;
+
+                if(phase == Phase.GREETING)
+                    phase = Phase.CLOSE;
+
+                advance(player);
+                return;
             case CLOSE:
-                PlayerDictionary.get(player.getUniqueId().toString()).removeDialogueHandler();
                 close(player);
                 return;
             case QUEST_PROMPT:
-                dialogue = questDialogue.get(currentQuest).prompt.get(0);
-                questDialogue.get(currentQuest).prompt.remove(0);
+                List<String[]> prompt = set.getQuestDialogue(currentQuest).prompt;
 
-                if(!questDialogue.get(currentQuest).prompt.isEmpty())
-                    break;
-
-                if(playerCharacter.getQuestStatus(currentQuest.getID()) == PlayerCharacter.QuestStatus.Status.ACCEPTED){
-                    phase = Phase.QUEST_COMPLETION_GUI;
+                if(iterator < prompt.size()){
+                    dialogue = prompt.get(iterator);
+                    iterator++;
                     break;
                 }
 
+                iterator = 0;
+
+                if(playerCharacter.getQuestStatus(currentQuest.getID()) == PlayerCharacter.QuestStatus.Status.ACCEPTED){
+                    phase = Phase.QUEST_COMPLETION_GUI;
+                    advance(player);
+                    return;
+                }
+
                 phase = Phase.QUEST_PROMPT_GUI;
-                break;
+                advance(player);
+                return;
             case QUEST_PROMPT_GUI:
                 promptQuest(player);
                 return;
             case QUEST_ACCEPT:
-                dialogue = questDialogue.get(currentQuest).accept.get(0);
+                List<String[]> accept = set.getQuestDialogue(currentQuest).accept;
 
-                questDialogue.get(currentQuest).accept.remove(0);
-
-                if(!questDialogue.get(currentQuest).accept.isEmpty())
+                if(iterator < accept.size()){
+                    dialogue = accept.get(iterator);
+                    iterator++;
                     break;
+                }
+
+                iterator = 0;
 
                 phase = Phase.CLOSE;
-                break;
+                advance(player);
+                return;
             case QUEST_DENY:
-                dialogue = questDialogue.get(currentQuest).deny.get(0);
+                List<String[]> deny = set.getQuestDialogue(currentQuest).deny;
 
-                questDialogue.get(currentQuest).deny.remove(0);
-
-                if(!questDialogue.get(currentQuest).deny.isEmpty())
+                if(iterator < deny.size()){
+                    dialogue = deny.get(iterator);
+                    iterator++;
                     break;
+                }
+
+                iterator = 0;
 
                 phase = Phase.CLOSE;
-                break;
+                advance(player);
+                return;
             case QUEST_COMPLETION:
-                dialogue = questDialogue.get(currentQuest).completion.get(0);
+                List<String[]> completion = set.getQuestDialogue(currentQuest).completion;
 
-                questDialogue.get(currentQuest).completion.remove(0);
-
-                if(!questDialogue.get(currentQuest).completion.isEmpty())
+                if(iterator < completion.size()){
+                    dialogue = completion.get(iterator);
+                    iterator++;
                     break;
+                }
+
+                iterator = 0;
 
                 phase = Phase.QUEST_REWARD_GUI;
-                break;
+
+                playerCharacter.updateQuestStatus(currentQuest.getID(), PlayerCharacter.QuestStatus.Status.COMPLETED);
+                advance(player);
+                return;
             case QUEST_COMPLETION_GUI:
                 promptQuestCompletion(player);
                 return;
@@ -167,48 +179,17 @@ public class DialogueHandler {
         advance(player);
     }
 
-    public void addGreeting(int min, int max, List<String[]> text){
-        greeting.add(new RelationshipDialogue(min, max, text));
-    }
-
-    public void addGreeting(int min, int max, String[] text){
-        List<String[]> temp =  new ArrayList<>();
-        temp.add(text);
-        greeting.add(new RelationshipDialogue(min, max, temp));
-    }
-
-    public void addQuestPrompt(Quest quest, String[] text){
-        questDialogue.get(quest).prompt.add(text);
-    }
-
-    public void addQuestAccept(Quest quest, String[] text){
-        questDialogue.get(quest).accept.add(text);
-    }
-
-    public void addQuestDeny(Quest quest, String[] text){
-        questDialogue.get(quest).deny.add(text);
-    }
-
-    public void addQuestCompletion(Quest quest, String[] text){
-        questDialogue.get(quest).completion.add(text);
-    }
-
-    public void addQuest(Quest quest){
-        quests.add(quest);
-        questDialogue.put(quest, new QuestDialogue());
-    }
-
-    // Getters and Setters
-
-    public String getCurrentQuestID(){
-        return currentQuest.getID();
-    }
-
     public void displayToPlayer(Player player, String[] dialogue){
-        PlayerDictionary.get(player.getUniqueId().toString()).setInDialogue(true);
         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, PotionEffect.INFINITE_DURATION, 3));
+        textScrolling = true;
 
-        new DialogueTask(dialogue, player);
+        dialogueTask = new DialogueTask(dialogue, player);
+    }
+
+    public void skipDialogue(Player player){
+        textScrolling = false;
+
+        dialogueTask.skipDialogue(player);
     }
 
     public void promptQuest(Player player){
@@ -234,23 +215,41 @@ public class DialogueHandler {
     }
 
     public static void close(Player player){
-        PlayerDictionary.get(player.getUniqueId().toString()).setInDialogue(false);
+        PlayerDictionary.get(player.getUniqueId().toString()).closeDialogue();
+        player.clearTitle();
         player.removePotionEffect(PotionEffectType.SLOW);
+    }
+
+    public void reset(){
+        iterator = 0;
+        set = null;
+        phase = Phase.GREETING;
+    }
+
+
+    public void setDialogueSet(DialogueSet set){
+        this.set = set;
+    }
+
+    public String getCurrentQuestID(){
+        return currentQuest.getID();
     }
 
     private class DialogueTask{
 
         private int iterator;
         private int line;
+        private final TextColor textColor = TextColor.color(130, 96, 69);
+        private final int initialOffset = 270;
+
+        private final String[] dialogue;
 
         private final BukkitTask task;
 
         public DialogueTask(String[] dialogue, Player player){
             iterator = 0;
             line = 0;
-
-            int initialOffset = 270;
-            TextColor textColor = TextColor.color(130, 96, 69);
+            this.dialogue = dialogue;
 
             int[] offset = new int[4];
 
@@ -258,8 +257,10 @@ public class DialogueHandler {
                 @Override
                 public void run() {
 
-                    if(line == 4)
+                    if(line == 4){
                         task.cancel();
+                        textScrolling = false;
+                    }
                     else {
                         Component component = Component.text("");
 
@@ -308,7 +309,7 @@ public class DialogueHandler {
                             component = Component.text(dialogue[0]).font(Key.key("sne:dialogue_one")).color(textColor)
                                     .append(Component.text(Globals.convertWidthToMinecraftCode(-offset[0])).font(Key.key("space:default")))
                                     .append(Component.text(dialogue[1]).font(Key.key("sne:dialogue_two")).color(textColor))
-                                    .append(Component.text(Globals.convertWidthToMinecraftCode(-offset[0])).font(Key.key("space:default")))
+                                    .append(Component.text(Globals.convertWidthToMinecraftCode(-offset[1])).font(Key.key("space:default")))
                                     .append(Component.text(sub).font(Key.key("sne:dialogue_three")).color(textColor))
                                     .append(Component.text(Globals.convertWidthToMinecraftCode(initialOffset-offset[2])).font(Key.key("space:default")));
                         }
@@ -345,6 +346,30 @@ public class DialogueHandler {
 
         }
 
+        public void skipDialogue(Player player){
+            task.cancel();
+
+            int[] offset = new int[4];
+
+            for(int i = 0; i < 4; i++){
+                for(char c : dialogue[i].toCharArray()){
+                    offset[i] += getOffset(c);
+                }
+            }
+
+            Component component = Component.text(dialogue[0]).font(Key.key("sne:dialogue_one")).color(textColor)
+                    .append(Component.text(Globals.convertWidthToMinecraftCode(-offset[0])).font(Key.key("space:default")))
+                    .append(Component.text(dialogue[1]).font(Key.key("sne:dialogue_two")).color(textColor))
+                    .append(Component.text(Globals.convertWidthToMinecraftCode(-offset[1])).font(Key.key("space:default")))
+                    .append(Component.text(dialogue[2]).font(Key.key("sne:dialogue_three")).color(textColor))
+                    .append(Component.text(Globals.convertWidthToMinecraftCode(-offset[2])).font(Key.key("space:default")))
+                    .append(Component.text(dialogue[3]).font(Key.key("sne:dialogue_four")).color(textColor))
+                    .append(Component.text(Globals.convertWidthToMinecraftCode(initialOffset-offset[3])).font(Key.key("space:default")));
+
+            Component empty = Component.text("");
+            player.showTitle(net.kyori.adventure.title.Title.title(empty, component, Title.Times.times(Duration.ZERO, Duration.ofMinutes(999999), Duration.ZERO)));
+        }
+
         private int getOffset(char c){
 
             switch(c){
@@ -365,29 +390,4 @@ public class DialogueHandler {
 
     }
 
-    private class QuestDialogue{
-
-        List<String[]> prompt = new ArrayList<>();
-        List<String[]> deny = new ArrayList<>();
-        List<String[]> accept = new ArrayList<>();
-        List<String[]> completion = new ArrayList<>();
-
-    }
-
-    private class RelationshipDialogue{
-
-        int min, max;
-        List<String[]> dialogue;
-
-        public RelationshipDialogue(int min, int max, List<String[]> dialogue){
-            this.max = max;
-            this.min = min;
-            this.dialogue = dialogue;
-        }
-
-        public boolean inRange(float i){
-            return (min <= i && i <= max);
-        }
-
-    }
 }

@@ -15,14 +15,18 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
+import org.checkerframework.checker.units.qual.N;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ItemRetrievalCompletionGUI extends DefaultGUI{
 
     protected List<ItemStack> questItems;
     protected String ownerUUID;
+
+    private boolean completed = false;
 
     public ItemRetrievalCompletionGUI(Player player, ItemRetrievalQuest quest){
         id = "item_turn_in";
@@ -40,11 +44,7 @@ public class ItemRetrievalCompletionGUI extends DefaultGUI{
         switch(questItems.size()){
             case 1:
                 blankSlots = new int[]{1,2,3,5,6,7,9,10,11,12,14,15,16,17};
-
-                ItemStack questItem = createGUIItem(Material.WHITE_STAINED_GLASS_PANE,
-                        questItems.get(0).displayName() + " x" + questItems.get(0).getAmount(),
-                        new ArrayList<>(), "quest");
-                inventory.setItem(4, questItem);
+                inventory.setItem(4, createGUIItem(questItems.get(0), "quest"));
                 break;
         }
 
@@ -105,6 +105,7 @@ public class ItemRetrievalCompletionGUI extends DefaultGUI{
                 if(valid){
                     player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
                     PlayerDictionary.get(player.getUniqueId().toString()).onQuestCompletion();
+                    completed = true;
                     player.closeInventory();
                 }
                 event.setCancelled(true);
@@ -127,6 +128,23 @@ public class ItemRetrievalCompletionGUI extends DefaultGUI{
     public void onInventoryClose(final InventoryCloseEvent event){
         if(!event.getView().getOriginalTitle().equals(title))
             return;
+
+        Player player = (Player) event.getPlayer();
+
+        if(!completed){
+            PlayerDictionary.get(player.getUniqueId().toString()).closeQuestCompletion();
+            for(ItemStack item : event.getInventory().getContents()){
+
+                if(item == null || item.getType() == Material.AIR)
+                    break;
+
+                NBTItem nbtItem = new NBTItem(item);
+
+                if(!Objects.equals(nbtItem.getString(nbtID), "blank") && !Objects.equals(nbtItem.getString(nbtID), "quest") &&
+                        !Objects.equals(nbtItem.getString(nbtID), "close") && !Objects.equals(nbtItem.getString(nbtID), "submit"))
+                    player.getInventory().addItem(nbtItem.getItem());
+            }
+        }
 
         HandlerList.unregisterAll(this);
     }

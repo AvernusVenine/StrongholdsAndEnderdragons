@@ -2,17 +2,9 @@ package avernusvenine.sne.npc.traits;
 
 import avernusvenine.sne.NPCDictionary;
 import avernusvenine.sne.PlayerDictionary;
-import avernusvenine.sne.StrongholdsAndEnderdragons;
-import avernusvenine.sne.npc.DialogueSet;
 import avernusvenine.sne.players.PlayerProfile;
 import net.citizensnpcs.api.trait.Trait;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DialogueTrait extends Trait {
 
@@ -30,7 +22,9 @@ public class DialogueTrait extends Trait {
         PlayerProfile profile = PlayerDictionary.get(event.getClicker().getUniqueId().toString());
 
         if(!profile.isInDialogue())
-            profile.onDialogueStart(NPCDictionary.getByUUID(event.getNPC().getUniqueId().toString()).getDialogueHandler());
+            profile.openDialogue(NPCDictionary.getByUUID(event.getNPC().getUniqueId().toString()).getDialogueHandler());
+
+        System.out.println("Clicked");
 
         profile.advanceDialogue();
     }

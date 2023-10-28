@@ -2,17 +2,12 @@ package avernusvenine.sne.players;
 
 import avernusvenine.sne.StrongholdsAndEnderdragons;
 import avernusvenine.sne.npc.DialogueHandler;
-import avernusvenine.sne.npc.SneNPC;
-import avernusvenine.sne.quests.Quest;
+import avernusvenine.sne.npc.DialogueSet;
+import com.google.gson.Gson;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
-
-import javax.swing.*;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PlayerProfile {
 
@@ -26,17 +21,36 @@ public class PlayerProfile {
     public PlayerProfile(Player player){
         this.player = player;
 
+        dialogueHandler = new DialogueHandler();
+
         actionBarTask = new ActionBarTask(player);
         actionBarTask.changeToOverlay();
     }
 
     public void onPlayerQuit(){
         actionBarTask.cancelTask();
+        dialogueHandler.reset();
     }
 
-    public void onDialogueStart(DialogueHandler handler){
-        dialogueHandler = handler;
+    public void openDialogue(DialogueSet set){
+        dialogueHandler.setDialogueSet(set);
         inDialogue = true;
+        actionBarTask.cancelTask();
+        actionBarTask = new ActionBarTask(player);
+        actionBarTask.changeToDialogueBox();
+    }
+
+    public void closeDialogue(){
+        inDialogue = false;
+        actionBarTask.cancelTask();
+        actionBarTask = new ActionBarTask(player);
+        actionBarTask.changeToOverlay();
+        dialogueHandler.reset();
+    }
+
+    public void closeQuestCompletion(){
+        dialogueHandler.advance(player, DialogueHandler.Phase.CLOSE);
+        closeDialogue();
     }
 
     public void advanceDialogue(){
@@ -58,10 +72,6 @@ public class PlayerProfile {
 
     // Getters and Setters
 
-    public void removeDialogueHandler(){
-        dialogueHandler = null;
-    }
-
     public PlayerCharacter getPlayerCharacter(){
         return playerCharacter;
     }
@@ -72,15 +82,6 @@ public class PlayerProfile {
 
     public String getUUID(){
         return player.getUniqueId().toString();
-    }
-
-    public void setInDialogue(boolean inDialogue){
-        if(inDialogue)
-            actionBarTask.changeToDialogueBox();
-        else
-            actionBarTask.changeToOverlay();
-
-        this.inDialogue = inDialogue;
     }
 
     public boolean isInDialogue(){
@@ -102,7 +103,7 @@ public class PlayerProfile {
                 public void run() {
                     player.sendActionBar(currentActionBar);
                 }
-            }, 0, 40);
+            }, 1, 40);
 
         }
 

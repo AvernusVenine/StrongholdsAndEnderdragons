@@ -353,6 +353,10 @@ public class DatabaseHandler {
         }
     }
 
+    public void updateNPCInfo(){
+
+    }
+
     public void closeConnection() throws SQLException {
         if(connection != null && !connection.isClosed())
             connection.close();

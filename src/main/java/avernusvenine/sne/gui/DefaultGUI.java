@@ -71,6 +71,13 @@ public abstract class DefaultGUI implements Listener {
         return nbtItem.getItem();
     }
 
+    public static ItemStack createGUIItem(final ItemStack item, final String id){
+        NBTItem nbtItem = new NBTItem(item);
+        nbtItem.setString(nbtID, id);
+
+        return nbtItem.getItem();
+    }
+
     public static String convertWidthToMinecraftCode(int width){
 
         int code = 0xD0000 + width;
