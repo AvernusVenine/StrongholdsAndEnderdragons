@@ -8,6 +8,7 @@ C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\s
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\events\ItemEventHandler.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\classes\Ranger.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\races\Human.java
+C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\gui\QuestPromptGUI.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\quests\Quest.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\classes\Druid.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\classes\Shaman.java
@@ -15,11 +16,13 @@ C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\s
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\players\PlayerCharacter.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\races\HalfOrc.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\classes\DefaultClass.java
+C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\npc\DialogueHandler.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\items\misc\PlayerJournal.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\ItemDictionary.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\classes\Warlock.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\items\SneItem.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\NPCDictionary.java
+C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\gui\QuestRewardGUI.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\events\PlayerEventHandler.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\commands\GetRank.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\classes\Sorcerer.java
@@ -38,13 +41,13 @@ C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\s
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\gui\DefaultGUI.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\races\Felidae.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\classes\Artificer.java
-C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\npc\traits\QuestTrait.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\events\ChatEventHandler.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\StrongholdsAndEnderdragons.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\classes\Monk.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\classes\Rogue.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\classes\Fighter.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\gui\ClassSelectGUI.java
+C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\Globals.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\quests\ItemRetrievalQuest.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\classes\Barbarian.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\gui\RaceSelectGUI.java
@@ -57,5 +60,6 @@ C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\s
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\gui\PlayerJournalGUI.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\items\misc\Midas.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\classes\Wizard.java
+C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\gui\ItemRetrievalCompletionGUI.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\players\PlayerProfile.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\commands\SetRank.java

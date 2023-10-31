@@ -22,3 +22,6 @@ commands:
   ShowTitle:
     description: Used to test negative spacing fonts
     usage: /<command> spacing
+  DespawnNPC:
+    description: Despawns an NPC
+    usage: /<command> npc_id

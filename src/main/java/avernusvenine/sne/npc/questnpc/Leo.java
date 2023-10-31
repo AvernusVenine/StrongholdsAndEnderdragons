@@ -5,6 +5,7 @@ import avernusvenine.sne.npc.SneNPC;
 import avernusvenine.sne.npc.traits.DialogueTrait;
 import avernusvenine.sne.quests.ItemRetrievalQuest;
 
+import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 
 import org.bukkit.Material;
@@ -13,16 +14,19 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Leo extends SneNPC {
 
     public Leo(){
-        npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.CAT, "Leo");
         id = "leo";
+        name = "Leo";
+        id_value = 0;
 
         dialogueSet = new DialogueSet(id);
 
-        npc.addTrait(new DialogueTrait());
+        createNPC();
+
         registerQuests();
         registerDialogue();
     }

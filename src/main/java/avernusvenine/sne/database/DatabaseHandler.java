@@ -1,13 +1,20 @@
 package avernusvenine.sne.database;
 
+import avernusvenine.sne.NPCDictionary;
+import avernusvenine.sne.npc.SneNPC;
 import avernusvenine.sne.players.PlayerCharacter;
 import avernusvenine.sne.classes.DefaultClass;
 import avernusvenine.sne.races.Race;
 import com.google.common.collect.BiMap;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DatabaseHandler {
@@ -38,9 +45,15 @@ public class DatabaseHandler {
                 "level INT NOT NULL DEFAULT 1, " +
                 "xp INT NOT NULL DEFAULT 0)");
 
-        statement.execute("CREATE TABLE IF NOT EXISTS feats(" +
-                "character_id INT PRIMARY KEY, " +
-                "feat_name TEXT NOT NULL)");
+        // Table for NPC locations in the world
+        statement.execute("CREATE TABLE IF NOT EXISTS npcs(" +
+                "npc_id TEXT PRIMARY KEY, " +
+                "x INT NOT NULL, " +
+                "y INT NOT NULL, " +
+                "z INT NOT NULL, " +
+                "pitch REAL NOT NULL," +
+                "yaw REAL NOT NULL, " +
+                "world TEXT NOT NULL)");
 
         statement.close();
     }
@@ -272,8 +285,8 @@ public class DatabaseHandler {
         preparedStatement.close();
 
         for(Map.Entry<String, PlayerCharacter.QuestStatus> entry : playerCharacter.getQuests().entrySet()){
-            preparedStatement = connection.prepareStatement("UPDATE " + questTablePrefix + playerCharacter.getID()
-                    +" SET status = ?, progress = ? WHERE quest_id = ?");
+            preparedStatement = connection.prepareStatement("INSERT OR REPLACE INTO " + questTablePrefix + playerCharacter.getID()
+                    + " (status, progress, quest_id) VALUES (?, ?, ?)");
             preparedStatement.setInt(1, entry.getValue().status.getValue());
             preparedStatement.setInt(2, entry.getValue().progress);
             preparedStatement.setString(3, entry.getKey());
@@ -353,8 +366,35 @@ public class DatabaseHandler {
         }
     }
 
-    public void updateNPCInfo(){
+    public void setNPCInfo(String id, int x, int y, int z, float pitch, float yaw, String world) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("INSERT OR REPLACE INTO npcs " +
+                "(npc_id, x, y, z, pitch, yaw, world) values (?, ?, ?, ?, ?, ?, ?)");
+        preparedStatement.setString(1, id);
+        preparedStatement.setInt(2, x);
+        preparedStatement.setInt(3, y);
+        preparedStatement.setInt(4, z);
+        preparedStatement.setFloat(5, pitch);
+        preparedStatement.setFloat(6, yaw);
+        preparedStatement.setString(7, world);
+        preparedStatement.executeUpdate();
+        preparedStatement.close();
+    }
 
+    public void spawnNPCs() throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM npcs");
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while(resultSet.next()){
+            World world = Bukkit.getServer().getWorld(resultSet.getString("world"));
+
+            if(world == null)
+                continue;
+
+            Location location = new Location(world, resultSet.getInt("x"), resultSet.getInt("y"),
+                    resultSet.getInt("z"), resultSet.getFloat("pitch"), resultSet.getFloat("yaw"));
+
+            NPCDictionary.get(resultSet.getString("npc_id")).spawnNPC(location);
+        }
     }
 
     public void closeConnection() throws SQLException {

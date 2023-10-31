@@ -73,6 +73,7 @@ avernusvenine\sne\npc\traits\DialogueTrait.class
 avernusvenine\sne\items\SneItem.class
 avernusvenine\sne\items\SneItem$1.class
 avernusvenine\sne\classes\Rogue.class
+avernusvenine\sne\commands\DespawnNPC.class
 avernusvenine\sne\races\Dwarf.class
 avernusvenine\sne\StrongholdsAndEnderdragons.class
 avernusvenine\sne\classes\Cleric.class

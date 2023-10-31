@@ -4,6 +4,7 @@ import avernusvenine.sne.classes.*;
 import avernusvenine.sne.commands.*;
 import avernusvenine.sne.events.ChatEventHandler;
 import avernusvenine.sne.gui.PlayerJournalGUI;
+import avernusvenine.sne.npc.SneNPC;
 import avernusvenine.sne.npc.traits.DialogueTrait;
 import avernusvenine.sne.players.PlayerCharacter;
 import avernusvenine.sne.database.DatabaseHandler;
@@ -53,22 +54,6 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
 
         plugin = this;
 
-        ItemDictionary.loadItems();
-        NPCDictionary.loadNPCs();
-
-        loadGUI();
-        loadCommands();
-        loadClasses();
-        loadRaces();
-
-        registerNPCTraits();
-        Bukkit.getServer().getConsoleSender().sendMessage("[SNE] Successfully registered Citizen Traits!");
-
-        registerEvents();
-        Bukkit.getServer().getConsoleSender().sendMessage("[SNE] Successfully registered events!");
-
-        registerEntities();
-
         try {
             if (!getDataFolder().exists())
                 getDataFolder().mkdirs();
@@ -80,6 +65,22 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
             Bukkit.getServer().getConsoleSender().sendMessage("Failed to load database! Disabling plugin");
             Bukkit.getPluginManager().disablePlugin(plugin);
         }
+
+        registerNPCTraits();
+        Bukkit.getServer().getConsoleSender().sendMessage("[SNE] Successfully registered Citizen Traits!");
+
+        ItemDictionary.loadItems();
+        NPCDictionary.loadNPCs();
+
+        loadGUI();
+        loadCommands();
+        loadClasses();
+        loadRaces();
+
+        registerEvents();
+        Bukkit.getServer().getConsoleSender().sendMessage("[SNE] Successfully registered events!");
+
+        registerEntities();
 
     }
 
@@ -237,7 +238,9 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
         registerCommand("opengui", new OpenGUI());
         registerCommand("spawnnpc", new SpawnNPC());
         registerCommand("showtitle", new ShowTitle());
+        registerCommand("despawnnpc", new DespawnNPC());
     }
+
     public void registerCommand(String name, CommandExecutor executor){
         PluginCommand command = getCommand(name);
 
@@ -259,12 +262,12 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        NPCDictionary.despawnAllNPCs();
+
         try {
             databaseHandler.closeConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        CitizensAPI.getNPCRegistry().deregisterAll();
     }
 }

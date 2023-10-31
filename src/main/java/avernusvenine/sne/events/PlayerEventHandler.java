@@ -31,12 +31,10 @@ public class PlayerEventHandler implements Listener {
         PlayerDictionary.add(new PlayerProfile(player));
 
         try {
-            if(StrongholdsAndEnderdragons.databaseHandler.playerExists(player)) {
-                openCharacterSelect(player);
-                return;
-            }
-
             openCharacterSelect(player);
+
+            if(StrongholdsAndEnderdragons.databaseHandler.playerExists(player))
+                return;
 
             StrongholdsAndEnderdragons.databaseHandler.addPlayer(player);
             Bukkit.getServer().getConsoleSender().sendMessage("Added " + event.getPlayer().getName() + " to the database");

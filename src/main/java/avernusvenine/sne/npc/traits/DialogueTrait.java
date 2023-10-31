@@ -24,8 +24,6 @@ public class DialogueTrait extends Trait {
         if(!profile.isInDialogue())
             profile.openDialogue(NPCDictionary.getByUUID(event.getNPC().getUniqueId().toString()).getDialogueHandler());
 
-        System.out.println("Clicked");
-
         profile.advanceDialogue();
     }
 

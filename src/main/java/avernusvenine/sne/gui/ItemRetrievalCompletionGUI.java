@@ -79,16 +79,6 @@ public class ItemRetrievalCompletionGUI extends DefaultGUI{
             default:
                 return;
             case "close":
-                switch(questItems.size()){
-                    default:
-                        break;
-                    case 1:
-                        ItemStack itemReturn = event.getInventory().getItem(4);
-                        if(itemReturn != null)
-                            player.getInventory().addItem(itemReturn);
-                        break;
-                }
-
                 player.playSound(player, Sound.UI_BUTTON_CLICK, 1, 1);
 
                 event.setCancelled(true);
@@ -140,9 +130,10 @@ public class ItemRetrievalCompletionGUI extends DefaultGUI{
 
                 NBTItem nbtItem = new NBTItem(item);
 
-                if(!Objects.equals(nbtItem.getString(nbtID), "blank") && !Objects.equals(nbtItem.getString(nbtID), "quest") &&
-                        !Objects.equals(nbtItem.getString(nbtID), "close") && !Objects.equals(nbtItem.getString(nbtID), "submit"))
+                if(!nbtItem.getString(nbtID).equalsIgnoreCase("blank") && !nbtItem.getString(nbtID).equalsIgnoreCase("quest") &&
+                        !nbtItem.getString(nbtID).equalsIgnoreCase("close") && !nbtItem.getString(nbtID).equalsIgnoreCase("submit")){
                     player.getInventory().addItem(nbtItem.getItem());
+                }
             }
         }
 

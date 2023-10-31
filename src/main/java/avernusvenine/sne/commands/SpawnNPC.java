@@ -25,6 +25,7 @@ public class SpawnNPC implements CommandExecutor {
 
             if(npc != null){
                 npc.spawnNPC(player.getLocation());
+                npc.saveToDatabase();
             }
         }
 
