@@ -1,4 +1,4 @@
-package avernusvenine.sne.npc;
+package avernusvenine.sne.npc.dialogue;
 
 import avernusvenine.sne.Globals;
 import avernusvenine.sne.PlayerDictionary;
@@ -26,15 +26,25 @@ import java.util.List;
 
 public class DialogueSet implements Cloneable{
 
+    public enum DialogueType{
+        QUEST,
+        TRAINER,
+        SHOP,
+        DEFAULT
+    }
 
-    private String id;
-    private List<RelationshipDialogue> greeting = new ArrayList<>();
 
-    private List<Quest> quests = new ArrayList<>();
-    private HashMap<Quest, QuestDialogue> questDialogue = new HashMap<>();
+    protected String id;
+    protected DialogueType type;
 
-    public DialogueSet(String id) {
+    protected List<RelationshipDialogue> greeting = new ArrayList<>();
+
+    protected List<Quest> quests = new ArrayList<>();
+    protected HashMap<Quest, QuestDialogue> questDialogue = new HashMap<>();
+
+    public DialogueSet(String id, DialogueType type) {
         this.id = id;
+        this.type = type;
     }
 
     public List<String[]> getGreeting(Player player){
@@ -85,6 +95,10 @@ public class DialogueSet implements Cloneable{
 
     public QuestDialogue getQuestDialogue(Quest quest){
         return questDialogue.get(quest);
+    }
+
+    public DialogueType getType(){
+        return type;
     }
 
 

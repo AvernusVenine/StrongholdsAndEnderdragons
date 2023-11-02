@@ -1,9 +1,12 @@
 package avernusvenine.sne.players;
 
 import avernusvenine.sne.StrongholdsAndEnderdragons;
-import avernusvenine.sne.npc.DialogueHandler;
-import avernusvenine.sne.npc.DialogueSet;
-import com.google.gson.Gson;
+import avernusvenine.sne.npc.dialogue.DialogueHandler;
+import avernusvenine.sne.npc.dialogue.DialogueSet;
+import avernusvenine.sne.npc.dialogue.DialogueSet.DialogueType;
+
+import avernusvenine.sne.npc.dialogue.QuestDialogueHandler;
+import avernusvenine.sne.npc.dialogue.TrainerDialogueHandler;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -33,6 +36,19 @@ public class PlayerProfile {
     }
 
     public void openDialogue(DialogueSet set){
+
+        switch(set.getType()){
+            case QUEST:
+                dialogueHandler = new QuestDialogueHandler();
+                break;
+            case TRAINER:
+                dialogueHandler = new TrainerDialogueHandler();
+                break;
+            case DEFAULT:
+                dialogueHandler = new DialogueHandler();
+                break;
+        }
+
         dialogueHandler.setDialogueSet(set);
         inDialogue = true;
         actionBarTask.cancelTask();

@@ -26,24 +26,6 @@ public class DefaultClass {
         WIZARD
     }
 
-    public enum FeatType{
-
-    }
-
-    // Work in progress, might not implement
-    public enum SkillType{
-        ACROBATICS,
-        MUSIC,
-        STEALTH,
-        POTIONS,
-        HERBALISM,
-        MINING,
-
-    }
-
-
-    protected List<SneItem.ItemType> innateItemProficiency = new ArrayList<SneItem.ItemType>();
-
     protected ClassType type;
     protected String id;
 
@@ -62,10 +44,8 @@ public class DefaultClass {
         return id;
     }
 
-    public String getChatPrefix(){return chatPrefix;}
-
-    public List<SneItem.ItemType> getInnateItemProficiency(){
-        return innateItemProficiency;
+    public String getChatPrefix(){
+        return chatPrefix;
     }
 
 }

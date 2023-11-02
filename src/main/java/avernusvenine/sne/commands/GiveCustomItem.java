@@ -32,7 +32,7 @@ public class GiveCustomItem implements CommandExecutor {
                 return true;
             }
 
-            player.getInventory().addItem(item.getCustomItem());
+            player.getInventory().addItem(item.getItem());
         }
 
         return true;

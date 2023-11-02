@@ -1,4 +1,4 @@
-package avernusvenine.sne.npc;
+package avernusvenine.sne.npc.dialogue;
 
 import avernusvenine.sne.Globals;
 import avernusvenine.sne.PlayerDictionary;
@@ -20,7 +20,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 
 public class DialogueHandler {
@@ -31,6 +30,9 @@ public class DialogueHandler {
         QUEST_PROMPT_GUI,
         SHOP_GUI,
         RELATIONSHIP,
+        TRAINER_GUI,
+        TRAINER_INITIAL,
+        TRAINER_INITIAL_GUI,
         QUEST_DENY,
         QUEST_ACCEPT,
         QUEST_COMPLETION,
@@ -39,14 +41,14 @@ public class DialogueHandler {
         CLOSE
     }
 
-    private Phase phase;
-    private Quest currentQuest;
-    private int iterator;
+    protected Phase phase;
+    protected Quest currentQuest;
+    protected int iterator;
 
-    private boolean textScrolling = false;
+    protected boolean textScrolling = false;
 
-    private DialogueSet set;
-    private DialogueTask dialogueTask;
+    protected DialogueSet set;
+    protected DialogueTask dialogueTask;
 
     public DialogueHandler(){
         phase = Phase.GREETING;
@@ -55,8 +57,6 @@ public class DialogueHandler {
     public void advance(Player player){
 
         String[] dialogue = new String[4];
-
-        PlayerCharacter playerCharacter = PlayerDictionary.get(player.getUniqueId().toString()).getPlayerCharacter();
 
         if(textScrolling){
             skipDialogue(player);
@@ -74,99 +74,11 @@ public class DialogueHandler {
                 }
 
                 iterator = 0;
-
-                if(set.getQuests().isEmpty())
-                    phase = Phase.CLOSE;
-
-                for(Quest quest : set.getQuests()){
-                    if(playerCharacter.getQuestStatus(quest.getID()) != PlayerCharacter.QuestStatus.Status.COMPLETED
-                            && playerCharacter.checkQuestCompletion(quest.getQuestPrerequisites())){
-                        currentQuest = quest;
-                        phase = Phase.QUEST_PROMPT;
-                        break;
-                    }
-                }
-
-                if(phase == Phase.GREETING)
-                    phase = Phase.CLOSE;
+                phase = Phase.CLOSE;
 
                 advance(player);
                 return;
             case CLOSE:
-                close(player);
-                return;
-            case QUEST_PROMPT:
-                List<String[]> prompt = set.getQuestDialogue(currentQuest).prompt;
-
-                if(iterator < prompt.size()){
-                    dialogue = prompt.get(iterator);
-                    iterator++;
-                    break;
-                }
-
-                iterator = 0;
-
-                if(playerCharacter.getQuestStatus(currentQuest.getID()) == PlayerCharacter.QuestStatus.Status.ACCEPTED){
-                    phase = Phase.QUEST_COMPLETION_GUI;
-                    advance(player);
-                    return;
-                }
-
-                phase = Phase.QUEST_PROMPT_GUI;
-                advance(player);
-                return;
-            case QUEST_PROMPT_GUI:
-                promptQuest(player);
-                return;
-            case QUEST_ACCEPT:
-                List<String[]> accept = set.getQuestDialogue(currentQuest).accept;
-
-                if(iterator < accept.size()){
-                    dialogue = accept.get(iterator);
-                    iterator++;
-                    break;
-                }
-
-                iterator = 0;
-
-                phase = Phase.CLOSE;
-                advance(player);
-                return;
-            case QUEST_DENY:
-                List<String[]> deny = set.getQuestDialogue(currentQuest).deny;
-
-                if(iterator < deny.size()){
-                    dialogue = deny.get(iterator);
-                    iterator++;
-                    break;
-                }
-
-                iterator = 0;
-
-                phase = Phase.CLOSE;
-                advance(player);
-                return;
-            case QUEST_COMPLETION:
-                List<String[]> completion = set.getQuestDialogue(currentQuest).completion;
-
-                if(iterator < completion.size()){
-                    dialogue = completion.get(iterator);
-                    iterator++;
-                    break;
-                }
-
-                iterator = 0;
-
-                phase = Phase.QUEST_REWARD_GUI;
-
-                playerCharacter.updateQuestStatus(currentQuest.getID(), PlayerCharacter.QuestStatus.Status.COMPLETED);
-                advance(player);
-                return;
-            case QUEST_COMPLETION_GUI:
-                promptQuestCompletion(player);
-                return;
-            case QUEST_REWARD_GUI:
-                rewardPlayer(player);
                 close(player);
                 return;
         }

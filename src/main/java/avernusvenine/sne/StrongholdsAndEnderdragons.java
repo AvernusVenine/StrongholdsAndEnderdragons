@@ -4,6 +4,7 @@ import avernusvenine.sne.classes.*;
 import avernusvenine.sne.commands.*;
 import avernusvenine.sne.events.ChatEventHandler;
 import avernusvenine.sne.gui.PlayerJournalGUI;
+import avernusvenine.sne.items.consumable.Food;
 import avernusvenine.sne.npc.SneNPC;
 import avernusvenine.sne.npc.traits.DialogueTrait;
 import avernusvenine.sne.players.PlayerCharacter;
@@ -14,6 +15,7 @@ import avernusvenine.sne.gui.ClassSelectGUI;
 import avernusvenine.sne.gui.DefaultGUI;
 import avernusvenine.sne.gui.RaceSelectGUI;
 
+import avernusvenine.sne.professions.Fishing;
 import avernusvenine.sne.races.*;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
@@ -253,6 +255,8 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ItemEventHandler(), plugin);
         getServer().getPluginManager().registerEvents(new PlayerEventHandler(), plugin);
         getServer().getPluginManager().registerEvents(new ChatEventHandler(), plugin);
+        getServer().getPluginManager().registerEvents(new Food(), plugin);
+        getServer().getPluginManager().registerEvents(new Fishing(), plugin);
     }
 
     public void registerNPCTraits(){

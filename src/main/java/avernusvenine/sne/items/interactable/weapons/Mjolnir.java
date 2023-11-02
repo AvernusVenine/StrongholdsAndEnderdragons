@@ -1,7 +1,7 @@
-package avernusvenine.sne.items.weapons;
+package avernusvenine.sne.items.interactable.weapons;
 
 import avernusvenine.sne.StrongholdsAndEnderdragons;
-import avernusvenine.sne.items.SneItem;
+import avernusvenine.sne.items.interactable.Interactable;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -14,7 +14,7 @@ import de.tr7zw.changeme.nbtapi.NBTItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Mjolnir extends SneItem {
+public class Mjolnir extends Interactable {
 
     public Mjolnir() {
         super();
@@ -54,7 +54,7 @@ public class Mjolnir extends SneItem {
         itemFlags.add(ItemFlag.HIDE_ENCHANTS);
         itemFlags.add(ItemFlag.HIDE_ITEM_SPECIFICS);
 
-        item = SneItem.generateItem(material, 1, displayName, lore, itemFlags, true, id);
+        item = generateItem(material, 1, displayName, lore, itemFlags, true, id);
     }
 
     public void rightClickAir(Player player){

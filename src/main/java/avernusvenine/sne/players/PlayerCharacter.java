@@ -2,8 +2,11 @@ package avernusvenine.sne.players;
 
 import avernusvenine.sne.StrongholdsAndEnderdragons;
 import avernusvenine.sne.classes.DefaultClass;
+import avernusvenine.sne.professions.DefaultProfession;
 import avernusvenine.sne.quests.Quest;
 import avernusvenine.sne.races.Race;
+import avernusvenine.sne.professions.DefaultProfession.ProfessionType;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.bukkit.ChatColor;
@@ -27,6 +30,8 @@ public class PlayerCharacter {
     protected int id;
     protected DefaultClass.ClassType classType;
     protected Race.RaceType raceType;
+
+    protected HashMap<DefaultProfession.ProfessionType, PlayerProfession> professions = new HashMap<>();
 
     public PlayerCharacter(Player player){
         uuid = player.getUniqueId().toString();
@@ -107,6 +112,7 @@ public class PlayerCharacter {
         return true;
     }
 
+
     //Getters and setters
 
     public BiMap<String, QuestStatus> getQuests(){
@@ -180,6 +186,24 @@ public class PlayerCharacter {
                 ChatColor.RESET +  levelColor + "" + ChatColor.BOLD + " [" + level + "] " + ChatColor.RESET;
 
         return prefix;
+    }
+
+    public void setProfession(int level, int experience, ProfessionType type){
+        if(professions.size() == 4)
+            return;
+
+        professions.put(type, new PlayerProfession(level, experience, type));
+    }
+
+    public int getProfessionLevel(ProfessionType type){
+        if(!professions.containsKey(type))
+            return 0;
+        else
+            return professions.get(type).getLevel();
+    }
+
+    public void addProfessionExperience(ProfessionType type, int experience){
+        professions.get(type).addExperience(experience);
     }
 
     public class QuestStatus{

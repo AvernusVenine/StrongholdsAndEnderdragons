@@ -1,4 +1,4 @@
-package avernusvenine.sne.items.misc;
+package avernusvenine.sne.items.interactable.misc;
 
 import avernusvenine.sne.StrongholdsAndEnderdragons;
 import avernusvenine.sne.gui.PlayerJournalGUI;

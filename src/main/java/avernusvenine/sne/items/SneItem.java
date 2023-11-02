@@ -1,7 +1,12 @@
 package avernusvenine.sne.items;
 
+import avernusvenine.sne.ItemDictionary;
+import avernusvenine.sne.NBTFlags;
 import avernusvenine.sne.StrongholdsAndEnderdragons;
+
 import de.tr7zw.changeme.nbtapi.NBTItem;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -15,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 
+
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,8 +31,14 @@ import java.util.Map;
 
 public class SneItem {
 
-    public final static String nbtBasic = "BasicCooldown";
-    public final static String nbtSpecial = "SpecialCooldown";
+    // Item Rarity Colors
+    protected static TextColor artifactColor = TextColor.color(122, 248, 255);
+    protected static TextColor legendaryColor = TextColor.color(238, 168, 17);
+    protected static TextColor epicColor = TextColor.color(190, 26, 196);
+    protected static TextColor rareColor = TextColor.color(14, 72, 173);
+    protected static TextColor uncommonColor = TextColor.color(82, 82, 82);
+    protected static TextColor commonColor = TextColor.color(170, 170, 170);
+
     public final static String nbtID = "CustomID";
 
     public final static String artifact = ChatColor.AQUA + "" + ChatColor.BOLD + "Artifact";
@@ -59,19 +71,6 @@ public class SneItem {
         BOOTS
     }
 
-    public enum ItemType {
-        SPELL,
-        MUSICAL,
-        CLOTH_ARMOR,
-        LIGHT_ARMOR,
-        MEDIUM_ARMOR,
-        HEAVY_ARMOR,
-        SHIELD,
-        SIMPLE_WEAPON,
-        MARTIAL_WEAPON,
-        MAGICAL_WEAPON
-    }
-
 
     public SneItem() {
         id = "default_custom_item";
@@ -80,6 +79,13 @@ public class SneItem {
 
         specialCooldown = 0;
         basicCooldown = 0;
+        ItemDictionary.put(id, this);
+    }
+
+    public static void setCustomModel(ItemStack item, int model){
+        ItemMeta meta = item.getItemMeta();
+        meta.setCustomModelData(model);
+        item.setItemMeta(meta);
     }
 
     public static ItemStack generateItem(){
@@ -95,9 +101,30 @@ public class SneItem {
         tempItem.setItemMeta(meta);
 
         NBTItem nbtItem = new NBTItem(tempItem);
-        nbtItem.setLong(nbtBasic, 0L);
-        nbtItem.setLong(nbtSpecial, 0L);
-        nbtItem.setString(nbtID, "default_custom_item");
+        nbtItem.setLong(NBTFlags.itemBasic, 0L);
+        nbtItem.setLong(NBTFlags.itemSpecial, 0L);
+        nbtItem.setString(NBTFlags.itemID, "default_custom_item");
+
+        return nbtItem.getItem();
+    }
+
+    public static ItemStack generateItem(Material material, int amount, TextComponent displayName, List<TextComponent> lore,
+                                         List<ItemFlag> itemFlags, boolean unbreakable, String id){
+        ItemStack item = new ItemStack(material, amount);
+
+        ItemMeta meta = item.getItemMeta();
+        meta.displayName(displayName);
+        meta.lore(lore);
+
+        for (ItemFlag itemFlag : itemFlags)
+            meta.addItemFlags(itemFlag);
+
+        meta.setUnbreakable(unbreakable);
+
+        item.setItemMeta(meta);
+
+        NBTItem nbtItem = new NBTItem(item);
+        nbtItem.setString(NBTFlags.itemID, id);
 
         return nbtItem.getItem();
     }
@@ -119,15 +146,15 @@ public class SneItem {
         tempItem.setItemMeta(meta);
 
         NBTItem nbtItem = new NBTItem(tempItem);
-        nbtItem.setLong(nbtBasic, 0L);
-        nbtItem.setLong(nbtSpecial, 0L);
-        nbtItem.setString(nbtID, id);
+        nbtItem.setLong(NBTFlags.itemBasic, 0L);
+        nbtItem.setLong(NBTFlags.itemSpecial, 0L);
+        nbtItem.setString(NBTFlags.itemID, id);
 
         return nbtItem.getItem();
     }
 
     public static ItemStack generateItem(Material material, int amount, String displayName, List<String> lore,
-                                         @NotNull Map<Enchantment, Integer> enchantment, @NotNull List<ItemFlag> itemFlags,
+                                         Map<Enchantment, Integer> enchantment, @NotNull List<ItemFlag> itemFlags,
                                          boolean unbreakable, String id) {
         ItemStack tempItem = new ItemStack(material, amount);
         ItemMeta meta = tempItem.getItemMeta();
@@ -149,10 +176,22 @@ public class SneItem {
         tempItem.setItemMeta(meta);
 
         NBTItem nbtItem = new NBTItem(tempItem);
-        nbtItem.setLong(nbtBasic, 0L);
-        nbtItem.setLong(nbtSpecial, 0L);
-        nbtItem.setString(nbtID, id);
+        nbtItem.setLong(NBTFlags.itemBasic, 0L);
+        nbtItem.setLong(NBTFlags.itemSpecial, 0L);
+        nbtItem.setString(NBTFlags.itemID, id);
 
+        return nbtItem.getItem();
+    }
+
+    public static ItemStack addFlag(ItemStack item, String flag, String info){
+        NBTItem nbtItem = new NBTItem(item);
+        nbtItem.setString(flag, info);
+        return nbtItem.getItem();
+    }
+
+    public static ItemStack addFlag(ItemStack item, String flag, double info){
+        NBTItem nbtItem = new NBTItem(item);
+        nbtItem.setDouble(flag, info);
         return nbtItem.getItem();
     }
 
@@ -167,9 +206,9 @@ public class SneItem {
         NBTItem nbtItem = new NBTItem(item);
 
         if(type == UseType.BASIC)
-            nbtItem.setLong(nbtBasic, System.currentTimeMillis());
+            nbtItem.setLong(NBTFlags.itemBasic, System.currentTimeMillis());
         else if(type == UseType.SPECIAL)
-            nbtItem.setLong(nbtSpecial, System.currentTimeMillis());
+            nbtItem.setLong(NBTFlags.itemSpecial, System.currentTimeMillis());
 
         switch(slot){
             case MAIN_HAND:
@@ -196,9 +235,9 @@ public class SneItem {
     public static boolean onCooldown(NBTItem nbtItem, UseType type, long cooldown){
 
         if(type == UseType.BASIC)
-            return ((nbtItem.getLong(nbtBasic) + ticksToMillis(cooldown)) - System.currentTimeMillis() > 1);
+            return ((nbtItem.getLong(NBTFlags.itemBasic) + ticksToMillis(cooldown)) - System.currentTimeMillis() > 1);
         else if(type == UseType.SPECIAL)
-            return ((nbtItem.getLong(nbtSpecial) + ticksToMillis(cooldown)) - System.currentTimeMillis() > 1);
+            return ((nbtItem.getLong(NBTFlags.itemSpecial) + ticksToMillis(cooldown)) - System.currentTimeMillis() > 1);
 
         return false;
     }
@@ -210,9 +249,9 @@ public class SneItem {
         NBTItem nbtItem = new NBTItem(player.getInventory().getItemInMainHand());
 
         if(type == UseType.BASIC)
-            time = nbtItem.getLong(nbtBasic);
+            time = nbtItem.getLong(NBTFlags.itemBasic);
         else if(type == UseType.SPECIAL)
-            time = nbtItem.getLong(nbtSpecial);
+            time = nbtItem.getLong(NBTFlags.itemSpecial);
 
         long diff = System.currentTimeMillis() - time;
         time =  ticksToMillis(cooldown) - diff;
@@ -245,7 +284,7 @@ public class SneItem {
         return id;
     }
 
-    public ItemStack getCustomItem(){
+    public ItemStack getItem(){
         return item;
     }
 

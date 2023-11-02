@@ -2,6 +2,7 @@ package avernusvenine.sne.events;
 
 import avernusvenine.sne.ItemDictionary;
 
+import avernusvenine.sne.NBTFlags;
 import avernusvenine.sne.items.SneItem;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.entity.Player;
@@ -25,7 +26,7 @@ public class ItemEventHandler implements Listener {
         if (item != null){
             if(event.getAction() == Action.RIGHT_CLICK_AIR){
 
-                SneItem sneItem = ItemDictionary.get(new NBTItem(item).getString(SneItem.nbtID));
+                SneItem sneItem = ItemDictionary.get(new NBTItem(item).getString(NBTFlags.itemID));
 
                 if(sneItem != null)
                     sneItem.rightClickAir(event.getPlayer());
@@ -54,7 +55,7 @@ public class ItemEventHandler implements Listener {
             if(item == null || item.getType().isAir() || item.getAmount() == 0)
                 return;
 
-            SneItem sneItem = ItemDictionary.get(new NBTItem(item).getString(SneItem.nbtID));
+            SneItem sneItem = ItemDictionary.get(new NBTItem(item).getString(NBTFlags.itemID));
 
             if(sneItem != null)
                 sneItem.leftClickAtEntity((Player) event.getDamager(), event.getEntity());
@@ -71,7 +72,7 @@ public class ItemEventHandler implements Listener {
         Player player = (Player) event.getEntity();
 
         {
-            SneItem sneItem = ItemDictionary.get(new NBTItem(player.getInventory().getItemInMainHand()).getString(SneItem.nbtID));
+            SneItem sneItem = ItemDictionary.get(new NBTItem(player.getInventory().getItemInMainHand()).getString(NBTFlags.itemID));
 
             if(sneItem != null)
                 sneItem.damagedWhileHeld(player, event);
@@ -82,7 +83,7 @@ public class ItemEventHandler implements Listener {
             if(item == null)
                 continue;
 
-            SneItem sneItem = ItemDictionary.get(new NBTItem(item).getString(SneItem.nbtID));
+            SneItem sneItem = ItemDictionary.get(new NBTItem(item).getString(NBTFlags.itemID));
 
             if(sneItem == null)
                 continue;

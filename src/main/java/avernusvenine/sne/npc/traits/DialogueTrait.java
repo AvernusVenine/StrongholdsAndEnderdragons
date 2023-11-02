@@ -22,7 +22,7 @@ public class DialogueTrait extends Trait {
         PlayerProfile profile = PlayerDictionary.get(event.getClicker().getUniqueId().toString());
 
         if(!profile.isInDialogue())
-            profile.openDialogue(NPCDictionary.getByUUID(event.getNPC().getUniqueId().toString()).getDialogueHandler());
+            profile.openDialogue(NPCDictionary.getByUUID(event.getNPC().getUniqueId().toString()).getDialogueSet());
 
         profile.advanceDialogue();
     }

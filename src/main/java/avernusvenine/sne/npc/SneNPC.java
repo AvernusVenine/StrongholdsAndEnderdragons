@@ -1,15 +1,13 @@
 package avernusvenine.sne.npc;
 
 import avernusvenine.sne.StrongholdsAndEnderdragons;
+import avernusvenine.sne.npc.dialogue.DialogueSet;
 import avernusvenine.sne.npc.traits.DialogueTrait;
 import avernusvenine.sne.quests.Quest;
-import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.MemoryNPCDataStore;
-import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 
 import java.sql.SQLException;
@@ -63,7 +61,7 @@ public abstract class SneNPC {
         return id;
     }
 
-    public DialogueSet getDialogueHandler(){
+    public DialogueSet getDialogueSet(){
         return dialogueSet;
     }
 

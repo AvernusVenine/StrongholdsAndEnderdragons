@@ -1,20 +1,15 @@
 package avernusvenine.sne.npc.questnpc;
 
-import avernusvenine.sne.npc.DialogueSet;
+import avernusvenine.sne.npc.dialogue.DialogueSet;
+import avernusvenine.sne.npc.dialogue.DialogueSet.DialogueType;
 import avernusvenine.sne.npc.SneNPC;
-import avernusvenine.sne.npc.traits.DialogueTrait;
 import avernusvenine.sne.quests.ItemRetrievalQuest;
 
-import net.citizensnpcs.Citizens;
-import net.citizensnpcs.api.CitizensAPI;
-
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class Leo extends SneNPC {
 
@@ -23,7 +18,7 @@ public class Leo extends SneNPC {
         name = "Leo";
         id_value = 0;
 
-        dialogueSet = new DialogueSet(id);
+        dialogueSet = new DialogueSet(id, DialogueType.QUEST);
 
         createNPC();
 
