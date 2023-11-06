@@ -2,6 +2,7 @@ package avernusvenine.sne;
 
 import avernusvenine.sne.npc.SneNPC;
 import avernusvenine.sne.npc.questnpc.Leo;
+import avernusvenine.sne.npc.trainernpc.Joel;
 import avernusvenine.sne.players.PlayerCharacter;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -12,17 +13,23 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 
 public class NPCDictionary {
 
-    private static BiMap<String, SneNPC> npcDictionary = HashBiMap.create();
-    private static BiMap<String, SneNPC> npcDictionaryUUID = HashBiMap.create();
+    private static HashMap<String, SneNPC> npcDictionary = new HashMap<>();
+    private static HashMap<String, SneNPC> npcDictionaryUUID = new HashMap<>();
 
 
     public static void loadNPCs(){
         {
             Leo npc = new Leo();
+            npcDictionary.put(npc.getID(), npc);
+            npcDictionaryUUID.put(npc.getUUID(), npc);
+        }
+        {
+            Joel npc = new Joel();
             npcDictionary.put(npc.getID(), npc);
             npcDictionaryUUID.put(npc.getUUID(), npc);
         }
@@ -47,9 +54,5 @@ public class NPCDictionary {
 
     public static SneNPC getByUUID(String uuid){
         return npcDictionaryUUID.get(uuid);
-    }
-
-    public static String get(SneNPC npc){
-        return npcDictionary.inverse().get(npc);
     }
 }

@@ -1,7 +1,12 @@
 package avernusvenine.sne.npc.dialogue;
 
+import avernusvenine.sne.Globals;
 import avernusvenine.sne.PlayerDictionary;
+import avernusvenine.sne.gui.quest.ItemRetrievalCompletionGUI;
+import avernusvenine.sne.gui.quest.QuestPromptGUI;
+import avernusvenine.sne.gui.quest.QuestRewardGUI;
 import avernusvenine.sne.players.PlayerCharacter;
+import avernusvenine.sne.quests.ItemRetrievalQuest;
 import avernusvenine.sne.quests.Quest;
 import org.bukkit.entity.Player;
 
@@ -15,6 +20,8 @@ public class QuestDialogueHandler extends DialogueHandler{
         String[] dialogue = new String[4];
 
         PlayerCharacter playerCharacter = PlayerDictionary.get(player.getUniqueId().toString()).getPlayerCharacter();
+
+        QuestDialogueSet questSet = (QuestDialogueSet) set;
 
         if(textScrolling){
             skipDialogue(player);
@@ -33,10 +40,10 @@ public class QuestDialogueHandler extends DialogueHandler{
 
                 iterator = 0;
 
-                if(set.getQuests().isEmpty())
+                if(questSet.getQuests().isEmpty())
                     phase = DialogueHandler.Phase.CLOSE;
 
-                for(Quest quest : set.getQuests()){
+                for(Quest quest : questSet.getQuests()){
                     if(playerCharacter.getQuestStatus(quest.getID()) != PlayerCharacter.QuestStatus.Status.COMPLETED
                             && playerCharacter.checkQuestCompletion(quest.getQuestPrerequisites())){
                         currentQuest = quest;
@@ -54,7 +61,7 @@ public class QuestDialogueHandler extends DialogueHandler{
                 close(player);
                 return;
             case QUEST_PROMPT:
-                List<String[]> prompt = set.getQuestDialogue(currentQuest).prompt;
+                List<String[]> prompt = questSet.getQuestDialogue(currentQuest).prompt;
 
                 if(iterator < prompt.size()){
                     dialogue = prompt.get(iterator);
@@ -74,10 +81,10 @@ public class QuestDialogueHandler extends DialogueHandler{
                 advance(player);
                 return;
             case QUEST_PROMPT_GUI:
-                promptQuest(player);
+                Globals.openGUI(player, new QuestPromptGUI(player));
                 return;
             case QUEST_ACCEPT:
-                List<String[]> accept = set.getQuestDialogue(currentQuest).accept;
+                List<String[]> accept = questSet.getQuestDialogue(currentQuest).accept;
 
                 if(iterator < accept.size()){
                     dialogue = accept.get(iterator);
@@ -91,7 +98,7 @@ public class QuestDialogueHandler extends DialogueHandler{
                 advance(player);
                 return;
             case QUEST_DENY:
-                List<String[]> deny = set.getQuestDialogue(currentQuest).deny;
+                List<String[]> deny = questSet.getQuestDialogue(currentQuest).deny;
 
                 if(iterator < deny.size()){
                     dialogue = deny.get(iterator);
@@ -105,7 +112,7 @@ public class QuestDialogueHandler extends DialogueHandler{
                 advance(player);
                 return;
             case QUEST_COMPLETION:
-                List<String[]> completion = set.getQuestDialogue(currentQuest).completion;
+                List<String[]> completion = questSet.getQuestDialogue(currentQuest).completion;
 
                 if(iterator < completion.size()){
                     dialogue = completion.get(iterator);
@@ -124,12 +131,24 @@ public class QuestDialogueHandler extends DialogueHandler{
                 promptQuestCompletion(player);
                 return;
             case QUEST_REWARD_GUI:
-                rewardPlayer(player);
+                Globals.openGUI(player, new QuestRewardGUI(player, currentQuest));
                 close(player);
                 return;
         }
 
         displayToPlayer(player, dialogue);
+    }
+
+    public void promptQuestCompletion(Player player){
+        switch(currentQuest.getType()){
+            case ITEM_RETRIEVAL:
+                Globals.openGUI(player, new ItemRetrievalCompletionGUI(player, (ItemRetrievalQuest) currentQuest));
+                break;
+        }
+    }
+
+    public String getCurrentQuestID(){
+        return currentQuest.getID();
     }
 
 }

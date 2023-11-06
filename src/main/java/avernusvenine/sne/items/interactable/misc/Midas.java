@@ -2,6 +2,7 @@ package avernusvenine.sne.items.interactable.misc;
 
 import avernusvenine.sne.items.SneItem;
 import avernusvenine.sne.StrongholdsAndEnderdragons;
+import avernusvenine.sne.items.interactable.Interactable;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -16,7 +17,7 @@ import de.tr7zw.changeme.nbtapi.NBTItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Midas extends SneItem {
+public class Midas extends Interactable {
 
     public Midas() {
         super();

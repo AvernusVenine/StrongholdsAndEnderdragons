@@ -3,6 +3,7 @@ package avernusvenine.sne.items.interactable.armor;
 import avernusvenine.sne.StrongholdsAndEnderdragons;
 import avernusvenine.sne.items.SneItem;
 
+import avernusvenine.sne.items.interactable.Interactable;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 
 import org.bukkit.ChatColor;
@@ -21,7 +22,7 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PhoenixHelmet extends SneItem {
+public class PhoenixHelmet extends Interactable {
 
     public PhoenixHelmet(){
         super();

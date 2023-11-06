@@ -51,11 +51,17 @@ public class SneItem {
     protected ItemStack item;
     protected Material material;
     protected String id;
+    protected Rarity rarity;
 
-    protected int basicCooldown;
-    protected int specialCooldown;
-    protected InventorySlot slot;
-
+    public enum Rarity{
+        GARBAGE,
+        COMMON,
+        UNCOMMON,
+        RARE,
+        EPIC,
+        LEGENDARY,
+        ARTIFACT
+    }
 
     public enum UseType{
         BASIC,
@@ -77,8 +83,6 @@ public class SneItem {
         material = Material.STICK;
         item = generateItem();
 
-        specialCooldown = 0;
-        basicCooldown = 0;
         ItemDictionary.put(id, this);
     }
 
@@ -278,6 +282,10 @@ public class SneItem {
 
 
     // Getters and Setters
+
+    public Rarity getRarity(){
+        return rarity;
+    }
 
 
     public String getID(){

@@ -1,10 +1,10 @@
 package avernusvenine.sne.events;
 
+import avernusvenine.sne.Globals;
 import avernusvenine.sne.PlayerDictionary;
 import avernusvenine.sne.StrongholdsAndEnderdragons;
-import avernusvenine.sne.gui.CharacterSelectGUI;
+import avernusvenine.sne.gui.charactercreation.CharacterSelectGUI;
 
-import avernusvenine.sne.players.PlayerCharacter;
 import avernusvenine.sne.players.PlayerProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -18,12 +18,6 @@ import java.sql.SQLException;
 
 public class PlayerEventHandler implements Listener {
 
-    private void openCharacterSelect(Player player){
-        CharacterSelectGUI gui = new CharacterSelectGUI(player);
-        StrongholdsAndEnderdragons.plugin.getServer().getPluginManager().registerEvents(gui, StrongholdsAndEnderdragons.plugin);
-        player.openInventory(gui.getInventory());
-    }
-
     @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent event){
         Player player = event.getPlayer();
@@ -31,7 +25,7 @@ public class PlayerEventHandler implements Listener {
         PlayerDictionary.add(new PlayerProfile(player));
 
         try {
-            openCharacterSelect(player);
+            Globals.openGUI(player, new CharacterSelectGUI(player));
 
             if(StrongholdsAndEnderdragons.databaseHandler.playerExists(player))
                 return;
@@ -62,10 +56,8 @@ public class PlayerEventHandler implements Listener {
     public void onPlayerMove(final PlayerMoveEvent event){
         Player player = event.getPlayer();
 
-        if(PlayerDictionary.get(player.getUniqueId().toString()).isInDialogue()){
+        if(PlayerDictionary.get(player).isInDialogue()){
             event.setCancelled(true);
         }
-
     }
-
 }

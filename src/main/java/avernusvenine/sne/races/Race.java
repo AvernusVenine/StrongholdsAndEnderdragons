@@ -1,22 +1,39 @@
 package avernusvenine.sne.races;
 
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 public class Race {
 
     public enum RaceType {
-        ELF,
-        DRAGON_KIN,
-        HALF_ELF,
-        DWARF,
-        GNOME,
-        HUMAN,
-        HALF_ORC,
-        ORC,
-        TIEFLING,
-        FELIDAE,
-        DEFAULT_RACE
+        ELF(0),
+        DRAGON_KIN(1),
+        HALF_ELF(2),
+        DWARF(3),
+        GNOME(4),
+        HUMAN(5),
+        HALF_ORC(6),
+        ORC(7),
+        TIEFLING(8),
+        FELIDAE(9),
+        DEFAULT_RACE(10);
+
+        private final int id;
+
+        RaceType(int i){
+            id = i;
+        }
+
+        public int getID(){
+            return id;
+        }
+
+        public static RaceType fromID(int id){
+            for(RaceType type : values()){
+                if(type.getID() == id)
+                    return type;
+            }
+            return null;
+        }
     }
 
     protected String id;
@@ -28,10 +45,6 @@ public class Race {
         type = RaceType.DEFAULT_RACE;
         id = "default_race";
         chatPrefix = ChatColor.GRAY + "[RACELESS]";
-    }
-
-    public static void setPlayerRace(Player player, RaceType type){
-
     }
 
     public String getChatPrefix(){

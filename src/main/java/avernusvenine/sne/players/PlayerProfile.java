@@ -1,12 +1,10 @@
 package avernusvenine.sne.players;
 
 import avernusvenine.sne.StrongholdsAndEnderdragons;
-import avernusvenine.sne.npc.dialogue.DialogueHandler;
-import avernusvenine.sne.npc.dialogue.DialogueSet;
-import avernusvenine.sne.npc.dialogue.DialogueSet.DialogueType;
+import avernusvenine.sne.npc.dialogue.*;
+import avernusvenine.sne.npc.dialogue.DialogueHandler.Phase;
+import avernusvenine.sne.players.PlayerCharacter.QuestStatus.Status;
 
-import avernusvenine.sne.npc.dialogue.QuestDialogueHandler;
-import avernusvenine.sne.npc.dialogue.TrainerDialogueHandler;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -65,7 +63,7 @@ public class PlayerProfile {
     }
 
     public void closeQuestCompletion(){
-        dialogueHandler.advance(player, DialogueHandler.Phase.CLOSE);
+        dialogueHandler.advance(player, Phase.CLOSE);
         closeDialogue();
     }
 
@@ -74,16 +72,28 @@ public class PlayerProfile {
     }
 
     public void onQuestAccept(){
-        dialogueHandler.advance(player, DialogueHandler.Phase.QUEST_ACCEPT);
-        playerCharacter.updateQuestStatus(dialogueHandler.getCurrentQuestID(), PlayerCharacter.QuestStatus.Status.ACCEPTED);
+        dialogueHandler.advance(player, Phase.QUEST_ACCEPT);
+        QuestDialogueHandler handler = (QuestDialogueHandler) dialogueHandler;
+        playerCharacter.updateQuestStatus(handler.getCurrentQuestID(), Status.ACCEPTED);
     }
 
     public void onQuestDeny(){
-        dialogueHandler.advance(player, DialogueHandler.Phase.QUEST_DENY);
+        dialogueHandler.advance(player, Phase.QUEST_DENY);
     }
 
     public void onQuestCompletion(){
-        dialogueHandler.advance(player, DialogueHandler.Phase.QUEST_COMPLETION);
+        dialogueHandler.advance(player, Phase.QUEST_COMPLETION);
+    }
+
+    public void onProfessionAccept(){
+        dialogueHandler.advance(player, Phase.TRAINER_PROFESSION_ACCEPT);
+        TrainerDialogueHandler handler = (TrainerDialogueHandler) dialogueHandler;
+        playerCharacter.setProfession(1, 0, handler.getProfessionType());
+        System.out.println(handler.getProfessionType());
+    }
+
+    public void onProfessionDeny(){
+        dialogueHandler.advance(player, Phase.TRAINER_PROFESSION_DENY);
     }
 
     // Getters and Setters

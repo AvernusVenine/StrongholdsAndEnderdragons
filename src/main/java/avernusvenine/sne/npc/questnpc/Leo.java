@@ -1,11 +1,17 @@
 package avernusvenine.sne.npc.questnpc;
 
+import avernusvenine.sne.PlayerDictionary;
 import avernusvenine.sne.npc.dialogue.DialogueSet;
 import avernusvenine.sne.npc.dialogue.DialogueSet.DialogueType;
 import avernusvenine.sne.npc.SneNPC;
+import avernusvenine.sne.npc.dialogue.QuestDialogueSet;
+import avernusvenine.sne.npc.traits.DialogueTrait;
+import avernusvenine.sne.players.PlayerCharacter;
 import avernusvenine.sne.quests.ItemRetrievalQuest;
 
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -16,14 +22,28 @@ public class Leo extends SneNPC {
     public Leo(){
         id = "leo";
         name = "Leo";
-        id_value = 0;
 
-        dialogueSet = new DialogueSet(id, DialogueType.QUEST);
+        QuestDialogueSet questSet = new QuestDialogueSet(id);
+        dialogueSet.put(DialogueType.QUEST, questSet);
 
         createNPC();
 
         registerQuests();
         registerDialogue();
+    }
+
+    @Override
+    public DialogueSet getDialogueSet(Player player){
+        PlayerCharacter playerCharacter = PlayerDictionary.get(player.getUniqueId().toString()).getPlayerCharacter();
+
+        return dialogueSet.get(DialogueType.QUEST);
+    }
+
+
+    @Override
+    public void createNPC(){
+        npc = registry.createNPC(EntityType.CAT, name);
+        npc.addTrait(new DialogueTrait());
     }
 
     protected void registerDialogue(){
@@ -33,10 +53,12 @@ public class Leo extends SneNPC {
                 "",
                 ""
         };
-        dialogueSet.addGreeting(-1, 10, greeting);
+        dialogueSet.get(DialogueType.QUEST).addGreeting(-1, 10, greeting);
     }
 
     protected void registerQuests(){
+        QuestDialogueSet questDialogueSet = (QuestDialogueSet) dialogueSet.get(DialogueType.QUEST);
+
         // LEOS REQUEST
         {
             List<ItemStack> questItems = new ArrayList<>();
@@ -47,7 +69,7 @@ public class Leo extends SneNPC {
 
             ItemRetrievalQuest quest = new ItemRetrievalQuest("leos_request", questItems, rewardItems);
             quests.add(quest);
-            dialogueSet.addQuest(quest);
+            questDialogueSet.addQuest(quest);
 
             String[] text;
 
@@ -57,7 +79,7 @@ public class Leo extends SneNPC {
                     "",
                     ""
             };
-            dialogueSet.addQuestPrompt(quest, text);
+            questDialogueSet.addQuestPrompt(quest, text);
 
             text = new String[]{
                     "Maow mowww!",
@@ -65,7 +87,7 @@ public class Leo extends SneNPC {
                     "",
                     ""
             };
-            dialogueSet.addQuestAccept(quest, text);
+            questDialogueSet.addQuestAccept(quest, text);
 
             text = new String[]{
                     "Mow.",
@@ -73,7 +95,7 @@ public class Leo extends SneNPC {
                     "",
                     ""
             };
-            dialogueSet.addQuestDeny(quest, text);
+            questDialogueSet.addQuestDeny(quest, text);
 
             text = new String[]{
                     "Rrrrrow rrow rrow!!",
@@ -81,7 +103,7 @@ public class Leo extends SneNPC {
                     "",
                     ""
             };
-            dialogueSet.addQuestCompletion(quest, text);
+            questDialogueSet.addQuestCompletion(quest, text);
 
             text = new String[]{
                     "Maow mow.",
@@ -89,7 +111,7 @@ public class Leo extends SneNPC {
                     "",
                     ""
             };
-            dialogueSet.addQuestCompletion(quest, text);
+            questDialogueSet.addQuestCompletion(quest, text);
         }
     }
 }

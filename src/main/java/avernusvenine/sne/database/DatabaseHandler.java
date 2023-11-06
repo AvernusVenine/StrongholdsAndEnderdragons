@@ -1,20 +1,18 @@
 package avernusvenine.sne.database;
 
 import avernusvenine.sne.NPCDictionary;
-import avernusvenine.sne.npc.SneNPC;
 import avernusvenine.sne.players.PlayerCharacter;
 import avernusvenine.sne.classes.DefaultClass;
+import avernusvenine.sne.players.PlayerProfession;
+import avernusvenine.sne.professions.Profession.ProfessionType;
 import avernusvenine.sne.races.Race;
-import com.google.common.collect.BiMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class DatabaseHandler {
@@ -22,6 +20,7 @@ public class DatabaseHandler {
     private final Connection connection;
 
     private final String questTablePrefix = "quests_";
+    private final String professionTablePrefix = "professions_";
 
     public DatabaseHandler(String path) throws SQLException {
         connection = DriverManager.getConnection("jdbc:sqlite:" + path);
@@ -40,8 +39,8 @@ public class DatabaseHandler {
                 "character_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "uuid TEXT NOT NULL," +
                 "name TEXT NOT NULL, " +
-                "race TEXT NOT NULL, " +
-                "class TEXT NOT NULL, " +
+                "race INTEGER NOT NULL, " +
+                "class INTEGER NOT NULL, " +
                 "level INT NOT NULL DEFAULT 1, " +
                 "xp INT NOT NULL DEFAULT 0)");
 
@@ -65,84 +64,8 @@ public class DatabaseHandler {
 
             preparedStatement.setString(1, playerCharacter.getUUID());
             preparedStatement.setString(2, playerCharacter.getName());
-
-            switch(playerCharacter.getClassType()){
-                case ARTIFICER:
-                    preparedStatement.setString(3, "artificer");
-                    break;
-                case BARBARIAN:
-                    preparedStatement.setString(3, "barbarian");
-                    break;
-                case SHAMAN:
-                    preparedStatement.setString(3, "shaman");
-                    break;
-                case BARD:
-                    preparedStatement.setString(3, "bard");
-                    break;
-                case CLERIC:
-                    preparedStatement.setString(3, "cleric");
-                    break;
-                case DRUID:
-                    preparedStatement.setString(3, "druid");
-                    break;
-                case FIGHTER:
-                    preparedStatement.setString(3, "fighter");
-                    break;
-                case MONK:
-                    preparedStatement.setString(3, "monk");
-                    break;
-                case PALADIN:
-                    preparedStatement.setString(3, "paladin");
-                    break;
-                case RANGER:
-                    preparedStatement.setString(3, "ranger");
-                    break;
-                case ROGUE:
-                    preparedStatement.setString(3, "rogue");
-                    break;
-                case SORCERER:
-                    preparedStatement.setString(3, "sorcerer");
-                    break;
-                case WARLOCK:
-                    preparedStatement.setString(3, "warlock");
-                    break;
-                case WIZARD:
-                    preparedStatement.setString(3, "wizard");
-                    break;
-            }
-
-            switch(playerCharacter.getRaceType()){
-                case DWARF:
-                    preparedStatement.setString(4, "dwarf");
-                    break;
-                case DRAGON_KIN:
-                    preparedStatement.setString(4, "dragon_kin");
-                    break;
-                case ELF:
-                    preparedStatement.setString(4, "elf");
-                    break;
-                case FELIDAE:
-                    preparedStatement.setString(4, "felidae");
-                    break;
-                case GNOME:
-                    preparedStatement.setString(4, "gnome");
-                    break;
-                case HALF_ELF:
-                    preparedStatement.setString(4, "half_elf");
-                    break;
-                case HALF_ORC:
-                    preparedStatement.setString(4, "half_orc");
-                    break;
-                case HUMAN:
-                    preparedStatement.setString(4, "human");
-                    break;
-                case ORC:
-                    preparedStatement.setString(4, "orc");
-                    break;
-                case TIEFLING:
-                    preparedStatement.setString(4, "tiefling");
-                    break;
-            }
+            preparedStatement.setInt(3, playerCharacter.getClassType().getID());
+            preparedStatement.setInt(4, playerCharacter.getRaceType().getID());
 
             preparedStatement.executeUpdate();
         }
@@ -155,14 +78,20 @@ public class DatabaseHandler {
         playerCharacter.setID(id);
 
         Statement statement = connection.createStatement();
-
         statement.execute("CREATE TABLE IF NOT EXISTS "
                 + questTablePrefix + playerCharacter.getID() + "(" +
                 "quest_id TEXT PRIMARY KEY, " +
                 "status INTEGER NOT NULL DEFAULT FALSE, " +
-                "progress INT DEFAULT 0)");
+                "progress INTEGER DEFAULT 0)");
 
+        statement.execute("CREATE TABLE IF NOT EXISTS "
+                + professionTablePrefix + playerCharacter.getID() + "(" +
+                "profession INTEGER PRIMARY KEY, " +
+                "xp INTEGER DEFAULT 0, " +
+                "level INTEGER DEFAULT 0)");
         statement.close();
+
+
 
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM characters WHERE character_id = ?");
         preparedStatement.setString(1, Integer.toString(id));
@@ -171,93 +100,8 @@ public class DatabaseHandler {
         playerCharacter.setName(resultSet.getString("name"));
         playerCharacter.setExperience(resultSet.getInt("xp"));
         playerCharacter.setLevel(resultSet.getInt("level"));
-
-        DefaultClass.ClassType classType = DefaultClass.ClassType.DEFAULT_CLASS;
-        Race.RaceType raceType = Race.RaceType.DEFAULT_RACE;
-
-        String classTitle = resultSet.getString("class");
-        String raceTitle = resultSet.getString("race");
-
-        switch(classTitle){
-            case "artificer":
-                classType = DefaultClass.ClassType.ARTIFICER;
-                break;
-            case "barbarian":
-                classType = DefaultClass.ClassType.BARBARIAN;
-                break;
-            case "shaman":
-                classType = DefaultClass.ClassType.SHAMAN;
-                break;
-            case "bard":
-                classType = DefaultClass.ClassType.BARD;
-                break;
-            case "cleric":
-                classType = DefaultClass.ClassType.CLERIC;
-                break;
-            case "druid":
-                classType = DefaultClass.ClassType.DRUID;
-                break;
-            case "fighter":
-                classType = DefaultClass.ClassType.FIGHTER;
-                break;
-            case "monk":
-                classType = DefaultClass.ClassType.MONK;
-                break;
-            case "paladin":
-                classType = DefaultClass.ClassType.PALADIN;
-                break;
-            case "ranger":
-                classType = DefaultClass.ClassType.RANGER;
-                break;
-            case "rogue":
-                classType = DefaultClass.ClassType.ROGUE;
-                break;
-            case "sorcerer":
-                classType = DefaultClass.ClassType.SORCERER;
-                break;
-            case "warlock":
-                classType = DefaultClass.ClassType.WARLOCK;
-                break;
-            case "wizard":
-                classType = DefaultClass.ClassType.WIZARD;
-                break;
-        }
-
-        switch(raceTitle){
-            case "dwarf":
-                raceType = Race.RaceType.DWARF;
-                break;
-            case "dragon_kin":
-                raceType = Race.RaceType.DRAGON_KIN;
-                break;
-            case "elf":
-                raceType = Race.RaceType.ELF;
-                break;
-            case "felidae":
-                raceType = Race.RaceType.FELIDAE;
-                break;
-            case "gnome":
-                raceType = Race.RaceType.GNOME;
-                break;
-            case "half_elf":
-                raceType = Race.RaceType.HALF_ELF;
-                break;
-            case "half_orc":
-                raceType = Race.RaceType.HALF_ORC;
-                break;
-            case "human":
-                raceType = Race.RaceType.HUMAN;
-                break;
-            case "orc":
-                raceType = Race.RaceType.ORC;
-                break;
-            case "tiefling":
-                raceType = Race.RaceType.TIEFLING;
-                break;
-        }
-
-        playerCharacter.setClassType(classType);
-        playerCharacter.setRaceType(raceType);
+        playerCharacter.setClassType(DefaultClass.ClassType.fromID(resultSet.getInt("class")));
+        playerCharacter.setRaceType(Race.RaceType.fromID(resultSet.getInt("race")));
 
         preparedStatement.close();
 
@@ -272,6 +116,16 @@ public class DatabaseHandler {
         }
 
         preparedStatementTwo.close();
+
+        PreparedStatement preparedStatementThree = connection.prepareStatement("SELECT * FROM " + professionTablePrefix + playerCharacter.getID());
+
+        resultSet = preparedStatementThree.executeQuery();
+
+        while(resultSet.next()){
+            playerCharacter.setProfession(resultSet.getInt("level"), resultSet.getInt("xp"),
+                    ProfessionType.fromID(resultSet.getInt("profession")));
+        }
+
         return playerCharacter;
     }
 
@@ -294,6 +148,15 @@ public class DatabaseHandler {
             preparedStatement.close();
         }
 
+        for(Map.Entry<ProfessionType, PlayerProfession> entry : playerCharacter.getProfessions().entrySet()){
+            preparedStatement = connection.prepareStatement("INSERT OR REPLACE INTO " + professionTablePrefix + playerCharacter.getID()
+                    + " (profession, xp, level) VALUES (?, ?, ?)");
+            preparedStatement.setInt(1, entry.getValue().getType().getID());
+            preparedStatement.setInt(2, entry.getValue().getExperience());
+            preparedStatement.setInt(3, entry.getValue().getLevel());
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+        }
     }
 
     public Map<String, Integer> getCharacters(String uuid) throws SQLException {
@@ -334,28 +197,12 @@ public class DatabaseHandler {
         }
     }
 
-    public void setPlayerRank(Player player, String rank) throws SQLException{
-        PreparedStatement preparedStatement = connection.prepareStatement("UPDATE players SET rank = ? WHERE uuid = ?");
-        preparedStatement.setString(1, rank);
-        preparedStatement.setString(2, player.getUniqueId().toString());
-        preparedStatement.executeUpdate();
-        preparedStatement.close();
-    }
-
     public void setPlayerRank(String username, String rank) throws SQLException{
         PreparedStatement preparedStatement = connection.prepareStatement("UPDATE players SET rank = ? WHERE username = ?");
         preparedStatement.setString(1, rank);
         preparedStatement.setString(2, username);
         preparedStatement.executeUpdate();
         preparedStatement.close();
-    }
-
-    public String getPlayerRank(Player player) throws SQLException{
-        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT rank FROM players WHERE uuid = ?")){
-            preparedStatement.setString(1, player.getUniqueId().toString());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.getString("rank");
-        }
     }
 
     public String getPlayerRank(String username) throws SQLException{

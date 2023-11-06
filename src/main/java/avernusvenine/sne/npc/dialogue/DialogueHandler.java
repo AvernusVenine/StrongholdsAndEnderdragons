@@ -3,11 +3,6 @@ package avernusvenine.sne.npc.dialogue;
 import avernusvenine.sne.Globals;
 import avernusvenine.sne.PlayerDictionary;
 import avernusvenine.sne.StrongholdsAndEnderdragons;
-import avernusvenine.sne.gui.ItemRetrievalCompletionGUI;
-import avernusvenine.sne.gui.QuestPromptGUI;
-import avernusvenine.sne.gui.QuestRewardGUI;
-import avernusvenine.sne.players.PlayerCharacter;
-import avernusvenine.sne.quests.ItemRetrievalQuest;
 import avernusvenine.sne.quests.Quest;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -33,6 +28,9 @@ public class DialogueHandler {
         TRAINER_GUI,
         TRAINER_INITIAL,
         TRAINER_INITIAL_GUI,
+        TRAINER_PROFESSION_ACCEPT,
+        TRAINER_PROFESSION_DENY,
+        TRAINER_PROFESSIONS_FULL,
         QUEST_DENY,
         QUEST_ACCEPT,
         QUEST_COMPLETION,
@@ -104,28 +102,6 @@ public class DialogueHandler {
         dialogueTask.skipDialogue(player);
     }
 
-    public void promptQuest(Player player){
-        QuestPromptGUI gui = new QuestPromptGUI();
-        player.openInventory(gui.getInventory());
-        Bukkit.getServer().getPluginManager().registerEvents(gui, StrongholdsAndEnderdragons.plugin);
-    }
-
-    public void promptQuestCompletion(Player player){
-        switch(currentQuest.getType()){
-            case ITEM_RETRIEVAL:
-                ItemRetrievalCompletionGUI gui = new ItemRetrievalCompletionGUI(player, (ItemRetrievalQuest) currentQuest);
-                player.openInventory(gui.getInventory());
-                Bukkit.getServer().getPluginManager().registerEvents(gui, StrongholdsAndEnderdragons.plugin);
-                break;
-        }
-    }
-
-    public void rewardPlayer(Player player){
-        QuestRewardGUI gui = new QuestRewardGUI(player, currentQuest);
-        player.openInventory(gui.getInventory());
-        Bukkit.getServer().getPluginManager().registerEvents(gui, StrongholdsAndEnderdragons.plugin);
-    }
-
     public static void close(Player player){
         PlayerDictionary.get(player.getUniqueId().toString()).closeDialogue();
         player.clearTitle();
@@ -138,13 +114,8 @@ public class DialogueHandler {
         phase = Phase.GREETING;
     }
 
-
     public void setDialogueSet(DialogueSet set){
         this.set = set;
-    }
-
-    public String getCurrentQuestID(){
-        return currentQuest.getID();
     }
 
     private class DialogueTask{

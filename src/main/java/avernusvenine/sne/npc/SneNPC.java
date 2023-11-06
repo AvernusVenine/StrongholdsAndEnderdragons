@@ -2,35 +2,32 @@ package avernusvenine.sne.npc;
 
 import avernusvenine.sne.StrongholdsAndEnderdragons;
 import avernusvenine.sne.npc.dialogue.DialogueSet;
-import avernusvenine.sne.npc.traits.DialogueTrait;
+import avernusvenine.sne.npc.dialogue.DialogueSet.DialogueType;
 import avernusvenine.sne.quests.Quest;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.MemoryNPCDataStore;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.util.*;
 
 public abstract class SneNPC {
 
-    private static final NPCRegistry registry = CitizensAPI.createAnonymousNPCRegistry(new MemoryNPCDataStore());
+    protected static final NPCRegistry registry = CitizensAPI.createAnonymousNPCRegistry(new MemoryNPCDataStore());
 
     protected net.citizensnpcs.api.npc.NPC npc;
 
-    protected DialogueSet dialogueSet;
+    protected HashMap<DialogueType, DialogueSet> dialogueSet = new HashMap<>();
 
     protected String id;
-    protected int id_value;
     protected String name;
 
     protected List<Quest> quests = new ArrayList<>();
 
-    public void createNPC(){
-        npc = registry.createNPC(EntityType.CAT, name);
-        npc.addTrait(new DialogueTrait());
-    }
+    public abstract void createNPC();
 
     public void spawnNPC(Location location){
         npc.despawn();
@@ -61,8 +58,8 @@ public abstract class SneNPC {
         return id;
     }
 
-    public DialogueSet getDialogueSet(){
-        return dialogueSet;
+    public DialogueSet getDialogueSet(Player player){
+        return dialogueSet.get(DialogueType.DEFAULT);
     }
 
     public String getUUID(){

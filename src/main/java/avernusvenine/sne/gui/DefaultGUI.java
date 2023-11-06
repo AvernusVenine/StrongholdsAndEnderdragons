@@ -1,12 +1,16 @@
 package avernusvenine.sne.gui;
 
+import avernusvenine.sne.PlayerDictionary;
 import de.tr7zw.changeme.nbtapi.NBTItem;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.Inventory;
@@ -24,6 +28,8 @@ public abstract class DefaultGUI implements Listener {
      * */
 
     protected final static String nbtID = "GuiID";
+
+    protected Player owner;
 
     protected Inventory inventory;
     protected String id;
@@ -71,6 +77,43 @@ public abstract class DefaultGUI implements Listener {
         return nbtItem.getItem();
     }
 
+    public static ItemStack createGUIItem(final Material material, final TextComponent displayName, final List<TextComponent> lore){
+        ItemStack item = new ItemStack(material, 1);
+        ItemMeta meta = item.getItemMeta();
+        meta.displayName(displayName);
+        meta.lore(lore);
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    public static ItemStack createGUIItem(final Material material, final TextComponent displayName, final List<TextComponent> lore,
+                                          String id, int model){
+        ItemStack item = new ItemStack(material, 1);
+        ItemMeta meta = item.getItemMeta();
+        meta.displayName(displayName);
+        meta.lore(lore);
+        meta.setCustomModelData(model);
+        item.setItemMeta(meta);
+
+        NBTItem nbtItem = new NBTItem(item);
+        nbtItem.setString(nbtID, id);
+
+        return nbtItem.getItem();
+    }
+
+    public static ItemStack createGUIItem(final Material material, final TextComponent displayName, final List<TextComponent> lore, String id){
+        ItemStack item = new ItemStack(material, 1);
+        ItemMeta meta = item.getItemMeta();
+        meta.displayName(displayName);
+        meta.lore(lore);
+        item.setItemMeta(meta);
+
+        NBTItem nbtItem = new NBTItem(item);
+        nbtItem.setString(nbtID, id);
+
+        return nbtItem.getItem();
+    }
+
     public static ItemStack createGUIItem(final ItemStack item, final String id){
         NBTItem nbtItem = new NBTItem(item);
         nbtItem.setString(nbtID, id);
@@ -96,4 +139,39 @@ public abstract class DefaultGUI implements Listener {
     public String getID(){
         return id;
     }
+
+
+    @EventHandler
+    public void onInventoryClose(final InventoryCloseEvent event){
+        if(!event.getView().getOriginalTitle().equals(title) || !owner.equals(event.getPlayer()))
+            return;
+
+        HandlerList.unregisterAll(this);
+    }
+
+    @EventHandler
+    public void onInventoryClick(final InventoryClickEvent event){
+
+        if(!event.getView().getOriginalTitle().equals(title))
+            return;
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onInventoryEvent(final InventoryInteractEvent event){
+        if(!event.getView().getOriginalTitle().equals(title))
+            return;
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onInventoryDrag(final InventoryDragEvent event){
+        if(!event.getView().getOriginalTitle().equals(title))
+            return;
+
+        event.setCancelled(true);
+    }
+
 }

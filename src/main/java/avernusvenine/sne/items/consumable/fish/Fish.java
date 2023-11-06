@@ -1,10 +1,15 @@
 package avernusvenine.sne.items.consumable.fish;
 
 import avernusvenine.sne.NBTFlags;
+import avernusvenine.sne.PlayerDictionary;
 import avernusvenine.sne.items.consumable.Food;
+import avernusvenine.sne.professions.Profession.ProfessionType;
+
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import org.bukkit.block.Biome;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -13,49 +18,69 @@ import java.util.Random;
 
 public class Fish extends Food {
 
-    protected float average;
-    protected float deviation;
+    protected float average = .5f;
+    protected float deviation = .5f;
 
-    public ItemStack generateSizedFish(){
-        NBTItem nbtItem = new NBTItem(item);
+    protected List<Biome> biomes = new ArrayList<>();
+
+    protected TextComponent initialLore;
+
+    public void sizeFish(ItemStack oldItem){
+        NBTItem nbtItem = new NBTItem(oldItem);
         Random rand = new Random();
 
         float randomFloat = (float) rand.nextGaussian() * deviation + average;
 
-        List<Component> lore = item.lore();
+        List<Component> lore = new ArrayList<>();
+        lore.add(initialLore);
+        lore.add(Component.text(""));
 
         nbtItem.setFloat(NBTFlags.fishLength, randomFloat);
 
-        if(randomFloat <= average - deviation) {
+        if(randomFloat <= average) {
             nbtItem.setInteger(NBTFlags.fishSize, 0);
             lore.add(Component.text("SMALL").color(commonColor));
         }
-        else if(average - deviation < randomFloat && randomFloat <= average + (deviation * 1.5f)) {
+        else if(randomFloat <= average + (deviation * 1.5f)) {
             nbtItem.setInteger(NBTFlags.fishSize, 1);
             nbtItem.setFloat(NBTFlags.foodLevel, nbtItem.getFloat(NBTFlags.foodLevel) + 1);
-            nbtItem.setFloat(NBTFlags.saturation, nbtItem.getFloat(NBTFlags.saturation) + 0.5f);
+            nbtItem.setFloat(NBTFlags.saturation, nbtItem.getFloat(NBTFlags.saturation));
             lore.add(Component.text("MEDIUM").color(commonColor));
         }
-        else {
+        else if(randomFloat <= average + (deviation * 3)){
             nbtItem.setInteger(NBTFlags.fishSize, 2);
-            nbtItem.setFloat(NBTFlags.foodLevel, nbtItem.getFloat(NBTFlags.foodLevel) + 3);
+            nbtItem.setFloat(NBTFlags.foodLevel, nbtItem.getFloat(NBTFlags.foodLevel) + 2);
             nbtItem.setFloat(NBTFlags.saturation, nbtItem.getFloat(NBTFlags.saturation) + 1);
             lore.add(Component.text("LARGE").color(commonColor));
         }
-
-        randomFloat *= 100;
-
-        if(randomFloat < 0.5f)
-            lore.add(Component.text((int) randomFloat + "cm").color(commonColor));
         else{
-            randomFloat = (int) randomFloat;
-            lore.add(Component.text(randomFloat/100 + "m").color(commonColor));
+            nbtItem.setInteger(NBTFlags.fishSize, 3);
+            nbtItem.setFloat(NBTFlags.foodLevel, nbtItem.getFloat(NBTFlags.foodLevel) + 4);
+            nbtItem.setFloat(NBTFlags.saturation, nbtItem.getFloat(NBTFlags.saturation) + 2);
+            lore.add(Component.text("HUMONGOUS").color(commonColor));
+        }
+
+        lore.add(Component.text(""));
+
+        if(randomFloat < 0.5f) {
+            lore.add(Component.text(String.format("%.2f", randomFloat*100) + "cm").color(commonColor));
+        }
+        else{
+            lore.add(Component.text(String.format("%.2f", randomFloat) + "m").color(commonColor));
         }
 
         item = nbtItem.getItem();
         item.lore(lore);
 
-        return item;
+        oldItem.setItemMeta(item.getItemMeta());
     }
 
+    public List<Biome> getBiomes(){
+        return biomes;
+    }
+
+    public boolean canPlayerCatch(Player player){
+        return PlayerDictionary.get(player.getUniqueId().toString()).getPlayerCharacter()
+                .hasRecipeUnlocked(item, ProfessionType.FISHING);
+    }
 }

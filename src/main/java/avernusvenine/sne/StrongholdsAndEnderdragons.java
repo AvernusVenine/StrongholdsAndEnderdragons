@@ -3,21 +3,14 @@ package avernusvenine.sne;
 import avernusvenine.sne.classes.*;
 import avernusvenine.sne.commands.*;
 import avernusvenine.sne.events.ChatEventHandler;
-import avernusvenine.sne.gui.PlayerJournalGUI;
-import avernusvenine.sne.items.consumable.Food;
-import avernusvenine.sne.npc.SneNPC;
 import avernusvenine.sne.npc.traits.DialogueTrait;
-import avernusvenine.sne.players.PlayerCharacter;
 import avernusvenine.sne.database.DatabaseHandler;
 import avernusvenine.sne.events.ItemEventHandler;
 import avernusvenine.sne.events.PlayerEventHandler;
-import avernusvenine.sne.gui.ClassSelectGUI;
 import avernusvenine.sne.gui.DefaultGUI;
-import avernusvenine.sne.gui.RaceSelectGUI;
 
 import avernusvenine.sne.professions.Fishing;
 import avernusvenine.sne.races.*;
-import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -74,7 +67,6 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
         ItemDictionary.loadItems();
         NPCDictionary.loadNPCs();
 
-        loadGUI();
         loadCommands();
         loadClasses();
         loadRaces();
@@ -114,23 +106,6 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
         classDictionary.put(DefaultClass.ClassType.SORCERER, new Sorcerer());
         classDictionary.put(DefaultClass.ClassType.WARLOCK, new Warlock());
         classDictionary.put(DefaultClass.ClassType.WIZARD, new Wizard());
-    }
-
-    public void loadGUI(){
-        {
-            ClassSelectGUI gui = new ClassSelectGUI();
-            guiDictionary.put(gui.getID(), gui);
-            getServer().getPluginManager().registerEvents(gui, plugin);
-        }
-        {
-            RaceSelectGUI gui = new RaceSelectGUI();
-            guiDictionary.put(gui.getID(), gui);
-            getServer().getPluginManager().registerEvents(gui, plugin);
-        }
-        {// TODO: Remove this once im done testing
-            PlayerJournalGUI gui = new PlayerJournalGUI();
-            guiDictionary.put(gui.getID(), gui);
-        }
     }
 
     public static void registerEntities(){
@@ -255,7 +230,6 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ItemEventHandler(), plugin);
         getServer().getPluginManager().registerEvents(new PlayerEventHandler(), plugin);
         getServer().getPluginManager().registerEvents(new ChatEventHandler(), plugin);
-        getServer().getPluginManager().registerEvents(new Food(), plugin);
         getServer().getPluginManager().registerEvents(new Fishing(), plugin);
     }
 

@@ -1,13 +1,13 @@
 package avernusvenine.sne.professions;
 
 import avernusvenine.sne.ItemDictionary;
-import avernusvenine.sne.NBTFlags;
 import avernusvenine.sne.PlayerDictionary;
-
+import avernusvenine.sne.items.SneItem;
+import avernusvenine.sne.items.SneItem.Rarity;
 import avernusvenine.sne.items.consumable.fish.Fish;
-import de.tr7zw.changeme.nbtapi.NBTItem;
-import org.bukkit.Material;
+
 import org.bukkit.block.Biome;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerFishEvent;
@@ -16,8 +16,9 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class Fishing extends DefaultProfession{
+public class Fishing extends Profession {
 
     private HashMap<Biome, LootTable> lootTables = new HashMap<>();
 
@@ -29,14 +30,19 @@ public class Fishing extends DefaultProfession{
     }
 
     private void loadLootTables(){
-        //DEEP DARK
-        LootTable lootTable = new LootTable();
-        lootTable.addItem(5, ItemDictionary.get("sculk_fish").getItem(), 1);
-        lootTables.put(Biome.DEEP_DARK, lootTable);
+        for(Map.Entry<String, SneItem> entry : ItemDictionary.getDictionary().entrySet()){
+            if(entry.getValue() instanceof Fish fish){
 
-        // WARM OCEAN
-        lootTable = new LootTable();
-        lootTables.put(Biome.OCEAN, lootTable);
+                for(Biome biome : fish.getBiomes()){
+                    if(!lootTables.containsKey(biome)){
+                        LootTable lootTable = new LootTable();
+                        lootTables.put(biome, lootTable);
+                    }
+                    lootTables.get(biome).addItem(fish);
+                }
+
+            }
+        }
     }
 
     @EventHandler
@@ -50,56 +56,131 @@ public class Fishing extends DefaultProfession{
         }
 
         if(event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
-            event.setCancelled(true);
-            player.getInventory().addItem(lootTables.get(player.getLocation().getBlock().getBiome()).getItem(level));
+            Item temp = (Item) event.getCaught();
+            assert temp != null;
+            ItemStack item = temp.getItemStack();
+
+            lootTables.get(player.getLocation().getBlock().getBiome()).changeItem(player, item);
         }
     }
 
     private class LootTable{
 
-        private List<Integer> chance = new ArrayList<>();
-        private List<ItemStack> item = new ArrayList<>();
-        private List<Integer> levelRequirement = new ArrayList<>();
+        private static HashMap<Rarity, Float> tierOne = new HashMap<>(){{
+            put(Rarity.GARBAGE, 10f);
+            put(Rarity.COMMON, 60f);
+            put(Rarity.UNCOMMON, 20f);
+            put(Rarity.RARE, 10f);
+            put(Rarity.EPIC, 0f);
+            put(Rarity.LEGENDARY, 0f);
+            put(Rarity.ARTIFACT, 0f);
+        }};
 
-        public void addItem(int chance, ItemStack item, int level){
-            this.chance.add(chance);
-            this.item.add(item);
-            this.levelRequirement.add(level);
+        private static HashMap<Rarity, Float> tierTwo = new HashMap<>(){{
+            put(Rarity.GARBAGE, 7.5f);
+            put(Rarity.COMMON, 55f);
+            put(Rarity.UNCOMMON, 22.5f);
+            put(Rarity.RARE, 12.5f);
+            put(Rarity.EPIC, 2.5f);
+            put(Rarity.LEGENDARY, 0f);
+            put(Rarity.ARTIFACT, 0f);
+        }};
+
+        private static HashMap<Rarity, Float> tierThree = new HashMap<>(){{
+            put(Rarity.GARBAGE, 5f);
+            put(Rarity.COMMON, 50f);
+            put(Rarity.UNCOMMON, 25f);
+            put(Rarity.RARE, 15f);
+            put(Rarity.EPIC, 4.5f);
+            put(Rarity.LEGENDARY, .5f);
+            put(Rarity.ARTIFACT, 0f);
+        }};
+
+        private static HashMap<Rarity, Float> tierFour = new HashMap<>(){{
+            put(Rarity.GARBAGE, 2.5f);
+            put(Rarity.COMMON, 45f);
+            put(Rarity.UNCOMMON, 30f);
+            put(Rarity.RARE, 16.5f);
+            put(Rarity.EPIC, 5f);
+            put(Rarity.LEGENDARY, 1f);
+            put(Rarity.ARTIFACT, 0f);
+        }};
+
+        private static HashMap<Rarity, Float> tierFive = new HashMap<>(){{
+            put(Rarity.GARBAGE, 0f);
+            put(Rarity.COMMON, 42.5f);
+            put(Rarity.UNCOMMON, 37.5f);
+            put(Rarity.RARE, 17.5f);
+            put(Rarity.EPIC, 7.5f);
+            put(Rarity.LEGENDARY, 2.4f);
+            put(Rarity.ARTIFACT, 0.1f);
+        }};
+
+        private List<SneItem> items = new ArrayList<>();
+
+        public void addItem(SneItem item){
+            this.items.add(item);
         }
 
-        public void addItem(int chance, ItemStack item){
-            this.chance.add(chance);
-            this.item.add(item);
-            this.levelRequirement.add(0);
-        }
+        public void changeItem(Player player, ItemStack oldItem){
+            int level = PlayerDictionary.get(player).getPlayerCharacter().getProfessionLevel(ProfessionType.FISHING);
 
-        public ItemStack getItem(int level){
-            ItemStack fishedItem = new ItemStack(Material.COD);
+            HashMap<Rarity, Float> tier;
 
-            int max = 0;
+            if(level < 25)
+                tier = tierOne;
+            else if(level < 50)
+                tier = tierTwo;
+            else if(level < 100)
+                tier = tierThree;
+            else if(level < 250)
+                tier = tierFour;
+            else
+                tier = tierFive;
 
-            for(int i = 0; i < chance.size(); i++)
-                if(levelRequirement.get(i) <= level)
-                    max += i;
+            float randomFloat = (float) (100 * Math.random());
+            Rarity selectedRarity = Rarity.COMMON;
 
-            int randomNum = (int) (1 + (Math.random() * (max - 1)));
+            if(randomFloat < tier.get(Rarity.GARBAGE))
+                selectedRarity = Rarity.GARBAGE;
+            randomFloat -= tier.get(Rarity.GARBAGE);
+            if(randomFloat < tier.get(Rarity.COMMON))
+                selectedRarity = Rarity.COMMON;
+            randomFloat -= tier.get(Rarity.COMMON);
+            if(randomFloat < tier.get(Rarity.UNCOMMON))
+                selectedRarity = Rarity.UNCOMMON;
+            randomFloat -= tier.get(Rarity.UNCOMMON);
+            if(randomFloat < tier.get(Rarity.RARE))
+                selectedRarity = Rarity.RARE;
+            randomFloat -= tier.get(Rarity.RARE);
+            if(randomFloat < tier.get(Rarity.EPIC))
+                selectedRarity = Rarity.EPIC;
+            randomFloat -= tier.get(Rarity.EPIC);
+            if(randomFloat < tier.get(Rarity.LEGENDARY))
+                selectedRarity = Rarity.LEGENDARY;
+            randomFloat -= tier.get(Rarity.LEGENDARY);
+            if(randomFloat < tier.get(Rarity.ARTIFACT))
+                selectedRarity = Rarity.ARTIFACT;
 
-            int val = 0;
-            for(int i = 0; i < chance.size(); i++){
-                if(levelRequirement.get(i) <= level)
-                    val += chance.get(i);
-                else
-                    continue;
+            List<SneItem> validItem = new ArrayList<>();
 
-                if(val >= randomNum){
-                    fishedItem = item.get(i);
-                    break;
+            for(SneItem item : items){
+                if(item instanceof Fish fish)
+                    if(fish.canPlayerCatch(player) && fish.getRarity() == selectedRarity)
+                        validItem.add(item);
+                else{
+                    validItem.add(item);
                 }
             }
 
-            Fish fish = (Fish) ItemDictionary.get(new NBTItem(fishedItem).getString(NBTFlags.itemID));
+            int randomInt = (int) (Math.random() * validItem.size());
+            SneItem selectedItem = validItem.get(randomInt);
 
-            return fish.generateSizedFish();
+            oldItem.setItemMeta(selectedItem.getItem().getItemMeta());
+            oldItem.setType(selectedItem.getItem().getType());
+
+            if(selectedItem instanceof Fish fish)
+                fish.sizeFish(oldItem);
         }
     }
 }

@@ -2,18 +2,15 @@ package avernusvenine.sne.players;
 
 import avernusvenine.sne.StrongholdsAndEnderdragons;
 import avernusvenine.sne.classes.DefaultClass;
-import avernusvenine.sne.professions.DefaultProfession;
-import avernusvenine.sne.quests.Quest;
+import avernusvenine.sne.professions.Profession;
 import avernusvenine.sne.races.Race;
-import avernusvenine.sne.professions.DefaultProfession.ProfessionType;
+import avernusvenine.sne.professions.Profession.ProfessionType;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,8 +18,8 @@ public class PlayerCharacter {
 
     protected final String uuid;
 
-    protected BiMap<String, QuestStatus> quests = HashBiMap.create();
-    protected BiMap<String, Float> relationships = HashBiMap.create();
+    protected HashMap<String, QuestStatus> quests = new HashMap<>();
+    protected HashMap<String, Float> relationships = new HashMap<>();
 
     protected String characterName;
     protected int experience;
@@ -31,10 +28,12 @@ public class PlayerCharacter {
     protected DefaultClass.ClassType classType;
     protected Race.RaceType raceType;
 
-    protected HashMap<DefaultProfession.ProfessionType, PlayerProfession> professions = new HashMap<>();
+    protected HashMap<Profession.ProfessionType, PlayerProfession> professions = new HashMap<>();
 
     public PlayerCharacter(Player player){
         uuid = player.getUniqueId().toString();
+        setProfession(0, 0, ProfessionType.FISHING);
+        setProfession(0, 0, ProfessionType.COOKING);
     }
 
     public void createInDatabase(){
@@ -61,13 +60,12 @@ public class PlayerCharacter {
 
     public float getRelationship(String id){
 
-        if(relationships.get(id) == null)
-            relationships.put(id, 0f);
+        relationships.putIfAbsent(id, 0f);
 
         return relationships.get(id);
     }
 
-    public BiMap<String, Float> getRelationships(){
+    public HashMap<String, Float> getRelationships(){
         return relationships;
     }
 
@@ -112,10 +110,14 @@ public class PlayerCharacter {
         return true;
     }
 
+    public boolean hasRecipeUnlocked(ItemStack item, ProfessionType type){
+        return professions.get(type).hasUnlockedRecipe(item);
+    }
+
 
     //Getters and setters
 
-    public BiMap<String, QuestStatus> getQuests(){
+    public HashMap<String, QuestStatus> getQuests(){
         return quests;
     }
 
@@ -189,6 +191,11 @@ public class PlayerCharacter {
     }
 
     public void setProfession(int level, int experience, ProfessionType type){
+        if(professions.containsKey(type)){
+            professions.replace(type, new PlayerProfession(level, experience, type));
+            return;
+        }
+
         if(professions.size() == 4)
             return;
 
@@ -200,6 +207,14 @@ public class PlayerCharacter {
             return 0;
         else
             return professions.get(type).getLevel();
+    }
+
+    public HashMap<ProfessionType, PlayerProfession> getProfessions(){
+        return professions;
+    }
+
+    public boolean getProfessionsFull(){
+        return professions.size() >= 4;
     }
 
     public void addProfessionExperience(ProfessionType type, int experience){

@@ -17,39 +17,21 @@ import java.util.List;
 
 public class Food extends SneItem implements Listener {
 
-    protected float foodLevel;
-    protected float saturation;
+    protected int foodLevel = 1;
+    protected int saturation = 1;
 
     public static ItemStack generateFoodItem(Material material, int amount, TextComponent displayName, List<TextComponent> lore,
-                                 List<ItemFlag> itemFlags, String id, float foodLevel, float saturation){
+                                 List<ItemFlag> itemFlags, String id, int foodLevel, int saturation){
         ItemStack item = generateItem(material, amount, displayName, lore, itemFlags, false, id);
 
         NBTItem nbtItem = new NBTItem(item);
-        nbtItem.setFloat(NBTFlags.foodLevel, foodLevel);
-        nbtItem.setFloat(NBTFlags.saturation, saturation);
+        nbtItem.setInteger(NBTFlags.foodLevel, foodLevel);
+        nbtItem.setInteger(NBTFlags.saturation, saturation);
 
         return nbtItem.getItem();
     }
 
     public void onConsumption(Player player){
 
-    }
-
-    @EventHandler
-    public void onPlayerItemConsumeEvent(PlayerItemConsumeEvent event){
-
-        NBTItem nbtItem = new NBTItem(event.getItem());
-
-        if(!id.equalsIgnoreCase(nbtItem.getString(NBTFlags.itemID)))
-            return;
-
-        Player player = event.getPlayer();
-        event.setCancelled(true);
-
-        Food food = (Food) ItemDictionary.get(id);
-        food.onConsumption(player);
-
-        player.setFoodLevel((int) Math.min(nbtItem.getFloat(NBTFlags.foodLevel) + foodLevel, 20));
-        player.setSaturation(Math.min(nbtItem.getFloat(NBTFlags.saturation) + saturation, 20));
     }
 }
