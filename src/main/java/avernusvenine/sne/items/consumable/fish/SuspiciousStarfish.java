@@ -17,7 +17,7 @@ public class SuspiciousStarfish extends Fish{
 
     public SuspiciousStarfish(){
         id = "suspicious_starfish";
-        material = Material.COD;
+        material = Material.COOKED_COD;
 
         deviation = .04f;
         average = .2f;

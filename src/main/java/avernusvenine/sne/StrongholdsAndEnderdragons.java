@@ -216,6 +216,7 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
         registerCommand("spawnnpc", new SpawnNPC());
         registerCommand("showtitle", new ShowTitle());
         registerCommand("despawnnpc", new DespawnNPC());
+        registerCommand("unlockrecipe", new UnlockRecipe());
     }
 
     public void registerCommand(String name, CommandExecutor executor){

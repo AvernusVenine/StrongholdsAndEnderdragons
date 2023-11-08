@@ -1,15 +1,20 @@
 package avernusvenine.sne.database;
 
+import avernusvenine.sne.ItemDictionary;
+import avernusvenine.sne.NBTFlags;
 import avernusvenine.sne.NPCDictionary;
 import avernusvenine.sne.players.PlayerCharacter;
 import avernusvenine.sne.classes.DefaultClass;
 import avernusvenine.sne.players.PlayerProfession;
 import avernusvenine.sne.professions.Profession.ProfessionType;
 import avernusvenine.sne.races.Race;
+import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.sql.*;
 import java.util.HashMap;
@@ -21,6 +26,7 @@ public class DatabaseHandler {
 
     private final String questTablePrefix = "quests_";
     private final String professionTablePrefix = "professions_";
+    private final String recipeTablePrefix = "recipes_";
 
     public DatabaseHandler(String path) throws SQLException {
         connection = DriverManager.getConnection("jdbc:sqlite:" + path);
@@ -89,9 +95,12 @@ public class DatabaseHandler {
                 "profession INTEGER PRIMARY KEY, " +
                 "xp INTEGER DEFAULT 0, " +
                 "level INTEGER DEFAULT 0)");
+
+        statement.execute("CREATE TABLE IF NOT EXISTS "
+                + recipeTablePrefix + playerCharacter.getID() + "(" +
+                "item STRING PRIMARY KEY, " +
+                "profession INTEGER NOT NULL)");
         statement.close();
-
-
 
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM characters WHERE character_id = ?");
         preparedStatement.setString(1, Integer.toString(id));
@@ -103,28 +112,36 @@ public class DatabaseHandler {
         playerCharacter.setClassType(DefaultClass.ClassType.fromID(resultSet.getInt("class")));
         playerCharacter.setRaceType(Race.RaceType.fromID(resultSet.getInt("race")));
 
-        preparedStatement.close();
+        preparedStatement = connection.prepareStatement("SELECT * FROM " + questTablePrefix + playerCharacter.getID());
 
-        PreparedStatement preparedStatementTwo = connection.prepareStatement("SELECT * FROM " + questTablePrefix + playerCharacter.getID());
-
-        resultSet = preparedStatementTwo.executeQuery();
+        resultSet = preparedStatement.executeQuery();
 
         while(resultSet.next()){
             playerCharacter.addQuest(resultSet.getString("quest_id"),
                     PlayerCharacter.QuestStatus.convertToEnum(resultSet.getInt("status")),
                     resultSet.getInt("progress"));
         }
+        preparedStatement.close();
 
-        preparedStatementTwo.close();
+        preparedStatement = connection.prepareStatement("SELECT * FROM " + professionTablePrefix + playerCharacter.getID());
 
-        PreparedStatement preparedStatementThree = connection.prepareStatement("SELECT * FROM " + professionTablePrefix + playerCharacter.getID());
-
-        resultSet = preparedStatementThree.executeQuery();
+        resultSet = preparedStatement.executeQuery();
 
         while(resultSet.next()){
             playerCharacter.setProfession(resultSet.getInt("level"), resultSet.getInt("xp"),
                     ProfessionType.fromID(resultSet.getInt("profession")));
         }
+        preparedStatement.close();
+
+        preparedStatement = connection.prepareStatement("SELECT * FROM " + recipeTablePrefix + playerCharacter.getID());
+
+        resultSet = preparedStatement.executeQuery();
+
+        while(resultSet.next()){
+            playerCharacter.unlockRecipe(ItemDictionary.get(resultSet.getString("item")).getItem(),
+                    ProfessionType.fromID(resultSet.getInt("profession")));
+        }
+        preparedStatement.close();
 
         return playerCharacter;
     }
@@ -151,11 +168,23 @@ public class DatabaseHandler {
         for(Map.Entry<ProfessionType, PlayerProfession> entry : playerCharacter.getProfessions().entrySet()){
             preparedStatement = connection.prepareStatement("INSERT OR REPLACE INTO " + professionTablePrefix + playerCharacter.getID()
                     + " (profession, xp, level) VALUES (?, ?, ?)");
-            preparedStatement.setInt(1, entry.getValue().getType().getID());
+            preparedStatement.setInt(1, entry.getKey().getID());
             preparedStatement.setInt(2, entry.getValue().getExperience());
             preparedStatement.setInt(3, entry.getValue().getLevel());
             preparedStatement.executeUpdate();
             preparedStatement.close();
+
+            for(ItemStack item : entry.getValue().getUnlockedRecipes()){
+                preparedStatement = connection.prepareStatement("INSERT OR REPLACE INTO " + recipeTablePrefix + playerCharacter.getID()
+                        + " (item, profession) VALUES (?, ?)");
+
+                NBTItem nbtItem = new NBTItem(item);
+
+                preparedStatement.setString(1, nbtItem.getString(NBTFlags.itemID));
+                preparedStatement.setInt(2, entry.getKey().getID());
+                preparedStatement.executeUpdate();
+                preparedStatement.close();
+            }
         }
     }
 

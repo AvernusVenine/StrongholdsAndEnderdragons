@@ -1,11 +1,14 @@
 package avernusvenine.sne.professions;
 
 import avernusvenine.sne.ItemDictionary;
+import avernusvenine.sne.NBTFlags;
 import avernusvenine.sne.PlayerDictionary;
 import avernusvenine.sne.items.SneItem;
 import avernusvenine.sne.items.SneItem.Rarity;
 import avernusvenine.sne.items.consumable.fish.Fish;
 
+import de.tr7zw.changeme.nbtapi.NBTItem;
+import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -27,6 +30,10 @@ public class Fishing extends Profession {
         id = "fishing";
 
         loadLootTables();
+
+        initialRecipes.add(ItemDictionary.get("gravel_lurker").getItem());
+        initialRecipes.add(ItemDictionary.get("deepslate_salmon").getItem());
+        initialRecipes.add(ItemDictionary.get("common_greentop").getItem());
     }
 
     private void loadLootTables(){
@@ -123,7 +130,7 @@ public class Fishing extends Profession {
         }
 
         public void changeItem(Player player, ItemStack oldItem){
-            int level = PlayerDictionary.get(player).getPlayerCharacter().getProfessionLevel(ProfessionType.FISHING);
+            int level = PlayerDictionary.get(player).getPlayerCharacter().getProfessionLevel(type);
 
             HashMap<Rarity, Float> tier;
 
@@ -141,36 +148,49 @@ public class Fishing extends Profession {
             float randomFloat = (float) (100 * Math.random());
             Rarity selectedRarity = Rarity.COMMON;
 
-            if(randomFloat < tier.get(Rarity.GARBAGE))
+            if(randomFloat <= tier.get(Rarity.GARBAGE))
                 selectedRarity = Rarity.GARBAGE;
-            randomFloat -= tier.get(Rarity.GARBAGE);
-            if(randomFloat < tier.get(Rarity.COMMON))
+            else if(randomFloat <= tier.get(Rarity.COMMON)+tier.get(Rarity.GARBAGE))
                 selectedRarity = Rarity.COMMON;
-            randomFloat -= tier.get(Rarity.COMMON);
-            if(randomFloat < tier.get(Rarity.UNCOMMON))
+            else if(randomFloat <= tier.get(Rarity.UNCOMMON)+tier.get(Rarity.COMMON)+tier.get(Rarity.GARBAGE))
                 selectedRarity = Rarity.UNCOMMON;
-            randomFloat -= tier.get(Rarity.UNCOMMON);
-            if(randomFloat < tier.get(Rarity.RARE))
+            else if(randomFloat <= tier.get(Rarity.RARE)+tier.get(Rarity.UNCOMMON)+tier.get(Rarity.COMMON)+tier.get(Rarity.GARBAGE))
                 selectedRarity = Rarity.RARE;
-            randomFloat -= tier.get(Rarity.RARE);
-            if(randomFloat < tier.get(Rarity.EPIC))
+            else if(randomFloat <= tier.get(Rarity.EPIC)+tier.get(Rarity.RARE)+tier.get(Rarity.UNCOMMON)+tier.get(Rarity.COMMON)
+                    +tier.get(Rarity.GARBAGE))
                 selectedRarity = Rarity.EPIC;
-            randomFloat -= tier.get(Rarity.EPIC);
-            if(randomFloat < tier.get(Rarity.LEGENDARY))
+            else if(randomFloat <= tier.get(Rarity.LEGENDARY)+tier.get(Rarity.EPIC)+tier.get(Rarity.RARE)+tier.get(Rarity.UNCOMMON)
+                    +tier.get(Rarity.COMMON)+tier.get(Rarity.GARBAGE))
                 selectedRarity = Rarity.LEGENDARY;
-            randomFloat -= tier.get(Rarity.LEGENDARY);
-            if(randomFloat < tier.get(Rarity.ARTIFACT))
+            else if(randomFloat <= tier.get(Rarity.ARTIFACT)+tier.get(Rarity.LEGENDARY)+tier.get(Rarity.EPIC)+tier.get(Rarity.RARE)
+                    +tier.get(Rarity.UNCOMMON) +tier.get(Rarity.COMMON)+tier.get(Rarity.GARBAGE))
                 selectedRarity = Rarity.ARTIFACT;
+
+            // TODO: Add more garbage options here
+            if(selectedRarity == Rarity.GARBAGE){
+                oldItem.setType(Material.PAPER);
+                return;
+            }
 
             List<SneItem> validItem = new ArrayList<>();
 
-            for(SneItem item : items){
-                if(item instanceof Fish fish)
-                    if(fish.canPlayerCatch(player) && fish.getRarity() == selectedRarity)
-                        validItem.add(item);
-                else{
-                    validItem.add(item);
+            for(ItemStack item : PlayerDictionary.get(player).getPlayerCharacter().getUnlockedRecipes(type)){
+                NBTItem nbtItem = new NBTItem(item);
+
+                if(ItemDictionary.get(nbtItem.getString(NBTFlags.itemID)) instanceof Fish fish){
+                    if(fish.getRarity() == selectedRarity){
+                        validItem.add(fish);
+                    }
                 }
+                else{
+                    validItem.add(ItemDictionary.get(nbtItem.getString(NBTFlags.itemID)));
+                }
+            }
+
+            if(validItem.isEmpty()){
+                oldItem.setType(Material.PAPER);
+                player.sendMessage("You do not have the knowledge required to catch this fish!");
+                return;
             }
 
             int randomInt = (int) (Math.random() * validItem.size());

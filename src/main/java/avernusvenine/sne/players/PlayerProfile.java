@@ -89,7 +89,6 @@ public class PlayerProfile {
         dialogueHandler.advance(player, Phase.TRAINER_PROFESSION_ACCEPT);
         TrainerDialogueHandler handler = (TrainerDialogueHandler) dialogueHandler;
         playerCharacter.setProfession(1, 0, handler.getProfessionType());
-        System.out.println(handler.getProfessionType());
     }
 
     public void onProfessionDeny(){

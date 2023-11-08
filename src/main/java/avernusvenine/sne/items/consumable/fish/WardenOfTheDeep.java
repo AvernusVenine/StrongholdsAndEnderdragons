@@ -18,7 +18,7 @@ public class WardenOfTheDeep extends Fish{
 
     public WardenOfTheDeep(){
         id = "warden_of_the_deep";
-        material = Material.COD;
+        material = Material.COOKED_COD;
 
         deviation = 1.5f;
         average = 10;
@@ -34,6 +34,7 @@ public class WardenOfTheDeep extends Fish{
         lore.add(initialLore);
 
         item = generateFoodItem(material, 1, displayName, lore, new ArrayList<>(), id, foodLevel, saturation);
+        setCustomModel(item, 2);
         ItemDictionary.put(id, this);
     }
 

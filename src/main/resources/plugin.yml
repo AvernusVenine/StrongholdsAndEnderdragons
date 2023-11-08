@@ -25,3 +25,6 @@ commands:
   DespawnNPC:
     description: Despawns an NPC
     usage: /<command> npc_id
+  UnlockRecipe:
+    description: Unlocks a recipe for the player character
+    usage: /<command> item_id profession_id

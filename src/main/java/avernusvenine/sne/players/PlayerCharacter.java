@@ -114,6 +114,18 @@ public class PlayerCharacter {
         return professions.get(type).hasUnlockedRecipe(item);
     }
 
+    public void unlockRecipe(ItemStack item, ProfessionType type){
+        professions.get(type).unlockRecipe(item);
+    }
+
+    public void unlockRecipe(List<ItemStack> item, ProfessionType type){
+        professions.get(type).unlockRecipe(item);
+    }
+
+    public List<ItemStack> getUnlockedRecipes(ProfessionType type){
+        return professions.get(type).getUnlockedRecipes();
+    }
+
 
     //Getters and setters
 

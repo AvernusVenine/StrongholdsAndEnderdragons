@@ -69,10 +69,10 @@ public class Fish extends Food {
             lore.add(Component.text(String.format("%.2f", randomFloat) + "m").color(commonColor));
         }
 
-        item = nbtItem.getItem();
-        item.lore(lore);
+        ItemStack newItem = nbtItem.getItem();
+        newItem.lore(lore);
 
-        oldItem.setItemMeta(item.getItemMeta());
+        oldItem.setItemMeta(newItem.getItemMeta());
     }
 
     public List<Biome> getBiomes(){

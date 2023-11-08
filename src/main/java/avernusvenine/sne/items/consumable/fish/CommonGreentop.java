@@ -13,7 +13,7 @@ public class CommonGreentop extends Fish{
 
     public CommonGreentop(){
         id = "common_greentop";
-        material = Material.COD;
+        material = Material.COOKED_COD;
 
         deviation = .2f;
         average = 1f;

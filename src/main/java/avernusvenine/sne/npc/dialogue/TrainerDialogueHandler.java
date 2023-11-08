@@ -80,6 +80,9 @@ public class TrainerDialogueHandler extends DialogueHandler{
                     break;
                 }
 
+                PlayerDictionary.get(player).getPlayerCharacter().unlockRecipe(getProfessionType().getProfession().getInitialRecipes(),
+                        getProfessionType());
+
                 iterator = 0;
                 phase = Phase.CLOSE;
 

@@ -1,5 +1,6 @@
 package avernusvenine.sne.npc.questnpc;
 
+import avernusvenine.sne.NPCDictionary;
 import avernusvenine.sne.PlayerDictionary;
 import avernusvenine.sne.npc.dialogue.DialogueSet;
 import avernusvenine.sne.npc.dialogue.DialogueSet.DialogueType;
@@ -30,6 +31,8 @@ public class Leo extends SneNPC {
 
         registerQuests();
         registerDialogue();
+
+        NPCDictionary.put(id, this);
     }
 
     @Override

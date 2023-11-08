@@ -13,7 +13,7 @@ public class StonePerch extends Fish{
 
     public StonePerch(){
         id = "stone_perch";
-        material = Material.COD;
+        material = Material.COOKED_COD;
 
         deviation = .2f;
         average = .75f;

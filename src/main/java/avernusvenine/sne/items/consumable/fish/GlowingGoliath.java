@@ -16,7 +16,7 @@ public class GlowingGoliath extends Fish{
 
     public GlowingGoliath(){
         id = "glowing_goliath";
-        material = Material.COD;
+        material = Material.COOKED_COD;
 
         deviation = 1f;
         average = 8;
@@ -32,6 +32,7 @@ public class GlowingGoliath extends Fish{
         lore.add(initialLore);
 
         item = generateFoodItem(material, 1, displayName, lore, new ArrayList<>(), id, foodLevel, saturation);
+        item = setCustomModel(item, 4);
         ItemDictionary.put(id, this);
     }
 

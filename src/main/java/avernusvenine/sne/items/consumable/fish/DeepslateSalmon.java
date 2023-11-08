@@ -16,7 +16,7 @@ public class DeepslateSalmon extends Fish{
 
     public DeepslateSalmon(){
         id = "deepslate_salmon";
-        material = Material.COD;
+        material = Material.COOKED_COD;
 
         deviation = .5f;
         average = 2;
@@ -34,6 +34,7 @@ public class DeepslateSalmon extends Fish{
         lore.add(initialLore);
 
         item = generateFoodItem(material, 1, displayName, lore, new ArrayList<>(), id, foodLevel, saturation);
+        setCustomModel(item, 3);
         ItemDictionary.put(id, this);
     }
 }

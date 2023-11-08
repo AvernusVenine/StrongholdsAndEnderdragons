@@ -19,7 +19,7 @@ public class IronSwordfish extends Fish{
 
     public IronSwordfish(){
         id = "iron_swordfish";
-        material = Material.COD;
+        material = Material.COOKED_COD;
 
         deviation = .5f;
         average = 4;
@@ -40,6 +40,8 @@ public class IronSwordfish extends Fish{
 
         item.getItemMeta().addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE,
                 new AttributeModifier("generic.attackDamage", 6, AttributeModifier.Operation.ADD_NUMBER));
+
+        setCustomModel(item, 5);
 
         ItemDictionary.put(id, this);
     }

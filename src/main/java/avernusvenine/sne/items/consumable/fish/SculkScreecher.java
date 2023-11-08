@@ -16,7 +16,7 @@ public class SculkScreecher extends Fish{
 
     public SculkScreecher(){
         id = "sculk_screecher";
-        material = Material.COD;
+        material = Material.COOKED_COD;
 
         deviation = .01f;
         average = .05f;
@@ -33,6 +33,7 @@ public class SculkScreecher extends Fish{
         lore.add(initialLore);
 
         item = generateFoodItem(material, 1, displayName, lore, new ArrayList<>(), id, foodLevel, saturation);
+        setCustomModel(item, 1);
         ItemDictionary.put(id, this);
     }
 

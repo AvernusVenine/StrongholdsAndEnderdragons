@@ -86,10 +86,11 @@ public class SneItem {
         ItemDictionary.put(id, this);
     }
 
-    public static void setCustomModel(ItemStack item, int model){
+    public static ItemStack setCustomModel(ItemStack item, int model){
         ItemMeta meta = item.getItemMeta();
         meta.setCustomModelData(model);
         item.setItemMeta(meta);
+        return item;
     }
 
     public static ItemStack generateItem(){

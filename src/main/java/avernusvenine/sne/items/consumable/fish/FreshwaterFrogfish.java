@@ -18,7 +18,7 @@ public class FreshwaterFrogfish extends Fish{
 
     public FreshwaterFrogfish(){
         id = "freshwater_frogfish";
-        material = Material.COD;
+        material = Material.COOKED_COD;
 
         deviation = .03f;
         average = .2f;
@@ -36,6 +36,8 @@ public class FreshwaterFrogfish extends Fish{
         lore.add(initialLore);
 
         item = generateFoodItem(material, 1, displayName, lore, new ArrayList<>(), id, foodLevel, saturation);
+        setCustomModel(item, 7);
+
         ItemDictionary.put(id, this);
     }
 

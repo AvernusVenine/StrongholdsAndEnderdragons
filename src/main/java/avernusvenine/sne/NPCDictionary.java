@@ -23,16 +23,8 @@ public class NPCDictionary {
 
 
     public static void loadNPCs(){
-        {
-            Leo npc = new Leo();
-            npcDictionary.put(npc.getID(), npc);
-            npcDictionaryUUID.put(npc.getUUID(), npc);
-        }
-        {
-            Joel npc = new Joel();
-            npcDictionary.put(npc.getID(), npc);
-            npcDictionaryUUID.put(npc.getUUID(), npc);
-        }
+        new Leo();
+        new Joel();
 
         try {
             StrongholdsAndEnderdragons.databaseHandler.spawnNPCs();
@@ -50,6 +42,11 @@ public class NPCDictionary {
 
     public static SneNPC get(String id){
         return npcDictionary.get(id);
+    }
+
+    public static void put(String id, SneNPC npc){
+        npcDictionary.put(id, npc);
+        npcDictionaryUUID.put(npc.getUUID(), npc);
     }
 
     public static SneNPC getByUUID(String uuid){

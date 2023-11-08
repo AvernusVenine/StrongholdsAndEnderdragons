@@ -11,9 +11,9 @@ public class PlayerProfession {
     private int level;
     private int experience;
 
-    private ProfessionType type;
+    private final ProfessionType type;
 
-    private List<ItemStack> unlockedRecipes = new ArrayList<>();
+    private final List<ItemStack> unlockedRecipes = new ArrayList<>();
 
     public PlayerProfession(int level, int experience, ProfessionType type){
         this.level = level;
@@ -39,5 +39,17 @@ public class PlayerProfession {
 
     public boolean hasUnlockedRecipe(ItemStack item){
         return unlockedRecipes.contains(item);
+    }
+
+    public List<ItemStack> getUnlockedRecipes(){
+        return unlockedRecipes;
+    }
+
+    public void unlockRecipe(ItemStack item){
+        unlockedRecipes.add(item);
+    }
+
+    public void unlockRecipe(List<ItemStack> item){
+        unlockedRecipes.addAll(item);
     }
 }

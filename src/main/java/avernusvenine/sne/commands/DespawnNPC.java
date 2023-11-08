@@ -11,13 +11,10 @@ import org.jetbrains.annotations.NotNull;
 public class DespawnNPC implements CommandExecutor {
 
     @Override
-
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args){
 
         if(!(sender instanceof Player))
             return true;
-
-        Player player = (Player) sender;
 
         if(command.getName().equalsIgnoreCase("despawnnpc")){
 

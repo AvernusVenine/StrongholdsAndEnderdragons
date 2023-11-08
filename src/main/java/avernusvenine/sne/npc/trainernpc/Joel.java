@@ -1,5 +1,6 @@
 package avernusvenine.sne.npc.trainernpc;
 
+import avernusvenine.sne.NPCDictionary;
 import avernusvenine.sne.PlayerDictionary;
 import avernusvenine.sne.npc.SneNPC;
 import avernusvenine.sne.npc.dialogue.DialogueSet;
@@ -8,6 +9,8 @@ import avernusvenine.sne.npc.dialogue.TrainerDialogueSet;
 import avernusvenine.sne.npc.traits.DialogueTrait;
 import avernusvenine.sne.players.PlayerCharacter;
 import avernusvenine.sne.professions.Profession.ProfessionType;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.trait.HologramTrait;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -24,6 +27,8 @@ public class Joel extends SneNPC {
         createNPC();
 
         registerDialogue();
+
+        NPCDictionary.put(id, this);
     }
 
     @Override

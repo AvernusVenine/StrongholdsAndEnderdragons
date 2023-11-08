@@ -13,7 +13,7 @@ public class GravelLurker extends Fish{
 
     public GravelLurker(){
         id = "gravel_lurker";
-        material = Material.COD;
+        material = Material.COOKED_COD;
 
         deviation = .25f;
         average = 1;
@@ -35,6 +35,8 @@ public class GravelLurker extends Fish{
         lore.add(initialLore);
 
         item = generateFoodItem(material, 1, displayName, lore, new ArrayList<>(), id, foodLevel, saturation);
+        setCustomModel(item, 6);
+
         ItemDictionary.put(id, this);
     }
 

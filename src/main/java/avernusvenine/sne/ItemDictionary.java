@@ -1,7 +1,10 @@
 package avernusvenine.sne;
 
 import avernusvenine.sne.items.SneItem;
+import avernusvenine.sne.items.consumable.cookable.*;
 import avernusvenine.sne.items.consumable.fish.*;
+import avernusvenine.sne.items.consumable.ingredient.*;
+import avernusvenine.sne.items.interactable.utility.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +14,11 @@ public class ItemDictionary {
     private static Map<String, SneItem> itemDictionary = new HashMap<>();
 
     public static void loadItems(){
+        // INGREDIENTS
+        new Salt();
+        new Oil();
+        new Chocolate();
+        new RawFishFilet();
 
         // FISH
         new SculkScreecher();
@@ -24,6 +32,13 @@ public class ItemDictionary {
         new GravelLurker();
         new FreshwaterFrogfish();
         new GoldenSnapper();
+
+        // COOKING
+        new CookedFishFilet();
+        new HoneyBakedHam();
+
+        // UTILITY
+        new CookingKit();
     }
 
     public static void put(String id, SneItem item){
