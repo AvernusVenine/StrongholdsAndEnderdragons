@@ -32,6 +32,13 @@ public class ItemDictionary {
         new GravelLurker();
         new FreshwaterFrogfish();
         new GoldenSnapper();
+        new TuffTrout();
+        new DiamondDiscus();
+        new SnowCrab();
+        new SlimeSkipper();
+        new CreeperCarp();
+        new RainbowShrimp();
+        new SeaSpider();
 
         // COOKING
         new CookedFishFilet();

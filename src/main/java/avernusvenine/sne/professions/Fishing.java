@@ -8,6 +8,9 @@ import avernusvenine.sne.items.SneItem.Rarity;
 import avernusvenine.sne.items.consumable.fish.Fish;
 
 import de.tr7zw.changeme.nbtapi.NBTItem;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Item;
@@ -15,6 +18,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +28,7 @@ import java.util.Map;
 
 public class Fishing extends Profession {
 
-    private HashMap<Biome, LootTable> lootTables = new HashMap<>();
+    private final HashMap<Biome, LootTable> lootTables = new HashMap<>();
 
     public Fishing(){
         type = ProfessionType.FISHING;
@@ -33,7 +38,13 @@ public class Fishing extends Profession {
 
         initialRecipes.add(ItemDictionary.get("gravel_lurker").getItem());
         initialRecipes.add(ItemDictionary.get("deepslate_salmon").getItem());
+        initialRecipes.add(ItemDictionary.get("stone_perch").getItem());
         initialRecipes.add(ItemDictionary.get("common_greentop").getItem());
+        initialRecipes.add(ItemDictionary.get("tuff_trout").getItem());
+        initialRecipes.add(ItemDictionary.get("snow_crab").getItem());
+        initialRecipes.add(ItemDictionary.get("creeper_carp").getItem());
+        initialRecipes.add(ItemDictionary.get("slime_skipper").getItem());
+        initialRecipes.add(ItemDictionary.get("sea_spider").getItem());
     }
 
     private void loadLootTables(){
@@ -129,6 +140,33 @@ public class Fishing extends Profession {
             this.items.add(item);
         }
 
+        public void generateTrash(ItemStack oldItem){
+
+            Material[] trashMaterial = new Material[]{
+                    Material.PAPER,
+                    Material.IRON_NUGGET,
+                    Material.BOWL,
+                    Material.BONE_MEAL,
+                    Material.STRING,
+                    Material.KELP,
+                    Material.SEAGRASS
+            };
+
+            int randomNum = (int) (trashMaterial.length * Math.random());
+
+            oldItem.setType(trashMaterial[randomNum]);
+            ItemMeta meta = oldItem.getItemMeta();
+
+            TextComponent displayName = Component.text("Trash").color(TextColor.color(170, 170, 170));
+
+            List<TextComponent> lore = new ArrayList<>();
+            lore.add(Component.text("Old, useless trash").color(TextColor.color(170, 170, 170)));
+
+            meta.displayName(displayName);
+            meta.lore(lore);
+            oldItem.setItemMeta(meta);
+        }
+
         public void changeItem(Player player, ItemStack oldItem){
             int level = PlayerDictionary.get(player).getPlayerCharacter().getProfessionLevel(type);
 
@@ -166,9 +204,8 @@ public class Fishing extends Profession {
                     +tier.get(Rarity.UNCOMMON) +tier.get(Rarity.COMMON)+tier.get(Rarity.GARBAGE))
                 selectedRarity = Rarity.ARTIFACT;
 
-            // TODO: Add more garbage options here
             if(selectedRarity == Rarity.GARBAGE){
-                oldItem.setType(Material.PAPER);
+                generateTrash(oldItem);
                 return;
             }
 
@@ -178,7 +215,8 @@ public class Fishing extends Profession {
                 NBTItem nbtItem = new NBTItem(item);
 
                 if(ItemDictionary.get(nbtItem.getString(NBTFlags.itemID)) instanceof Fish fish){
-                    if(fish.getRarity() == selectedRarity){
+                    if(fish.getRarity() == selectedRarity &&
+                            fish.getBiomes().contains(player.getLocation().getBlock().getBiome())){
                         validItem.add(fish);
                     }
                 }
@@ -188,7 +226,7 @@ public class Fishing extends Profession {
             }
 
             if(validItem.isEmpty()){
-                oldItem.setType(Material.PAPER);
+                generateTrash(oldItem);
                 player.sendMessage("You do not have the knowledge required to catch this fish!");
                 return;
             }
@@ -199,8 +237,10 @@ public class Fishing extends Profession {
             oldItem.setItemMeta(selectedItem.getItem().getItemMeta());
             oldItem.setType(selectedItem.getItem().getType());
 
-            if(selectedItem instanceof Fish fish)
+            if(selectedItem instanceof Fish fish) {
                 fish.sizeFish(oldItem);
+                PlayerDictionary.get(player).getPlayerCharacter().addProfessionExperience(type, fish.getFishExperience(), player);
+            }
         }
     }
 }

@@ -27,7 +27,7 @@ public class GravelLurker extends Fish{
 
         rarity = Rarity.COMMON;
 
-        TextComponent displayName = Component.text("Gravel Lurker").color(epicColor).toBuilder().build();
+        TextComponent displayName = Component.text("Gravel Lurker").color(commonColor).toBuilder().build();
 
         List<TextComponent> lore = new ArrayList<>();
         initialLore = Component.text("Nests in large gravel patches next to sources of water").color(commonColor)

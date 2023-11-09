@@ -79,8 +79,15 @@ public class Fish extends Food {
         return biomes;
     }
 
-    public boolean canPlayerCatch(Player player){
-        return PlayerDictionary.get(player.getUniqueId().toString()).getPlayerCharacter()
-                .hasRecipeUnlocked(item, ProfessionType.FISHING);
+    public int getFishExperience(){
+        return switch (rarity) {
+            case COMMON -> 10;
+            case UNCOMMON -> 25;
+            case RARE -> 50;
+            case EPIC -> 100;
+            case LEGENDARY -> 500;
+            case ARTIFACT -> 5000;
+            default -> 0;
+        };
     }
 }

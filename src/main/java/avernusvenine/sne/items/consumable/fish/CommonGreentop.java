@@ -40,6 +40,8 @@ public class CommonGreentop extends Fish{
         lore.add(initialLore);
 
         item = generateFoodItem(material, 1, displayName, lore, new ArrayList<>(), id, foodLevel, saturation);
+        setCustomModel(item, 21);
+
         ItemDictionary.put(id, this);
     }
 

@@ -64,6 +64,7 @@ avernusvenine\sne\items\consumable\fish\WardenOfTheDeep.class
 avernusvenine\sne\races\HalfElf.class
 avernusvenine\sne\races\Orc.class
 avernusvenine\sne\items\consumable\cookable\HoneyBakedHam.class
+avernusvenine\sne\items\consumable\fish\TuffTrout.class
 avernusvenine\sne\commands\GetRank.class
 avernusvenine\sne\players\PlayerCharacter$QuestStatus.class
 avernusvenine\sne\items\SneItem$Rarity.class
@@ -103,9 +104,11 @@ avernusvenine\sne\races\HalfOrc.class
 avernusvenine\sne\commands\ShowTitle.class
 avernusvenine\sne\professions\Fishing$LootTable$1.class
 avernusvenine\sne\races\Tiefling.class
+avernusvenine\sne\items\consumable\fish\Fish$1.class
 avernusvenine\sne\items\SneItem$InventorySlot.class
 avernusvenine\sne\npc\dialogue\DialogueHandler$1.class
 avernusvenine\sne\PlayerDictionary.class
+avernusvenine\sne\items\consumable\fish\DiamondDiscus.class
 avernusvenine\sne\items\consumable\ingredient\Oil.class
 avernusvenine\sne\races\Felidae.class
 avernusvenine\sne\items\consumable\cookable\RawFishFilet.class

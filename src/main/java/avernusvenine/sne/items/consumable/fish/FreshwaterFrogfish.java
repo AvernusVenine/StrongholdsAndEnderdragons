@@ -44,7 +44,7 @@ public class FreshwaterFrogfish extends Fish{
     @Override
     public void onConsumption(Player player){
         Vector v = player.getVelocity();
-        v.setY(5);
+        v.setY(1);
         player.setVelocity(v);
     }
 

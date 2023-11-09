@@ -229,8 +229,8 @@ public class PlayerCharacter {
         return professions.size() >= 4;
     }
 
-    public void addProfessionExperience(ProfessionType type, int experience){
-        professions.get(type).addExperience(experience);
+    public void addProfessionExperience(ProfessionType type, int experience, Player player){
+        professions.get(type).addExperience(experience, player);
     }
 
     public class QuestStatus{
