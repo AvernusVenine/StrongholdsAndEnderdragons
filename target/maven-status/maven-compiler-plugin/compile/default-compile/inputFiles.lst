@@ -13,6 +13,7 @@ C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\s
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\races\HalfOrc.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\classes\DefaultClass.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\ItemDictionary.java
+C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\items\consumable\fish\SnowCrab.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\gui\utility\CookingGUI.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\classes\Warlock.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\items\SneItem.java
@@ -22,6 +23,7 @@ C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\s
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\npc\dialogue\QuestDialogueHandler.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\players\PlayerProfession.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\items\interactable\weapons\Mjolnir.java
+C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\items\consumable\fish\DiamondDiscus.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\npc\traits\DialogueTrait.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\races\Elf.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\npc\dialogue\QuestDialogueSet.java
@@ -29,19 +31,23 @@ C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\s
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\gui\quest\ItemRetrievalCompletionGUI.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\items\consumable\Food.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\races\HalfElf.java
+C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\commands\ShowActionbar.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\events\ChatEventHandler.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\StrongholdsAndEnderdragons.java
+C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\items\consumable\fish\TuffTrout.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\npc\dialogue\TrainerDialogueSet.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\items\consumable\ingredient\Oil.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\items\interactable\Interactable.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\Globals.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\quests\ItemRetrievalQuest.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\classes\Barbarian.java
+C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\items\consumable\fish\RainbowShrimp.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\races\Tiefling.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\races\Dragonkin.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\commands\OpenGUI.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\npc\dialogue\DialogueSet.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\classes\Wizard.java
+C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\items\consumable\fish\SeaSpider.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\items\interactable\armor\PhoenixHelmet.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\npc\dialogue\TrainerDialogueHandler.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\commands\UnlockRecipe.java
@@ -67,6 +73,7 @@ C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\s
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\gui\profession\ProfessionPromptGUI.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\NBTFlags.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\items\consumable\fish\DeepslateSalmon.java
+C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\items\consumable\fish\SlimeSkipper.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\commands\SpawnNPC.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\classes\Bard.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\items\consumable\fish\GravelLurker.java
@@ -91,6 +98,7 @@ C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\s
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\professions\Cooking.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\items\consumable\fish\IronSwordfish.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\gui\quest\QuestPromptGUI.java
+C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\items\consumable\fish\CreeperCarp.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\enchantments\SneEnchantment.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\commands\GiveCustomItem.java
 C:\Users\Avernus\StrongholdsAndEnderdragons\Plugin\src\main\java\avernusvenine\sne\items\consumable\fish\FreshwaterFrogfish.java

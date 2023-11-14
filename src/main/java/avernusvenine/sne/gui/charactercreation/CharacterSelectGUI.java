@@ -105,6 +105,8 @@ public class CharacterSelectGUI extends DefaultGUI {
                 player.playSound(player, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1, 1);
                 event.setCancelled(true);
                 player.closeInventory();
+
+                PlayerDictionary.get(player).onCharacterSelect();
                 break;
         }
     }

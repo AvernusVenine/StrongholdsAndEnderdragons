@@ -8,15 +8,18 @@ avernusvenine\sne\npc\dialogue\DialogueHandler.class
 avernusvenine\sne\npc\dialogue\DialogueSet$DialogueType.class
 avernusvenine\sne\enchantments\SneEnchantment.class
 avernusvenine\sne\items\consumable\fish\GravelLurker.class
+avernusvenine\sne\items\consumable\fish\SnowCrab.class
 avernusvenine\sne\items\consumable\fish\GoldenSnapper.class
 avernusvenine\sne\classes\Druid.class
 avernusvenine\sne\npc\trainernpc\Joel.class
+avernusvenine\sne\items\consumable\fish\RainbowShrimp.class
 avernusvenine\sne\races\Race.class
 avernusvenine\sne\professions\Fishing$LootTable$2.class
 avernusvenine\sne\npc\questnpc\Leo.class
 avernusvenine\sne\gui\AcceptDenyGUI.class
 avernusvenine\sne\npc\dialogue\DialogueSet$RelationshipDialogue.class
 avernusvenine\sne\commands\UnlockRecipe.class
+avernusvenine\sne\items\consumable\fish\SeaSpider.class
 avernusvenine\sne\items\SneItem$TaskHandler$1.class
 avernusvenine\sne\classes\Fighter.class
 avernusvenine\sne\classes\Ranger.class
@@ -27,6 +30,7 @@ avernusvenine\sne\items\consumable\ingredient\Salt.class
 avernusvenine\sne\players\PlayerProfile$ActionBarTask.class
 avernusvenine\sne\items\consumable\fish\StonePerch.class
 avernusvenine\sne\classes\Paladin.class
+avernusvenine\sne\commands\SetResource.class
 avernusvenine\sne\quests\Quest.class
 avernusvenine\sne\races\Elf.class
 avernusvenine\sne\classes\Barbarian.class
@@ -48,6 +52,7 @@ avernusvenine\sne\quests\Quest$QuestType.class
 avernusvenine\sne\events\PlayerEventHandler.class
 avernusvenine\sne\classes\DefaultClass$ClassType.class
 avernusvenine\sne\items\consumable\cookable\Chocolate.class
+avernusvenine\sne\commands\ShowActionbar.class
 avernusvenine\sne\professions\Fishing$LootTable$5.class
 avernusvenine\sne\items\interactable\misc\Midas.class
 avernusvenine\sne\items\interactable\weapons\Mjolnir.class
@@ -75,6 +80,7 @@ avernusvenine\sne\gui\charactercreation\RaceSelectGUI.class
 avernusvenine\sne\items\consumable\fish\SuspiciousStarfish.class
 avernusvenine\sne\gui\quest\ItemRetrievalCompletionGUI.class
 avernusvenine\sne\commands\SetRank.class
+avernusvenine\sne\items\consumable\fish\CreeperCarp.class
 avernusvenine\sne\commands\OpenGUI.class
 avernusvenine\sne\gui\quest\QuestPromptGUI.class
 avernusvenine\sne\npc\dialogue\QuestDialogueHandler.class
@@ -105,6 +111,7 @@ avernusvenine\sne\commands\ShowTitle.class
 avernusvenine\sne\professions\Fishing$LootTable$1.class
 avernusvenine\sne\races\Tiefling.class
 avernusvenine\sne\items\consumable\fish\Fish$1.class
+avernusvenine\sne\items\consumable\fish\SlimeSkipper.class
 avernusvenine\sne\items\SneItem$InventorySlot.class
 avernusvenine\sne\npc\dialogue\DialogueHandler$1.class
 avernusvenine\sne\PlayerDictionary.class

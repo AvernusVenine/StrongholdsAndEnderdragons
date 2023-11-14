@@ -28,3 +28,9 @@ commands:
   UnlockRecipe:
     description: Unlocks a recipe for the player character
     usage: /<command> item_id profession_id
+  ShowActionbar:
+    description: Shows the actionbar to the player, used for testing
+    usage: /<command> offset
+  SetResource:
+    description: Sets the players resource
+    usage: /<command> amount

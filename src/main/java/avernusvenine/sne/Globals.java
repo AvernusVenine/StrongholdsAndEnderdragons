@@ -1,6 +1,7 @@
 package avernusvenine.sne;
 
 import avernusvenine.sne.gui.DefaultGUI;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -16,6 +17,8 @@ public class Globals {
         PLAYER_KILLED,
         PLAYER_DAMAGED
     }
+
+    public static final TextColor shadowless = TextColor.color(78, 92, 36);
 
     public static void openGUI(Player player, DefaultGUI gui){
         StrongholdsAndEnderdragons.plugin.getServer().getPluginManager().registerEvents(gui, StrongholdsAndEnderdragons.plugin);

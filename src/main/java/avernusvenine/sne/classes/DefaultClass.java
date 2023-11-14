@@ -10,30 +10,36 @@ import java.util.List;
 public class DefaultClass {
 
     public enum ClassType{
-        ARTIFICER(0),
-        BARBARIAN(1),
-        BARD(2),
-        SHAMAN(3),
-        CLERIC(4),
-        DRUID(5),
-        DEFAULT_CLASS(6),
-        FIGHTER(7),
-        MONK(8),
-        PALADIN(9),
-        RANGER(10),
-        ROGUE(11),
-        SORCERER(12),
-        WARLOCK(13),
-        WIZARD(14);
+        ARTIFICER(0, new Artificer()),
+        BARBARIAN(1, new Barbarian()),
+        BARD(2, new Bard()),
+        SHAMAN(3, new Shaman()),
+        CLERIC(4, new Cleric()),
+        DRUID(5, new Druid()),
+        DEFAULT_CLASS(6, null),
+        FIGHTER(7, new Fighter()),
+        MONK(8, new Monk()),
+        PALADIN(9, new Paladin()),
+        RANGER(10, new Ranger()),
+        ROGUE(11, new Rogue()),
+        SORCERER(12, new Sorcerer()),
+        WARLOCK(13, new Warlock()),
+        WIZARD(14, new Wizard());
 
         private final int id;
+        private final DefaultClass sneClass;
 
-        ClassType(int i){
+        ClassType(int i, DefaultClass c){
             id = i;
+            sneClass = c;
         }
 
         public int getID(){
             return id;
+        }
+
+        public DefaultClass getSneClass(){
+            return sneClass;
         }
 
         public static ClassType fromID(int id){
@@ -58,6 +64,10 @@ public class DefaultClass {
     }
 
     //Getters and setters
+
+    public int getMaxResource(int level){
+        return 0;
+    }
 
     public String getID(){
         return id;

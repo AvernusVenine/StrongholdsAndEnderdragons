@@ -35,16 +35,6 @@ public class Fishing extends Profession {
         id = "fishing";
 
         loadLootTables();
-
-        initialRecipes.add(ItemDictionary.get("gravel_lurker").getItem());
-        initialRecipes.add(ItemDictionary.get("deepslate_salmon").getItem());
-        initialRecipes.add(ItemDictionary.get("stone_perch").getItem());
-        initialRecipes.add(ItemDictionary.get("common_greentop").getItem());
-        initialRecipes.add(ItemDictionary.get("tuff_trout").getItem());
-        initialRecipes.add(ItemDictionary.get("snow_crab").getItem());
-        initialRecipes.add(ItemDictionary.get("creeper_carp").getItem());
-        initialRecipes.add(ItemDictionary.get("slime_skipper").getItem());
-        initialRecipes.add(ItemDictionary.get("sea_spider").getItem());
     }
 
     private void loadLootTables(){

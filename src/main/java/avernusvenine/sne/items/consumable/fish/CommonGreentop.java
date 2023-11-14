@@ -1,6 +1,9 @@
 package avernusvenine.sne.items.consumable.fish;
 
 import avernusvenine.sne.ItemDictionary;
+import avernusvenine.sne.professions.Fishing;
+import avernusvenine.sne.professions.Profession;
+import avernusvenine.sne.professions.Profession.ProfessionType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
@@ -43,6 +46,7 @@ public class CommonGreentop extends Fish{
         setCustomModel(item, 21);
 
         ItemDictionary.put(id, this);
+        ProfessionType.FISHING.getProfession().addInitialRecipe(item);
     }
 
 }

@@ -17,9 +17,6 @@ public class Cooking extends Profession {
     public Cooking(){
         type = ProfessionType.COOKING;
         id = "cooking";
-
-        initialRecipes.add(ItemDictionary.get("chocolate").getItem());
-        initialRecipes.add(ItemDictionary.get("honey_baked_ham").getItem());
     }
 
     public static boolean checkRecipes(List<ItemStack> input, ItemStack result, Player player){
@@ -37,6 +34,7 @@ public class Cooking extends Profession {
                 break;
             }
         }
+
         if(recycling && !input.isEmpty()){
             ItemStack filet = ItemDictionary.get("raw_fish_filet").getItem();
             result.setType(filet.getType());

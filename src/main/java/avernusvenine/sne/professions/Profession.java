@@ -53,4 +53,7 @@ public class Profession implements Listener{
         return initialRecipes;
     }
 
+    public void addInitialRecipe(ItemStack item){
+        initialRecipes.add(item);
+    }
 }

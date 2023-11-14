@@ -6,6 +6,7 @@ import avernusvenine.sne.professions.Profession;
 import avernusvenine.sne.races.Race;
 import avernusvenine.sne.professions.Profession.ProfessionType;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -15,6 +16,16 @@ import java.util.HashMap;
 import java.util.List;
 
 public class PlayerCharacter {
+
+    private final int[] XP_PER_LEVEL = new int[]{
+            0, // 0 placeholder
+            250, 750, 1250, 2250, 3250, // 1-5
+            4250, 5500, 6750, 8000, 9250, // 5-10
+            10500, 12000, 13500, 15000, 16500, // 10-15
+            18000, 20000, 22000, 24000, 26000 // 15-20
+    };
+
+    private int currentResource;
 
     protected final String uuid;
 
@@ -32,8 +43,11 @@ public class PlayerCharacter {
 
     public PlayerCharacter(Player player){
         uuid = player.getUniqueId().toString();
+
         setProfession(0, 0, ProfessionType.FISHING);
         setProfession(0, 0, ProfessionType.COOKING);
+
+        currentResource = classType.getSneClass().getMaxResource(level);
     }
 
     public void createInDatabase(){
@@ -126,8 +140,39 @@ public class PlayerCharacter {
         return professions.get(type).getUnlockedRecipes();
     }
 
+    public void addExperience(int xp, Player player){
+        experience += xp;
+
+        if(experience >= XP_PER_LEVEL[level]){
+            experience -= XP_PER_LEVEL[level];
+            setLevel(level + 1);
+
+            player.sendMessage(Component.text("Congratulations, you have reached level " + level + "!"));
+        }
+    }
+
+    public void addResource(int amount){
+        currentResource += amount;
+        if(currentResource > classType.getSneClass().getMaxResource(level))
+            currentResource = classType.getSneClass().getMaxResource(level);
+    }
+
+    public void removeResource(int amount){
+        currentResource -= amount;
+    }
+
+    public void setResource(int amount){
+        currentResource = amount;
+        if(currentResource > classType.getSneClass().getMaxResource(level))
+            currentResource = classType.getSneClass().getMaxResource(level);
+    }
+
 
     //Getters and setters
+
+    public int getCurrentResource(){
+        return currentResource;
+    }
 
     public HashMap<String, QuestStatus> getQuests(){
         return quests;
@@ -153,6 +198,8 @@ public class PlayerCharacter {
 
     public void setLevel(int level){
         this.level = level;
+
+        currentResource = classType.getSneClass().getMaxResource(level);
     }
 
     public int getLevel(){return level;}

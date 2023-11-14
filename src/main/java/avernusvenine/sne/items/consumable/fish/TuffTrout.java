@@ -1,6 +1,7 @@
 package avernusvenine.sne.items.consumable.fish;
 
 import avernusvenine.sne.ItemDictionary;
+import avernusvenine.sne.professions.Profession.ProfessionType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
@@ -33,7 +34,9 @@ public class TuffTrout extends Fish{
 
         item = generateFoodItem(material, 1, displayName, lore, new ArrayList<>(), id, foodLevel, saturation);
         setCustomModel(item, 24);
+
         ItemDictionary.put(id, this);
+        ProfessionType.FISHING.getProfession().addInitialRecipe(item);
     }
 
 }
