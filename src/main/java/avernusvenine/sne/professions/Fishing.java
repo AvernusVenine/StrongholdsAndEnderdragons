@@ -229,7 +229,7 @@ public class Fishing extends Profession {
 
             if(selectedItem instanceof Fish fish) {
                 fish.sizeFish(oldItem);
-                PlayerDictionary.get(player).getPlayerCharacter().addProfessionExperience(type, fish.getFishExperience(), player);
+                PlayerDictionary.get(player).getPlayerCharacter().addProfessionExperience(type, fish.getFishExperience());
             }
         }
     }

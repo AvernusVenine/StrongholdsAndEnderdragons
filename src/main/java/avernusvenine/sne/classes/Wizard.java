@@ -4,7 +4,11 @@ import org.bukkit.ChatColor;
 
 public class Wizard extends DefaultClass{
 
-    public static final int INITIAL_MANA = 50;
+    private static final int[] MAX_MANA = new int[]{
+            0, // Placeholder 0
+            50, 50, 50, 50, 50 // 1-5
+    };
+
 
     public Wizard(){
         type = ClassType.WIZARD;
@@ -14,6 +18,6 @@ public class Wizard extends DefaultClass{
 
     @Override
     public int getMaxResource(int level){
-        return INITIAL_MANA;
+        return MAX_MANA[level];
     }
 }

@@ -8,7 +8,6 @@ import avernusvenine.sne.classes.DefaultClass;
 import avernusvenine.sne.players.PlayerProfession;
 import avernusvenine.sne.professions.Profession.ProfessionType;
 import avernusvenine.sne.races.Race;
-import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -118,7 +117,7 @@ public class DatabaseHandler {
 
         while(resultSet.next()){
             playerCharacter.addQuest(resultSet.getString("quest_id"),
-                    PlayerCharacter.QuestStatus.convertToEnum(resultSet.getInt("status")),
+                    PlayerCharacter.QuestStatus.Status.fromID(resultSet.getInt("status")),
                     resultSet.getInt("progress"));
         }
         preparedStatement.close();
@@ -158,7 +157,7 @@ public class DatabaseHandler {
         for(Map.Entry<String, PlayerCharacter.QuestStatus> entry : playerCharacter.getQuests().entrySet()){
             preparedStatement = connection.prepareStatement("INSERT OR REPLACE INTO " + questTablePrefix + playerCharacter.getID()
                     + " (status, progress, quest_id) VALUES (?, ?, ?)");
-            preparedStatement.setInt(1, entry.getValue().status.getValue());
+            preparedStatement.setInt(1, entry.getValue().status.getID());
             preparedStatement.setInt(2, entry.getValue().progress);
             preparedStatement.setString(3, entry.getKey());
             preparedStatement.executeUpdate();

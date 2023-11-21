@@ -4,11 +4,13 @@ import avernusvenine.sne.Globals.ActionType;
 import avernusvenine.sne.ItemDictionary;
 
 import avernusvenine.sne.NBTFlags;
+import avernusvenine.sne.PlayerDictionary;
 import avernusvenine.sne.items.SneItem;
 import avernusvenine.sne.items.consumable.Food;
 import avernusvenine.sne.items.interactable.Interactable;
 
 import de.tr7zw.changeme.nbtapi.NBTItem;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -40,8 +42,12 @@ public class ItemEventHandler implements Listener {
         else if(event.getAction() == Action.LEFT_CLICK_AIR)
             type = ActionType.PLAYER_LEFT_CLICK_AIR;
 
-        if(sneItem instanceof Interactable interactable)
-            interactable.onItemUse(event.getPlayer(), null, type, event);
+        if(sneItem instanceof Interactable interactable) {
+            if(interactable.canClassUse(PlayerDictionary.get(event.getPlayer()).getPlayerCharacter().getClassType()))
+                interactable.onItemUse(event.getPlayer(), null, type, event);
+            else
+                event.getPlayer().sendMessage(Component.text("You don't know how to use this item!"));
+        }
     }
 
     // When a player right clicks at an entity
@@ -54,10 +60,15 @@ public class ItemEventHandler implements Listener {
 
         SneItem sneItem = ItemDictionary.get(new NBTItem(item).getString(NBTFlags.itemID));
 
-        ActionType type = ActionType.UNKNOWN;
+        Player player = event.getPlayer();
 
-        if(sneItem instanceof Interactable interactable)
-            interactable.onItemUse(event.getPlayer(), null, ActionType.PLAYER_RIGHT_CLICK_ENTITY, event);
+        if(sneItem instanceof Interactable interactable) {
+            if(interactable.canClassUse(PlayerDictionary.get(player).getPlayerCharacter().getClassType())
+            && interactable.canLevelUse(PlayerDictionary.get(player).getPlayerCharacter().getLevel()))
+                interactable.onItemUse(player, null, ActionType.PLAYER_RIGHT_CLICK_ENTITY, event);
+            else
+                player.sendMessage(Component.text("You don't know how to use this item!"));
+        }
     }
 
     // When a player damages another entity or is damaged by another entity
@@ -73,8 +84,13 @@ public class ItemEventHandler implements Listener {
 
             SneItem sneItem = ItemDictionary.get(new NBTItem(item).getString(NBTFlags.itemID));
 
-            if(sneItem instanceof Interactable interactable)
-                interactable.onItemUse(player, event.getEntity(), ActionType.PLAYER_LEFT_CLICK_ENTITY, event);
+            if(sneItem instanceof Interactable interactable) {
+                if(interactable.canClassUse(PlayerDictionary.get(player).getPlayerCharacter().getClassType())
+                        && interactable.canLevelUse(PlayerDictionary.get(player).getPlayerCharacter().getLevel()))
+                    interactable.onItemUse(player, null, ActionType.PLAYER_DAMAGE_ENTITY, event);
+                else
+                    player.sendMessage(Component.text("You don't know how to use this item!"));
+            }
         }
 
         if(event.getEntity() instanceof Player player){

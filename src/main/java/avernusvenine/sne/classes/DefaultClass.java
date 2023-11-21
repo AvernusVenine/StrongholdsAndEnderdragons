@@ -16,7 +16,7 @@ public class DefaultClass {
         SHAMAN(3, new Shaman()),
         CLERIC(4, new Cleric()),
         DRUID(5, new Druid()),
-        DEFAULT_CLASS(6, null),
+        DEFAULT_CLASS(6, new DefaultClass()),
         FIGHTER(7, new Fighter()),
         MONK(8, new Monk()),
         PALADIN(9, new Paladin()),

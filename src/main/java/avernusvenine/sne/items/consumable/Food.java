@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class Food extends SneItem implements Listener {
+public class Food extends SneItem {
 
     protected int foodLevel = 1;
     protected int saturation = 1;

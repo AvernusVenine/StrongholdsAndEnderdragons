@@ -34,3 +34,6 @@ commands:
   SetResource:
     description: Sets the players resource
     usage: /<command> amount
+  SetSpell:
+    description: Sets the held items primary spell
+    usage: /<command> spell_id

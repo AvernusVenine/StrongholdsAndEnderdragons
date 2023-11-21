@@ -4,6 +4,8 @@ import avernusvenine.sne.items.SneItem;
 import avernusvenine.sne.items.consumable.cookable.*;
 import avernusvenine.sne.items.consumable.fish.*;
 import avernusvenine.sne.items.consumable.ingredient.*;
+import avernusvenine.sne.items.interactable.castable.AbilityBook;
+import avernusvenine.sne.items.interactable.castable.SpellBook;
 import avernusvenine.sne.items.interactable.utility.*;
 
 import java.util.HashMap;
@@ -46,6 +48,10 @@ public class ItemDictionary {
 
         // UTILITY
         new CookingKit();
+
+        // ITEMS
+        new SpellBook();
+        new AbilityBook();
     }
 
     public static void put(String id, SneItem item){

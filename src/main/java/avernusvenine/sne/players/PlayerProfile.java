@@ -1,25 +1,37 @@
 package avernusvenine.sne.players;
 
-import avernusvenine.sne.Globals;
-import avernusvenine.sne.StrongholdsAndEnderdragons;
+import avernusvenine.sne.*;
+import avernusvenine.sne.items.SneItem;
+import avernusvenine.sne.items.interactable.Interactable;
 import avernusvenine.sne.npc.dialogue.*;
 import avernusvenine.sne.npc.dialogue.DialogueHandler.Phase;
 import avernusvenine.sne.players.PlayerCharacter.QuestStatus.Status;
 
+import avernusvenine.sne.spells.Spell;
+import avernusvenine.sne.status.StatusEffect;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerProfile {
 
     protected PlayerCharacter playerCharacter;
     protected Player player;
 
+    // Dialogue variables
     protected boolean inDialogue = false;
     protected ActionBarTask actionBarTask;
     protected DialogueHandler dialogueHandler;
+    protected CooldownHandler cooldownHandler;
+
+    protected List<StatusEffect> statusEffects = new ArrayList<>();
 
     public PlayerProfile(Player player){
         this.player = player;
@@ -28,6 +40,7 @@ public class PlayerProfile {
         actionBarTask.changeToEmpty();
 
         dialogueHandler = new DialogueHandler();
+        cooldownHandler = new CooldownHandler(player);
     }
 
     public void onCharacterSelect(){
@@ -39,6 +52,19 @@ public class PlayerProfile {
     public void onPlayerQuit(){
         actionBarTask.cancelTask();
         dialogueHandler.reset();
+        cooldownHandler.removeAll();
+    }
+
+    public void addCooldown(String id, int cooldown){
+        cooldownHandler.add(id, cooldown);
+    }
+
+    public void removeCooldown(String id){
+        cooldownHandler.remove(id);
+    }
+
+    public boolean checkCooldown(String id){
+        return cooldownHandler.check(id);
     }
 
     public void addResource(int amount){
@@ -131,6 +157,32 @@ public class PlayerProfile {
         dialogueHandler.advance(player, Phase.TRAINER_PROFESSION_DENY);
     }
 
+    public void addStatusEffect(StatusEffect effect){
+        statusEffects.add(effect);
+    }
+
+    public void removeStatusEffect(StatusEffect effect){
+        statusEffects.remove(effect);
+    }
+
+    public void removeStatusEffect(Class<? extends StatusEffect> type){
+
+        for(StatusEffect effect : statusEffects){
+            if(effect.getClass() == type){
+                effect.cancel();
+                statusEffects.remove(effect);
+            }
+        }
+    }
+
+    public boolean hasStatusEffect(Class<? extends StatusEffect> type){
+        for(StatusEffect effect : statusEffects)
+            if(effect.getClass() == type)
+                return true;
+
+        return false;
+    }
+
     // Getters and Setters
 
     public PlayerCharacter getPlayerCharacter(){
@@ -179,15 +231,15 @@ public class PlayerProfile {
         public void changeToOverlay(){
             Component comp = Component.text("");
 
-            char[] icons = switch (playerCharacter.getClassType()) {
-                case ARTIFICER -> new char[]{'\ue243', '\ue244', '\ue245'};
-                case BARBARIAN -> new char[]{'\ue246', '\ue247', '\ue248'};
-                case BARD, WIZARD, SORCERER, WARLOCK, DRUID, SHAMAN -> new char[]{'\ue240', '\ue241', '\ue242'};
-                case ROGUE -> new char[]{'\ue249', '\ue250', '\ue251'};
-                case RANGER, FIGHTER -> new char[]{'\ue258', '\ue259', '\ue260'};
-                case MONK -> new char[]{'\ue252', '\ue253', '\ue254'};
-                case PALADIN, CLERIC -> new char[]{'\ue255', '\ue256', '\ue257'};
-                default -> new char[3];
+            String[] icons = switch (playerCharacter.getClassType()) {
+                case ARTIFICER -> new String[]{"\ue243", "\ue244", "\ue245"};
+                case BARBARIAN -> new String[]{"\ue246", "\ue247", "\ue248"};
+                case BARD, WIZARD, SORCERER, WARLOCK, DRUID, SHAMAN -> new String[]{"\ue240", "\ue241", "\ue242"};
+                case ROGUE -> new String[]{"\ue249", "\ue250", "\ue251"};
+                case RANGER, FIGHTER -> new String[]{"\ue258", "\ue259", "\ue260"};
+                case MONK -> new String[]{"\ue252", "\ue253", "\ue254"};
+                case PALADIN, CLERIC -> new String[]{"\ue255", "\ue256", "\ue257"};
+                default -> new String[3];
             };
 
             int max = playerCharacter.getClassType().getSneClass().getMaxResource(playerCharacter.getLevel());

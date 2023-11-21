@@ -2,10 +2,13 @@ package avernusvenine.sne.items.interactable;
 
 import avernusvenine.sne.Globals.ActionType;
 import avernusvenine.sne.NBTFlags;
-import avernusvenine.sne.enchantments.SneEnchantment;
+import avernusvenine.sne.PlayerDictionary;
+import avernusvenine.sne.classes.DefaultClass.ClassType;
 import avernusvenine.sne.items.SneItem;
 
+import avernusvenine.sne.players.PlayerCharacter;
 import de.tr7zw.changeme.nbtapi.NBTItem;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -19,41 +22,66 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Interactable extends SneItem {
+public abstract class Interactable extends SneItem {
 
-    protected List<SneEnchantment> enchantments = new ArrayList<>();
+    private final static TextComponent INVALID_CLASS_RESPONSE = Component.text("Your class is unable to use this item!");
+    private final static TextComponent INVALID_LEVEL_RESPONSE = Component.text("Your level is too low to use this item!");
 
-    protected int basicCooldown;
-    protected int specialCooldown;
-    protected InventorySlot slot;
+    protected List<ClassType> validClasses = new ArrayList<>(){{
+        add(ClassType.ARTIFICER);
+        add(ClassType.BARBARIAN);
+        add(ClassType.BARD);
+        add(ClassType.CLERIC);
+        add(ClassType.DRUID);
+        add(ClassType.FIGHTER);
+        add(ClassType.MONK);
+        add(ClassType.PALADIN);
+        add(ClassType.RANGER);
+        add(ClassType.ROGUE);
+        add(ClassType.SHAMAN);
+        add(ClassType.SORCERER);
+        add(ClassType.WARLOCK);
+        add(ClassType.WIZARD);
+    }};
+    protected int levelRequired;
 
-    public static ItemStack generateInteractableItem(Material material, int amount, TextComponent displayName, List<TextComponent> lore,
-                                                     List<ItemFlag> itemFlags, boolean unbreakable, String id){
+    protected int customModel;
+    protected int cooldownCustomModel;
+    protected boolean overrideItemModel = false;
 
-        ItemStack item = generateItem(material, amount, displayName, lore, itemFlags, unbreakable, id);
+    public abstract void onItemUse(Player player, Entity entity, ActionType type, Event event);
 
-        NBTItem nbtItem = new NBTItem(item);
-        nbtItem.setLong(NBTFlags.itemBasic, 0L);
-        nbtItem.setLong(NBTFlags.itemSpecial, 0L);
+    public boolean denyIfInvalid(Player player){
+        PlayerCharacter character = PlayerDictionary.get(player).getPlayerCharacter();
 
-        return nbtItem.getItem();
-    }
-
-    public static ItemStack generateInteractableItem(Material material, int amount, String displayName, List<String> lore,
-                                                     Map<Enchantment, Integer> enchantment, List<ItemFlag> itemFlags,
-                                                     boolean unbreakable, String id){
-        ItemStack item = generateItem(material, amount, displayName, lore, enchantment, itemFlags, unbreakable, id);
-
-        NBTItem nbtItem = new NBTItem(item);
-        nbtItem.setLong(NBTFlags.itemBasic, 0L);
-        nbtItem.setLong(NBTFlags.itemSpecial, 0L);
-
-        return nbtItem.getItem();
-    }
-
-    public void onItemUse(Player player, Entity entity, ActionType type, Event event){
-        for(SneEnchantment enchantment : enchantments){
-            enchantment.use(player, entity, type, event);
+        if(!validClasses.contains(character.getClassType())){
+            player.sendMessage(INVALID_CLASS_RESPONSE);
+            return false;
         }
+        else if(character.getLevel() < levelRequired){
+            player.sendMessage(INVALID_LEVEL_RESPONSE);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean canClassUse(ClassType type){
+        return validClasses.contains(type);
+    }
+
+    public boolean canLevelUse(int level){
+        return level >= levelRequired;
+    }
+
+    public int getCustomModel(){
+        return customModel;
+    }
+
+    public int getCooldownModel(){
+        return cooldownCustomModel;
+    }
+
+    public boolean overrideItemModel(){
+        return overrideItemModel;
     }
 }

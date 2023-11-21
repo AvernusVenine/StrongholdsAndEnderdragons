@@ -3,6 +3,7 @@ package avernusvenine.sne;
 import avernusvenine.sne.classes.*;
 import avernusvenine.sne.commands.*;
 import avernusvenine.sne.events.ChatEventHandler;
+import avernusvenine.sne.events.ProjectileEventHandler;
 import avernusvenine.sne.npc.traits.DialogueTrait;
 import avernusvenine.sne.database.DatabaseHandler;
 import avernusvenine.sne.events.ItemEventHandler;
@@ -11,25 +12,23 @@ import avernusvenine.sne.gui.DefaultGUI;
 
 import avernusvenine.sne.professions.Fishing;
 import avernusvenine.sne.races.*;
+import com.comphenix.protocol.ProtocolLib;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.*;
 
 public final class StrongholdsAndEnderdragons extends JavaPlugin {
 
-    /*
-    #### TAKEN UNICODE CHARACTERS ####
-    /uC0000 - /u512C0
-    /uE238 -> Player Journal
-    /uE239 -> Empty speech bubble
-     */
-
-    // Dictionary of all custom items
     public static Map<DefaultClass.ClassType, DefaultClass> classDictionary = new HashMap<DefaultClass.ClassType, DefaultClass>();
     public static Map<Race.RaceType, Race> raceDictionary = new HashMap<Race.RaceType, Race>();
 
@@ -43,6 +42,7 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
 
     public static JavaPlugin plugin;
     public static DatabaseHandler databaseHandler;
+    public static ProtocolManager manager;
 
     @Override
     public void onEnable() {
@@ -65,11 +65,14 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
         Bukkit.getServer().getConsoleSender().sendMessage("[SNE] Successfully registered Citizen Traits!");
 
         ItemDictionary.loadItems();
+        SpellDictionary.loadSpells();
         NPCDictionary.loadNPCs();
 
         loadCommands();
         loadClasses();
         loadRaces();
+
+        manager = ProtocolLibrary.getProtocolManager();
 
         registerEvents();
         Bukkit.getServer().getConsoleSender().sendMessage("[SNE] Successfully registered events!");
@@ -218,7 +221,8 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
         registerCommand("despawnnpc", new DespawnNPC());
         registerCommand("unlockrecipe", new UnlockRecipe());
         registerCommand("showactionbar", new ShowActionbar());
-        registerCommand("setmana", new SetResource());
+        registerCommand("setresource", new SetResource());
+        registerCommand("setspell", new SetSpell());
     }
 
     public void registerCommand(String name, CommandExecutor executor){
@@ -234,6 +238,7 @@ public final class StrongholdsAndEnderdragons extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerEventHandler(), plugin);
         getServer().getPluginManager().registerEvents(new ChatEventHandler(), plugin);
         getServer().getPluginManager().registerEvents(new Fishing(), plugin);
+        getServer().getPluginManager().registerEvents(new ProjectileEventHandler(), plugin);
     }
 
     public void registerNPCTraits(){

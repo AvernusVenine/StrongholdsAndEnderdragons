@@ -1,5 +1,5 @@
 name: StrongholdsandEnderdragons
-version: "InDev 1.1"
+version: "InDev 2.0"
 main: avernusvenine.sne.StrongholdsAndEnderdragons
 api-version: '1.20'
 depend: [Citizens]
@@ -34,3 +34,6 @@ commands:
   SetResource:
     description: Sets the players resource
     usage: /<command> amount
+  SetSpell:
+    description: Sets the held items primary spell
+    usage: /<command> spell_id

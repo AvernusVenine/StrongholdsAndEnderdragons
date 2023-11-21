@@ -1,22 +1,37 @@
 package avernusvenine.sne;
 
+import avernusvenine.sne.classes.DefaultClass.ClassType;
 import avernusvenine.sne.gui.DefaultGUI;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Globals {
 
     public enum ActionType{
         UNKNOWN,
-        PLAYER_LEFT_CLICK_ENTITY,
+        PLAYER_DAMAGE_ENTITY,
         PLAYER_DAMAGED_BY_ENTITY,
         PLAYER_RIGHT_CLICK_AIR,
         PLAYER_RIGHT_CLICK_ENTITY,
+        PLAYER_RIGHT_CLICK_BLOCK,
         PLAYER_LEFT_CLICK_AIR,
+        PLAYER_LEFT_CLICK_ENTITY,
         PLAYER_KILLED,
         PLAYER_DAMAGED
     }
+
+    public static final List<ClassType> MANA_USERS = new ArrayList<>(){{
+        add(ClassType.WIZARD);
+        add(ClassType.SHAMAN);
+        add(ClassType.SORCERER);
+        add(ClassType.DRUID);
+        add(ClassType.WARLOCK);
+        add(ClassType.BARD);
+    }};
 
     public static final TextColor shadowless = TextColor.color(78, 92, 36);
 

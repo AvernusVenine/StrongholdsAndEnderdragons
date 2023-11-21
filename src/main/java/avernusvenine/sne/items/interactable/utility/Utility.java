@@ -3,7 +3,6 @@ package avernusvenine.sne.items.interactable.utility;
 import avernusvenine.sne.Globals;
 import avernusvenine.sne.Globals.ActionType;
 import avernusvenine.sne.StrongholdsAndEnderdragons;
-import avernusvenine.sne.enchantments.SneEnchantment;
 import avernusvenine.sne.gui.DefaultGUI;
 import avernusvenine.sne.items.interactable.Interactable;
 import org.bukkit.Bukkit;

@@ -1,17 +1,18 @@
 package avernusvenine.sne.players;
 
 import avernusvenine.sne.StrongholdsAndEnderdragons;
-import avernusvenine.sne.classes.DefaultClass;
-import avernusvenine.sne.professions.Profession;
-import avernusvenine.sne.races.Race;
+import avernusvenine.sne.classes.DefaultClass.ClassType;
+import avernusvenine.sne.races.Race.RaceType;
 import avernusvenine.sne.professions.Profession.ProfessionType;
 
+import avernusvenine.sne.spells.Spell;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class PlayerCharacter {
     private int currentResource;
 
     protected final String uuid;
+    protected final Player player;
 
     protected HashMap<String, QuestStatus> quests = new HashMap<>();
     protected HashMap<String, Float> relationships = new HashMap<>();
@@ -36,18 +38,20 @@ public class PlayerCharacter {
     protected int experience;
     protected int level;
     protected int id;
-    protected DefaultClass.ClassType classType;
-    protected Race.RaceType raceType;
+    protected ClassType classType;
+    protected RaceType raceType;
 
-    protected HashMap<Profession.ProfessionType, PlayerProfession> professions = new HashMap<>();
+    protected HashMap<ProfessionType, PlayerProfession> professions = new HashMap<>();
+    protected List<String> spells = new ArrayList<>();
 
     public PlayerCharacter(Player player){
         uuid = player.getUniqueId().toString();
+        this.player = player;
 
         setProfession(0, 0, ProfessionType.FISHING);
         setProfession(0, 0, ProfessionType.COOKING);
 
-        currentResource = classType.getSneClass().getMaxResource(level);
+        currentResource = 100;
     }
 
     public void createInDatabase(){
@@ -68,6 +72,24 @@ public class PlayerCharacter {
         }
     }
 
+    // SPELLS
+
+    public void learnSpell(Spell spell){
+        spells.add(spell.getID());
+        player.sendMessage(Component.text("You have learned the spell ").append(spell.getDisplayName()).append(Component.text("!")));
+    }
+
+    public void addSpell(String id){
+        spells.add(id);
+    }
+
+    public List<String> getSpells(){
+        return spells;
+    }
+
+
+    // RELATIONSHIPS
+
     public void addRelationship(String id, float level){
         relationships.replace(id, relationships.get(id) + level);
     }
@@ -82,6 +104,9 @@ public class PlayerCharacter {
     public HashMap<String, Float> getRelationships(){
         return relationships;
     }
+
+
+    // QUESTS
 
     public void addQuest(String id, QuestStatus.Status status, int progress){
         quests.put(id, new QuestStatus(status, progress));
@@ -124,56 +149,6 @@ public class PlayerCharacter {
         return true;
     }
 
-    public boolean hasRecipeUnlocked(ItemStack item, ProfessionType type){
-        return professions.get(type).hasUnlockedRecipe(item);
-    }
-
-    public void unlockRecipe(ItemStack item, ProfessionType type){
-        professions.get(type).unlockRecipe(item);
-    }
-
-    public void unlockRecipe(List<ItemStack> item, ProfessionType type){
-        professions.get(type).unlockRecipe(item);
-    }
-
-    public List<ItemStack> getUnlockedRecipes(ProfessionType type){
-        return professions.get(type).getUnlockedRecipes();
-    }
-
-    public void addExperience(int xp, Player player){
-        experience += xp;
-
-        if(experience >= XP_PER_LEVEL[level]){
-            experience -= XP_PER_LEVEL[level];
-            setLevel(level + 1);
-
-            player.sendMessage(Component.text("Congratulations, you have reached level " + level + "!"));
-        }
-    }
-
-    public void addResource(int amount){
-        currentResource += amount;
-        if(currentResource > classType.getSneClass().getMaxResource(level))
-            currentResource = classType.getSneClass().getMaxResource(level);
-    }
-
-    public void removeResource(int amount){
-        currentResource -= amount;
-    }
-
-    public void setResource(int amount){
-        currentResource = amount;
-        if(currentResource > classType.getSneClass().getMaxResource(level))
-            currentResource = classType.getSneClass().getMaxResource(level);
-    }
-
-
-    //Getters and setters
-
-    public int getCurrentResource(){
-        return currentResource;
-    }
-
     public HashMap<String, QuestStatus> getQuests(){
         return quests;
     }
@@ -190,63 +165,23 @@ public class PlayerCharacter {
         return quests.get(id).progress;
     }
 
-    public void setExperience(int xp){
-        experience = xp;
+    public boolean hasRecipeUnlocked(ItemStack item, ProfessionType type){
+        return professions.get(type).hasUnlockedRecipe(item);
     }
 
-    public int getExperience(){return experience;}
 
-    public void setLevel(int level){
-        this.level = level;
+    // RECIPES AND PROFESSIONS
 
-        currentResource = classType.getSneClass().getMaxResource(level);
+    public void unlockRecipe(ItemStack item, ProfessionType type){
+        professions.get(type).unlockRecipe(item);
     }
 
-    public int getLevel(){return level;}
-
-    public void setID(int id){
-        this.id = id;
+    public void unlockRecipe(List<ItemStack> item, ProfessionType type){
+        professions.get(type).unlockRecipe(item);
     }
 
-    public int getID(){return id;}
-
-    public void setRaceType(Race.RaceType type){
-        this.raceType = type;
-    }
-
-    public Race.RaceType getRaceType(){return raceType;}
-
-    public void setClassType(DefaultClass.ClassType type){
-        this.classType = type;
-    }
-
-    public DefaultClass.ClassType getClassType(){return classType;}
-
-    public void setName(String name){
-        this.characterName = name;
-    }
-
-    public String getName(){return characterName;}
-
-    public String getUUID(){return uuid;}
-
-    public String getChatPrefix(){
-
-        ChatColor levelColor = ChatColor.WHITE;
-
-        if(level < 11 && level > 5)
-            levelColor = ChatColor.GRAY;
-        else if(level < 16 && level > 10)
-            levelColor = ChatColor.GOLD;
-        else if(level > 15)
-            levelColor = ChatColor.GRAY;
-
-
-        String prefix = StrongholdsAndEnderdragons.raceDictionary.get(raceType).getChatPrefix() + " " +
-                ChatColor.RESET + StrongholdsAndEnderdragons.classDictionary.get(classType).getChatPrefix() +
-                ChatColor.RESET +  levelColor + "" + ChatColor.BOLD + " [" + level + "] " + ChatColor.RESET;
-
-        return prefix;
+    public List<ItemStack> getUnlockedRecipes(ProfessionType type){
+        return professions.get(type).getUnlockedRecipes();
     }
 
     public void setProfession(int level, int experience, ProfessionType type){
@@ -276,11 +211,111 @@ public class PlayerCharacter {
         return professions.size() >= 4;
     }
 
-    public void addProfessionExperience(ProfessionType type, int experience, Player player){
+    public void addProfessionExperience(ProfessionType type, int experience){
         professions.get(type).addExperience(experience, player);
     }
 
-    public class QuestStatus{
+
+    // LEVELING AND EXPERIENCE
+
+    public void addExperience(int xp){
+        experience += xp;
+
+        if(experience >= XP_PER_LEVEL[level]){
+            experience -= XP_PER_LEVEL[level];
+            setLevel(level + 1);
+
+            player.sendMessage(Component.text("Congratulations, you have reached level " + level + "!"));
+        }
+    }
+
+    public void setExperience(int xp){
+        experience = xp;
+    }
+
+    public int getExperience(){return experience;}
+
+    public void setLevel(int level){
+        this.level = level;
+
+        if(classType != null)
+            currentResource = classType.getSneClass().getMaxResource(level);
+    }
+
+    public int getLevel(){return level;}
+
+    // RESOURCE MANAGEMENT
+
+    public void addResource(int amount){
+        currentResource += amount;
+        if(currentResource > classType.getSneClass().getMaxResource(level))
+            currentResource = classType.getSneClass().getMaxResource(level);
+    }
+
+    public void removeResource(int amount){
+        currentResource -= amount;
+    }
+
+    public void setResource(int amount){
+        currentResource = amount;
+        if(currentResource > classType.getSneClass().getMaxResource(level))
+            currentResource = classType.getSneClass().getMaxResource(level);
+    }
+
+    public int getCurrentResource(){
+        return currentResource;
+    }
+
+
+    //Getters and setters
+
+    public void setID(int id){
+        this.id = id;
+    }
+
+    public int getID(){return id;}
+
+    public void setRaceType(RaceType type){
+        this.raceType = type;
+    }
+
+    public RaceType getRaceType(){return raceType;}
+
+    public void setClassType(ClassType type){
+        this.classType = type;
+    }
+
+    public ClassType getClassType(){return classType;}
+
+    public void setName(String name){
+        this.characterName = name;
+    }
+
+    public String getName(){return characterName;}
+
+    public String getUUID(){return uuid;}
+
+    public String getChatPrefix(){
+
+        ChatColor levelColor = ChatColor.WHITE;
+
+        if(level < 11 && level > 5)
+            levelColor = ChatColor.GRAY;
+        else if(level < 16 && level > 10)
+            levelColor = ChatColor.GOLD;
+        else if(level > 15)
+            levelColor = ChatColor.GRAY;
+
+
+        String prefix = StrongholdsAndEnderdragons.raceDictionary.get(raceType).getChatPrefix() + " " +
+                ChatColor.RESET + StrongholdsAndEnderdragons.classDictionary.get(classType).getChatPrefix() +
+                ChatColor.RESET +  levelColor + "" + ChatColor.BOLD + " [" + level + "] " + ChatColor.RESET;
+
+        return prefix;
+    }
+
+
+    public static class QuestStatus{
 
         public enum Status {
             NOT_ACCEPTED(0),
@@ -288,14 +323,22 @@ public class PlayerCharacter {
             IN_PROGRESS(2),
             COMPLETED(3);
 
-            final int value;
+            final int id;
 
             Status(final int i){
-                this.value = i;
+                this.id = i;
             }
 
-            public int getValue(){
-                return value;
+            public int getID(){
+                return id;
+            }
+
+            public static Status fromID(int id){
+                for(Status type : values()){
+                    if(type.getID() == id)
+                        return type;
+                }
+                return null;
             }
         }
 
@@ -306,16 +349,5 @@ public class PlayerCharacter {
             this.status = status;
             this.progress = progress;
         }
-
-        public static Status convertToEnum(int i){
-            return switch (i) {
-                case 0 -> Status.NOT_ACCEPTED;
-                case 1 -> Status.ACCEPTED;
-                case 2 -> Status.IN_PROGRESS;
-                case 3 -> Status.COMPLETED;
-                default -> Status.NOT_ACCEPTED;
-            };
-        }
-
     }
 }
