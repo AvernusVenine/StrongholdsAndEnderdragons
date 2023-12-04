@@ -11,12 +11,18 @@ import avernusvenine.sne.items.interactable.Interactable;
 
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDropItemEvent;
+import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -41,6 +47,10 @@ public class ItemEventHandler implements Listener {
             type = ActionType.PLAYER_RIGHT_CLICK_AIR;
         else if(event.getAction() == Action.LEFT_CLICK_AIR)
             type = ActionType.PLAYER_LEFT_CLICK_AIR;
+        if(event.getAction() == Action.RIGHT_CLICK_AIR && event.getPlayer().isSneaking())
+            type = ActionType.PLAYER_SHIFT_RIGHT_CLICK_AIR;
+        else if(event.getAction() == Action.LEFT_CLICK_AIR && event.getPlayer().isSneaking())
+            type = ActionType.PLAYER_SHIFT_LEFT_CLICK_AIR;
 
         if(sneItem instanceof Interactable interactable) {
             if(interactable.canClassUse(PlayerDictionary.get(event.getPlayer()).getPlayerCharacter().getClassType()))
@@ -64,8 +74,13 @@ public class ItemEventHandler implements Listener {
 
         if(sneItem instanceof Interactable interactable) {
             if(interactable.canClassUse(PlayerDictionary.get(player).getPlayerCharacter().getClassType())
-            && interactable.canLevelUse(PlayerDictionary.get(player).getPlayerCharacter().getLevel()))
-                interactable.onItemUse(player, null, ActionType.PLAYER_RIGHT_CLICK_ENTITY, event);
+            && interactable.canLevelUse(PlayerDictionary.get(player).getPlayerCharacter().getLevel())) {
+                if (player.isSneaking()) {
+                    interactable.onItemUse(player, null, ActionType.PLAYER_SHIFT_RIGHT_CLICK_ENTITY, event);
+                } else {
+                    interactable.onItemUse(player, null, ActionType.PLAYER_RIGHT_CLICK_ENTITY, event);
+                }
+            }
             else
                 player.sendMessage(Component.text("You don't know how to use this item!"));
         }
@@ -142,8 +157,7 @@ public class ItemEventHandler implements Listener {
 
         Player player = event.getPlayer();
 
-        if(sneItem instanceof Food){
-            Food food = (Food) sneItem;
+        if(sneItem instanceof Food food){
 
             event.setCancelled(true);
             food.onConsumption(player);
@@ -156,5 +170,49 @@ public class ItemEventHandler implements Listener {
             player.setFoodLevel((int) Math.min(nbtItem.getFloat(NBTFlags.foodLevel) + player.getFoodLevel(), 20));
             player.setSaturation(Math.min(nbtItem.getFloat(NBTFlags.saturation) + player.getSaturation(), 20));
         }
+    }
+
+    // Events for disallowing certain items to be dropped and stored
+    @EventHandler
+    public void onEntityDropItem(EntityDropItemEvent event){
+        SneItem item = ItemDictionary.get(event.getItemDrop().getItemStack());
+
+        if(item != null && item.isDroppable()){
+            event.getItemDrop().setItemStack(new ItemStack(Material.AIR));
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClickEvent(InventoryClickEvent event){
+        ItemStack item = event.getCurrentItem();
+
+        if(item == null || item.getType() == Material.AIR)
+            return;
+
+        SneItem sneItem = ItemDictionary.get(item);
+
+        if(sneItem != null && sneItem.isDroppable()){
+            if(event.getClickedInventory() != event.getWhoClicked().getInventory()){
+                event.setCancelled(true);
+            }
+        }
+
+    }
+
+    @EventHandler
+    public void onInventoryDragEvent(InventoryDragEvent event){
+        ItemStack item = event.getOldCursor();
+
+        if(item.getType() == Material.AIR)
+            return;
+
+        SneItem sneItem = ItemDictionary.get(item);
+
+        if(sneItem != null && sneItem.isDroppable()){
+            if(event.getInventory() != event.getWhoClicked().getInventory()){
+                event.setCancelled(true);
+            }
+        }
+
     }
 }

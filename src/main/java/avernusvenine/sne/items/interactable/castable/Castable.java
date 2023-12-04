@@ -1,10 +1,9 @@
 package avernusvenine.sne.items.interactable.castable;
 
+import avernusvenine.sne.*;
 import avernusvenine.sne.Globals.ActionType;
-import avernusvenine.sne.ItemDictionary;
-import avernusvenine.sne.NBTFlags;
-import avernusvenine.sne.PlayerDictionary;
-import avernusvenine.sne.SpellDictionary;
+import avernusvenine.sne.gui.DefaultGUI;
+import avernusvenine.sne.gui.utility.SpellSelectGUI;
 import avernusvenine.sne.items.SneItem;
 import avernusvenine.sne.items.interactable.Interactable;
 import avernusvenine.sne.spells.Spell;
@@ -24,11 +23,14 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Castable extends Interactable {
+public abstract class Castable extends Interactable {
 
     private final static TextComponent INVALID_MANA_RESPONSE = Component.text("You do not have enough mana!");
     private final static TextComponent INVALID_SPELL_LEVEL_RESPONSE = Component.text("You are not high enough level to cast this!");
     private final static TextComponent INVALID_SPELL_CLASS_RESPONSE = Component.text("Your class cannot cast this!");
+
+    protected boolean swappable = true;
+    protected List<String> validSpells = new ArrayList<>();
 
 
     public static ItemStack generateCastableItem(Material material, int amount, TextComponent displayName, List<TextComponent> lore,
@@ -47,8 +49,18 @@ public class Castable extends Interactable {
         PlayerDictionary.get(player).addStatusEffect(new Casting(player, spell));
     }
 
+    public void openSpellSelectGUI(Player player, ItemStack item){
+        Globals.openGUI(player, new SpellSelectGUI(player, item));
+    }
+
     @Override
     public void onItemUse(Player player, Entity entity, ActionType type, Event event){
+
+        if((type == ActionType.PLAYER_SHIFT_RIGHT_CLICK_ENTITY || type == ActionType.PLAYER_SHIFT_RIGHT_CLICK_AIR ||
+                type == ActionType.PLAYER_SHIFT_LEFT_CLICK_BLOCK) && swappable){
+            openSpellSelectGUI(player, item);
+            return;
+        }
 
         if(!(type == ActionType.PLAYER_RIGHT_CLICK_ENTITY || type == ActionType.PLAYER_RIGHT_CLICK_AIR ||
                 type == ActionType.PLAYER_RIGHT_CLICK_BLOCK))
@@ -121,6 +133,10 @@ public class Castable extends Interactable {
             item.setType(SpellDictionary.get(id).getMaterial());
             SneItem.setCustomModel(item, spell.getCustomModel());
         }
+    }
+
+    public List<String> getValidSpells(){
+        return validSpells;
     }
 
 }

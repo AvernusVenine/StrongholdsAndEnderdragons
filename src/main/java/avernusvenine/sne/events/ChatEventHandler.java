@@ -13,7 +13,7 @@ public class ChatEventHandler implements Listener {
     @EventHandler
     public void onAsyncPlayerChatEvent(AsyncPlayerChatEvent event){
 
-        PlayerCharacter playerCharacter = PlayerDictionary.get(event.getPlayer().getUniqueId().toString()).getPlayerCharacter();
+        PlayerCharacter playerCharacter = PlayerDictionary.get(event.getPlayer()).getPlayerCharacter();
 
         if(playerCharacter == null)
             return;

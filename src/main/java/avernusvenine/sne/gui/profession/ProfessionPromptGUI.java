@@ -27,23 +27,18 @@ public class ProfessionPromptGUI extends AcceptDenyGUI {
 
     @Override
     protected void onAccept(Player player) {
-        PlayerDictionary.get(player).onProfessionAccept();
+
     }
 
     @Override
     protected void onDeny(Player player) {
-        PlayerDictionary.get(player).onProfessionDeny();
+
     }
 
     @EventHandler
     public void onInventoryClose(final InventoryCloseEvent event){
         if(!event.getView().getOriginalTitle().equals(title))
             return;
-
-        if(playerChoice)
-            PlayerDictionary.get(event.getPlayer().getUniqueId().toString()).onProfessionAccept();
-        else
-            PlayerDictionary.get(event.getPlayer().getUniqueId().toString()).onProfessionDeny();
 
         HandlerList.unregisterAll(this);
     }

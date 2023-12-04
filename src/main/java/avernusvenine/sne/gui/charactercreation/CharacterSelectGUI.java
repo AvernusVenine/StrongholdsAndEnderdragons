@@ -15,14 +15,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
 import java.util.*;
 
 public class CharacterSelectGUI extends DefaultGUI {
+
+    private boolean playerChoose = false;
 
     public CharacterSelectGUI(Player player){
         owner = player;
@@ -92,6 +92,7 @@ public class CharacterSelectGUI extends DefaultGUI {
                 event.setCancelled(true);
 
                 PlayerDictionary.get(player).setPlayerCharacter(new PlayerCharacter(player));
+                playerChoose = true;
                 break;
             case "load_character":
                 try{
@@ -104,11 +105,33 @@ public class CharacterSelectGUI extends DefaultGUI {
 
                 player.playSound(player, Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1, 1);
                 event.setCancelled(true);
+                playerChoose = true;
                 player.closeInventory();
 
                 PlayerDictionary.get(player).onCharacterSelect();
                 break;
         }
+    }
+
+    @Override
+    @EventHandler
+    public void onInventoryClose(final InventoryCloseEvent event){
+        if(!event.getView().getOriginalTitle().equals(title) || !owner.equals(event.getPlayer()))
+            return;
+
+        if(!playerChoose) {
+            event.getPlayer().sendMessage("You must select a character in order to play!");
+            Bukkit.getScheduler().scheduleSyncDelayedTask(StrongholdsAndEnderdragons.plugin, new Runnable() {
+                @Override
+                public void run() {
+                    event.getPlayer().openInventory(inventory);
+                }
+            }, 1);
+
+            return;
+        }
+
+        HandlerList.unregisterAll(this);
     }
 
 }

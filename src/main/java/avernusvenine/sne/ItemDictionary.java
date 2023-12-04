@@ -7,6 +7,8 @@ import avernusvenine.sne.items.consumable.ingredient.*;
 import avernusvenine.sne.items.interactable.castable.AbilityBook;
 import avernusvenine.sne.items.interactable.castable.SpellBook;
 import avernusvenine.sne.items.interactable.utility.*;
+import de.tr7zw.changeme.nbtapi.NBTItem;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -64,6 +66,11 @@ public class ItemDictionary {
 
     public static SneItem get(String id){
         return itemDictionary.get(id);
+    }
+
+    public static SneItem get(ItemStack item){
+        NBTItem nbtItem = new NBTItem(item);
+        return itemDictionary.get(nbtItem.getString(NBTFlags.itemID));
     }
 
     public static Map<String, SneItem> getDictionary(){

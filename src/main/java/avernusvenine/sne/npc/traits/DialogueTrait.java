@@ -2,6 +2,7 @@ package avernusvenine.sne.npc.traits;
 
 import avernusvenine.sne.NPCDictionary;
 import avernusvenine.sne.PlayerDictionary;
+import avernusvenine.sne.players.PlayerDialogueHandler;
 import avernusvenine.sne.players.PlayerProfile;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.event.EventHandler;
@@ -24,12 +25,25 @@ public class DialogueTrait extends Trait {
         if(event.getNPC() != this.getNPC())
             return;
 
-        PlayerProfile profile = PlayerDictionary.get(event.getClicker().getUniqueId().toString());
+        PlayerProfile profile = PlayerDictionary.get(event.getClicker());
+        PlayerDialogueHandler handler = profile.getPlayerDialogueHandler();
 
-        if(!profile.isInDialogue())
-            profile.openDialogue(NPCDictionary.getByUUID(event.getNPC().getUniqueId().toString()).getDialogueSet(event.getClicker()));
+        if(!handler.isInDialogue()) {
+            handler.start(NPCDictionary.get(event.getNPC().getUniqueId()).getBranch(event.getClicker()));
+            handler.setInDialogue(true);
+            profile.openDialogue();
+        }
+        else {
+            if(handler.isChoosing())
+                return;
 
-        profile.advanceDialogue();
+            if(handler.isTextScrolling()){
+                handler.skipDialogue();
+                return;
+            }
+
+            handler.next();
+        }
     }
 
 }

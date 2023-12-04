@@ -21,7 +21,13 @@ public class Globals {
         PLAYER_LEFT_CLICK_AIR,
         PLAYER_LEFT_CLICK_ENTITY,
         PLAYER_KILLED,
-        PLAYER_DAMAGED
+        PLAYER_DAMAGED,
+        PLAYER_SHIFT_RIGHT_CLICK_AIR,
+        PLAYER_SHIFT_RIGHT_CLICK_ENTITY,
+        PLAYER_SHIFT_RIGHT_CLICK_BLOCK,
+        PLAYER_SHIFT_LEFT_CLICK_AIR,
+        PLAYER_SHIFT_LEFT_CLICK_ENTITY,
+        PLAYER_SHIFT_LEFT_CLICK_BLOCK,
     }
 
     public static final List<ClassType> MANA_USERS = new ArrayList<>(){{

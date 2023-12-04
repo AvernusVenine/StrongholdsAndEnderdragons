@@ -59,8 +59,12 @@ public class PlayerEventHandler implements Listener {
     public void onPlayerMove(final PlayerMoveEvent event){
         Player player = event.getPlayer();
 
-        if(PlayerDictionary.get(player).isInDialogue()){
-            event.setCancelled(true);
+        try{
+            if(PlayerDictionary.get(player).getPlayerDialogueHandler().isInDialogue()){
+                event.setCancelled(true);
+            }
+        } catch (Exception ignored) {
+
         }
     }
 

@@ -1,5 +1,6 @@
 package avernusvenine.sne.classes;
 
+import avernusvenine.sne.players.PlayerCharacter;
 import org.bukkit.ChatColor;
 
 public class Rogue extends DefaultClass{
@@ -10,6 +11,15 @@ public class Rogue extends DefaultClass{
         type = ClassType.ROGUE;
         id = "rogue";
         chatPrefix = ChatColor.DARK_GRAY + "" + ChatColor.BOLD +  "[ROGUE]";
+    }
+
+    @Override
+    public void onLevelUp(PlayerCharacter character, int level) {
+        switch (level){
+            case 1:
+                character.addSpell("eviscerate");
+                break;
+        }
     }
 
     @Override

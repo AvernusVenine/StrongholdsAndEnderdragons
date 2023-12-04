@@ -1,5 +1,6 @@
 package avernusvenine.sne.classes;
 
+import avernusvenine.sne.players.PlayerCharacter;
 import org.bukkit.ChatColor;
 
 public class Barbarian extends DefaultClass {
@@ -10,6 +11,11 @@ public class Barbarian extends DefaultClass {
         type = ClassType.BARBARIAN;
         id = "barbarian";
         chatPrefix = ChatColor.DARK_RED + "" + ChatColor.BOLD +  "[BARBARIAN]";
+    }
+
+    @Override
+    public void onLevelUp(PlayerCharacter character, int level) {
+
     }
 
     @Override

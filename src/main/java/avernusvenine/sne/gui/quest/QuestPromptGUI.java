@@ -28,10 +28,10 @@ public class QuestPromptGUI extends AcceptDenyGUI {
     }
 
     protected void onAccept(Player player){
-        PlayerDictionary.get(player).onQuestAccept();
+        //PlayerDictionary.get(player).onQuestAccept();
     }
 
     protected void onDeny(Player player){
-        PlayerDictionary.get(player).onQuestDeny();
+        //PlayerDictionary.get(player).onQuestDeny();
     }
 }

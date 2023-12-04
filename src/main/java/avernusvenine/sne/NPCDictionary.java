@@ -1,20 +1,12 @@
 package avernusvenine.sne;
 
+import avernusvenine.sne.npc.Leo;
 import avernusvenine.sne.npc.SneNPC;
-import avernusvenine.sne.npc.questnpc.Leo;
-import avernusvenine.sne.npc.trainernpc.Joel;
-import avernusvenine.sne.players.PlayerCharacter;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import net.citizensnpcs.Citizens;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.MemoryNPCDataStore;
-import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.api.npc.NPCRegistry;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class NPCDictionary {
 
@@ -24,7 +16,6 @@ public class NPCDictionary {
 
     public static void loadNPCs(){
         new Leo();
-        new Joel();
 
         try {
             StrongholdsAndEnderdragons.databaseHandler.spawnNPCs();
@@ -49,7 +40,7 @@ public class NPCDictionary {
         npcDictionaryUUID.put(npc.getUUID(), npc);
     }
 
-    public static SneNPC getByUUID(String uuid){
-        return npcDictionaryUUID.get(uuid);
+    public static SneNPC get(UUID uuid){
+        return npcDictionaryUUID.get(uuid.toString());
     }
 }

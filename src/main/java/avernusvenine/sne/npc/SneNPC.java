@@ -1,14 +1,12 @@
 package avernusvenine.sne.npc;
 
 import avernusvenine.sne.StrongholdsAndEnderdragons;
-import avernusvenine.sne.npc.dialogue.DialogueSet;
-import avernusvenine.sne.npc.dialogue.DialogueSet.DialogueType;
+import avernusvenine.sne.npc.dialogue.Branch;
 import avernusvenine.sne.quests.Quest;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.MemoryNPCDataStore;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
@@ -20,12 +18,13 @@ public abstract class SneNPC {
 
     protected net.citizensnpcs.api.npc.NPC npc;
 
-    protected HashMap<DialogueType, DialogueSet> dialogueSet = new HashMap<>();
-
     protected String id;
     protected String name;
 
-    protected List<Quest> quests = new ArrayList<>();
+
+    protected HashMap<String, Quest> quests = new HashMap<>();
+    protected HashMap<String, Branch> trees = new HashMap<>();
+    protected HashMap<String, Branch> branches = new HashMap<>();
 
     public abstract void createNPC();
 
@@ -58,9 +57,7 @@ public abstract class SneNPC {
         return id;
     }
 
-    public DialogueSet getDialogueSet(Player player){
-        return dialogueSet.get(DialogueType.DEFAULT);
-    }
+    public abstract Branch getBranch(Player player);
 
     public String getUUID(){
         return npc.getUniqueId().toString();

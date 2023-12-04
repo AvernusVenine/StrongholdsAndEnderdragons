@@ -1,5 +1,6 @@
 package avernusvenine.sne.classes;
 
+import avernusvenine.sne.players.PlayerCharacter;
 import org.bukkit.ChatColor;
 
 public class Cleric extends DefaultClass {
@@ -10,6 +11,11 @@ public class Cleric extends DefaultClass {
         type = ClassType.CLERIC;
         id = "cleric";
         chatPrefix = ChatColor.WHITE + "" + ChatColor.BOLD +  "[CLERIC]";
+    }
+
+    @Override
+    public void onLevelUp(PlayerCharacter character, int level) {
+
     }
 
     @Override

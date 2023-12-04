@@ -1,20 +1,12 @@
 package avernusvenine.sne.players;
 
 import avernusvenine.sne.*;
-import avernusvenine.sne.items.SneItem;
-import avernusvenine.sne.items.interactable.Interactable;
-import avernusvenine.sne.npc.dialogue.*;
-import avernusvenine.sne.npc.dialogue.DialogueHandler.Phase;
-import avernusvenine.sne.players.PlayerCharacter.QuestStatus.Status;
 
-import avernusvenine.sne.spells.Spell;
 import avernusvenine.sne.status.StatusEffect;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
@@ -26,9 +18,8 @@ public class PlayerProfile {
     protected Player player;
 
     // Dialogue variables
-    protected boolean inDialogue = false;
     protected ActionBarTask actionBarTask;
-    protected DialogueHandler dialogueHandler;
+    protected PlayerDialogueHandler playerDialogueHandler;
     protected CooldownHandler cooldownHandler;
 
     protected List<StatusEffect> statusEffects = new ArrayList<>();
@@ -38,9 +29,8 @@ public class PlayerProfile {
 
         actionBarTask = new ActionBarTask(player);
         actionBarTask.changeToEmpty();
-
-        dialogueHandler = new DialogueHandler();
         cooldownHandler = new CooldownHandler(player);
+        playerDialogueHandler = new PlayerDialogueHandler(player);
     }
 
     public void onCharacterSelect(){
@@ -51,7 +41,6 @@ public class PlayerProfile {
 
     public void onPlayerQuit(){
         actionBarTask.cancelTask();
-        dialogueHandler.reset();
         cooldownHandler.removeAll();
     }
 
@@ -95,66 +84,16 @@ public class PlayerProfile {
         return cost <= playerCharacter.getCurrentResource();
     }
 
-    public void openDialogue(DialogueSet set){
-
-        switch(set.getType()){
-            case QUEST:
-                dialogueHandler = new QuestDialogueHandler();
-                break;
-            case TRAINER:
-                dialogueHandler = new TrainerDialogueHandler();
-                break;
-            case DEFAULT:
-                dialogueHandler = new DialogueHandler();
-                break;
-        }
-
-        dialogueHandler.setDialogueSet(set);
-        inDialogue = true;
+    public void openDialogue(){
         actionBarTask.cancelTask();
         actionBarTask = new ActionBarTask(player);
         actionBarTask.changeToDialogueBox();
     }
 
     public void closeDialogue(){
-        inDialogue = false;
         actionBarTask.cancelTask();
         actionBarTask = new ActionBarTask(player);
         actionBarTask.changeToOverlay();
-        dialogueHandler.reset();
-    }
-
-    public void closeQuestCompletion(){
-        dialogueHandler.advance(player, Phase.CLOSE);
-        closeDialogue();
-    }
-
-    public void advanceDialogue(){
-        dialogueHandler.advance(player);
-    }
-
-    public void onQuestAccept(){
-        dialogueHandler.advance(player, Phase.QUEST_ACCEPT);
-        QuestDialogueHandler handler = (QuestDialogueHandler) dialogueHandler;
-        playerCharacter.updateQuestStatus(handler.getCurrentQuestID(), Status.ACCEPTED);
-    }
-
-    public void onQuestDeny(){
-        dialogueHandler.advance(player, Phase.QUEST_DENY);
-    }
-
-    public void onQuestCompletion(){
-        dialogueHandler.advance(player, Phase.QUEST_COMPLETION);
-    }
-
-    public void onProfessionAccept(){
-        dialogueHandler.advance(player, Phase.TRAINER_PROFESSION_ACCEPT);
-        TrainerDialogueHandler handler = (TrainerDialogueHandler) dialogueHandler;
-        playerCharacter.setProfession(1, 0, handler.getProfessionType());
-    }
-
-    public void onProfessionDeny(){
-        dialogueHandler.advance(player, Phase.TRAINER_PROFESSION_DENY);
     }
 
     public void addStatusEffect(StatusEffect effect){
@@ -185,6 +124,10 @@ public class PlayerProfile {
 
     // Getters and Setters
 
+    public PlayerDialogueHandler getPlayerDialogueHandler(){
+        return playerDialogueHandler;
+    }
+
     public PlayerCharacter getPlayerCharacter(){
         return playerCharacter;
     }
@@ -195,10 +138,6 @@ public class PlayerProfile {
 
     public String getUUID(){
         return player.getUniqueId().toString();
-    }
-
-    public boolean isInDialogue(){
-        return inDialogue;
     }
 
     public class ActionBarTask{

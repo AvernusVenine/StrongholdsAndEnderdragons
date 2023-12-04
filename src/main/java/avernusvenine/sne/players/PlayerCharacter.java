@@ -83,8 +83,12 @@ public class PlayerCharacter {
         spells.add(id);
     }
 
-    public List<String> getSpells(){
+    public List<String> getUnlockedSpells(){
         return spells;
+    }
+
+    public boolean checkSpellUnlocked(String id){
+        return spells.contains(id);
     }
 
 
@@ -129,7 +133,7 @@ public class PlayerCharacter {
         if(!quests.containsKey(id))
             return false;
 
-        return quests.get(id).status == QuestStatus.Status.COMPLETED;
+        return quests.get(id).status == QuestStatus.Status.TURNED_IN;
     }
 
     public boolean checkQuestCompletion(List<String> idList){
@@ -141,7 +145,7 @@ public class PlayerCharacter {
 
             if(!quests.containsKey(id))
                 return false;
-            else if(quests.get(id).status != QuestStatus.Status.COMPLETED)
+            else if(quests.get(id).status != QuestStatus.Status.TURNED_IN)
                 return false;
 
         }
@@ -321,7 +325,8 @@ public class PlayerCharacter {
             NOT_ACCEPTED(0),
             ACCEPTED(1),
             IN_PROGRESS(2),
-            COMPLETED(3);
+            TURNED_IN(3),
+            COMPLETED(4);
 
             final int id;
 

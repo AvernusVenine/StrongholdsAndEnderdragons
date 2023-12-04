@@ -37,3 +37,6 @@ commands:
   SetSpell:
     description: Sets the held items primary spell
     usage: /<command> spell_id
+  NPCDialogueChoice:
+    description: Chooses a dialogue option
+    usage: /<command> choice_index
