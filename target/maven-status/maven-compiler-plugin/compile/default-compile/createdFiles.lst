@@ -3,6 +3,7 @@ avernusvenine\sne\spells\projectile\Fireball.class
 avernusvenine\sne\items\consumable\fish\DeepslateSalmon.class
 avernusvenine\sne\npc\dialogue\FunctionBranch.class
 avernusvenine\sne\professions\Profession$ProfessionType.class
+avernusvenine\sne\npc\dialogue\RewardBranch.class
 avernusvenine\sne\SpellDictionary.class
 avernusvenine\sne\classes\Artificer.class
 avernusvenine\sne\NPCDictionary.class
@@ -19,6 +20,7 @@ avernusvenine\sne\items\consumable\fish\RainbowShrimp.class
 avernusvenine\sne\races\Race.class
 avernusvenine\sne\professions\Fishing$LootTable$2.class
 avernusvenine\sne\items\interactable\castable\InstantCastable.class
+avernusvenine\sne\npc\Leo$Quests$1.class
 avernusvenine\sne\players\PlayerDialogueHandler.class
 avernusvenine\sne\players\CooldownHandler$CooldownTask.class
 avernusvenine\sne\gui\AcceptDenyGUI.class
@@ -40,6 +42,7 @@ avernusvenine\sne\commands\SetResource.class
 avernusvenine\sne\quests\Quest.class
 avernusvenine\sne\races\Elf.class
 avernusvenine\sne\classes\Barbarian.class
+avernusvenine\sne\npc\dialogue\TurnInBranch.class
 avernusvenine\sne\spells\Disperse.class
 avernusvenine\sne\gui\charactercreation\ClassSelectGUI.class
 avernusvenine\sne\ItemDictionary.class
@@ -59,6 +62,7 @@ avernusvenine\sne\events\PlayerEventHandler.class
 avernusvenine\sne\StrongholdsAndEnderdragons$1.class
 avernusvenine\sne\classes\DefaultClass$ClassType.class
 avernusvenine\sne\items\consumable\cookable\Chocolate.class
+avernusvenine\sne\npc\dialogue\QuestBranch.class
 avernusvenine\sne\spells\passive\Passive.class
 avernusvenine\sne\commands\NPCDialogueChoice.class
 avernusvenine\sne\npc\dialogue\Branch.class
@@ -83,6 +87,7 @@ avernusvenine\sne\items\consumable\fish\TuffTrout.class
 avernusvenine\sne\commands\GetRank.class
 avernusvenine\sne\players\PlayerCharacter$QuestStatus.class
 avernusvenine\sne\items\interactable\castable\AbilityBook.class
+avernusvenine\sne\npc\Leo$Quests$2.class
 avernusvenine\sne\spells\Sprint.class
 avernusvenine\sne\spells\targeted\SwiftStep.class
 avernusvenine\sne\spells\targeted\GutShot.class
@@ -124,12 +129,14 @@ avernusvenine\sne\status\StatusEffect$StatusEffectTask$1.class
 avernusvenine\sne\classes\Warlock.class
 avernusvenine\sne\items\consumable\fish\IronSwordfish.class
 avernusvenine\sne\races\Dragonkin.class
+avernusvenine\sne\status\AnimalSpeaking.class
 avernusvenine\sne\races\HalfOrc.class
 avernusvenine\sne\commands\ShowTitle.class
 avernusvenine\sne\professions\Fishing$LootTable$1.class
 avernusvenine\sne\races\Tiefling.class
 avernusvenine\sne\items\consumable\fish\Fish$1.class
 avernusvenine\sne\items\consumable\fish\SlimeSkipper.class
+avernusvenine\sne\npc\dialogue\NextBranch.class
 avernusvenine\sne\PlayerDictionary.class
 avernusvenine\sne\items\consumable\fish\DiamondDiscus.class
 avernusvenine\sne\items\interactable\castable\Castable.class
@@ -146,6 +153,7 @@ avernusvenine\sne\players\CooldownHandler.class
 avernusvenine\sne\spells\Spell.class
 avernusvenine\sne\items\consumable\fish\Fish.class
 avernusvenine\sne\gui\utility\PlayerJournalGUI.class
+avernusvenine\sne\npc\Leo$Quests.class
 avernusvenine\sne\status\Casting.class
 avernusvenine\sne\gui\charactercreation\CharacterSelectGUI$1.class
 avernusvenine\sne\items\consumable\fish\GlowingGoliath.class
