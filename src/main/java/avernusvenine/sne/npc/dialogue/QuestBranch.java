@@ -3,6 +3,7 @@ package avernusvenine.sne.npc.dialogue;
 import avernusvenine.sne.PlayerDictionary;
 import avernusvenine.sne.players.PlayerCharacter;
 import avernusvenine.sne.players.PlayerCharacter.QuestStatus.Status;
+import avernusvenine.sne.players.PlayerDialogueHandler;
 import avernusvenine.sne.quests.Quest;
 import org.bukkit.entity.Player;
 
@@ -17,6 +18,7 @@ public class QuestBranch extends Branch{
     @Override
     public DialogueTask run(Player player) {
         PlayerDictionary.get(player).getPlayerCharacter().addQuest(quest.getID(), Status.ACCEPTED, 0);
+        PlayerDictionary.get(player).getPlayerDialogueHandler().next();
         return null;
     }
 }

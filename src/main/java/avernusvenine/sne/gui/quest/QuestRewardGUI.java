@@ -1,5 +1,6 @@
 package avernusvenine.sne.gui.quest;
 
+import avernusvenine.sne.PlayerDictionary;
 import avernusvenine.sne.gui.DefaultGUI;
 import avernusvenine.sne.quests.Quest;
 import org.bukkit.Bukkit;
@@ -36,7 +37,6 @@ public class QuestRewardGUI extends DefaultGUI {
     @Override
     @EventHandler
     public void onInventoryClose(final InventoryCloseEvent event){
-
         Player player = (Player) event.getPlayer();
 
         if(!event.getView().getOriginalTitle().equals(title) || !owner.equals(player))
@@ -46,6 +46,8 @@ public class QuestRewardGUI extends DefaultGUI {
             if(item != null)
                 player.getInventory().addItem(item);
         }
+
+        PlayerDictionary.get(player).getPlayerDialogueHandler().next();
 
         HandlerList.unregisterAll(this);
     }

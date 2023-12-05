@@ -11,12 +11,12 @@ import java.util.*;
 
 public class ChoiceBranch extends Branch{
 
-    private final static TextColor GREEN = TextColor.color(91,200,49);
-    private final static TextColor RED = TextColor.color(200, 0, 0);
+    protected final static TextColor GREEN = TextColor.color(91,200,49);
+    protected final static TextColor RED = TextColor.color(200, 0, 0);
 
-    private final List<String> choices = new ArrayList<>();
-    private final List<TextComponent> buttons = new ArrayList<>();
-    private final List<ConditionalInterface> conditionals = new ArrayList<>();
+    protected final List<String> choices = new ArrayList<>();
+    protected final List<TextComponent> buttons = new ArrayList<>();
+    protected final List<ConditionalInterface> conditionals = new ArrayList<>();
 
     @Override
     public DialogueTask run(Player player) {
@@ -43,6 +43,20 @@ public class ChoiceBranch extends Branch{
         nextBranches.add(index, branch);
         choices.add(index, text);
         conditionals.add(index, conditional);
+        return this;
+    }
+
+    public ChoiceBranch append(Branch branch, String text){
+        nextBranches.add(branch);
+        choices.add(text);
+        conditionals.add((Player player) -> true);
+        return this;
+    }
+
+    public ChoiceBranch append(Branch branch, String text, ConditionalInterface conditional){
+        nextBranches.add(branch);
+        choices.add(text);
+        conditionals.add(conditional);
         return this;
     }
 

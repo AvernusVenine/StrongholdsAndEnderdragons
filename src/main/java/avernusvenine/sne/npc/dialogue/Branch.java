@@ -18,6 +18,11 @@ public abstract class Branch {
         return this;
     }
 
+    public Branch append(Branch branch){
+        nextBranches.add(branch);
+        return this;
+    }
+
     public boolean hasNext(){
         return !nextBranches.isEmpty();
     }

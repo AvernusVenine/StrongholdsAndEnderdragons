@@ -1,5 +1,5 @@
 name: StrongholdsandEnderdragons
-version: "InDev 2.0"
+version: "InDev 3.0"
 main: avernusvenine.sne.StrongholdsAndEnderdragons
 api-version: '1.20'
 depend: [Citizens]

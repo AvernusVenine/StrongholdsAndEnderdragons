@@ -94,7 +94,7 @@ public class ItemRetrievalCompletionGUI extends DefaultGUI {
 
                 if(valid){
                     player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-                    //PlayerDictionary.get(player.getUniqueId().toString()).onQuestCompletion();
+                    PlayerDictionary.get(player).getPlayerDialogueHandler().next(0);
                     completed = true;
                     player.closeInventory();
                 }
@@ -115,7 +115,7 @@ public class ItemRetrievalCompletionGUI extends DefaultGUI {
         Player player = (Player) event.getPlayer();
 
         if(!completed){
-            //PlayerDictionary.get(player).closeQuestCompletion();
+            PlayerDictionary.get(player).getPlayerDialogueHandler().next(1);
             for(ItemStack item : event.getInventory().getContents()){
 
                 if(item == null || item.getType() == Material.AIR)

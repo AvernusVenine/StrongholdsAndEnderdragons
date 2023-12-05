@@ -6,7 +6,7 @@
 
     <groupId>avernusvenine</groupId>
     <artifactId>SnE</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>INDEV 3.0</version>
     <packaging>jar</packaging>
 
     <name>Strongholds and Enderdragons</name>
